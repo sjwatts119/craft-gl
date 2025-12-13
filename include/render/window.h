@@ -27,9 +27,9 @@ public:
 
     void update();
 
-    void poll();
+    static void poll();
 
-    void swapBuffers();
+    void swapBuffers() const;
 
     static void destroy();
 
