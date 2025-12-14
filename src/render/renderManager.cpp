@@ -17,33 +17,7 @@ void RenderManager::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderManager::addTestBlocks() {
-    for (int x = 0; x < 16; x++) {
-        for (int y = 0; y < 100; y++) {
-            for (int z = 0; z < 16; z++) {
-                BlockType type;
-
-                if (y == 0) {
-                    type = BEDROCK;
-                } else if (y < 46) {
-                    type = STONE;
-                } else if (y < 49) {
-                    type = DIRT;
-                } else if (y < 50) {
-                    type = GRASS;
-                } else {
-                    type = AIR;
-                }
-
-                _blocks.insert({Coordinate {x, y, z}, Block{type}});
-            }
-        }
-    }
-
-    std::cout << "Added Test Blocks - Count: " << _blocks.size() << std::endl;
-};
-
-void RenderManager::renderBlocks(const Camera* camera, const Window* window) const {
+void RenderManager::renderBlocks(const Camera* camera, const Window* window, const World* world) {
     // Bind the block VAO
     glBindVertexArray(_blockVaoId);
 
@@ -65,27 +39,31 @@ void RenderManager::renderBlocks(const Camera* camera, const Window* window) con
     _blockShader.setMat4("uViewMatrix", camera->getViewMatrix());
     _blockShader.setMat4("uProjectionMatrix", camera->getProjectionMatrix(window));
 
-    for (auto& [coordinate, block]: _blocks) {
-        const auto type = block.getType();
+    for (auto& [chunkCoordinate, chunk]: world->_chunks) {
+        for (auto& [coordinate, block]: chunk._blocks) {
+            const auto type = block.getType();
 
-        if (type == AIR) {
-            continue;
+            if (type == AIR) {
+                continue;
+            }
+
+            glm::mat4 localModelMatrix = glm::translate(glm::mat4{1.0f}, coordinate.toVec3());
+            glm::mat4 modelMatrix = chunk.localToWorldMatrix() * localModelMatrix;
+
+            _blockShader.setMat4("uModelMatrix", modelMatrix);
+
+            _blockShader.setInt("uBlockType", type);
+
+            glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
         }
-
-        glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, coordinate.toVec3());
-
-        _blockShader.setMat4("uModelMatrix", modelMatrix);
-
-        _blockShader.setInt("uBlockType", type);
-
-        glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
     }
+
 
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Camera* camera, const Window* window) const {
-    renderBlocks(camera, window);
+void RenderManager::render(const Camera* camera, const Window* window, const World* world) {
+    renderBlocks(camera, window, world);
 
     // Foreach of stored types, render.
 

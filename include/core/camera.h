@@ -30,16 +30,16 @@ class Camera
 
     float _zoomSensitivity = 2.0f;
     float _aimSensitivity = 0.1f;
-    float _movementSensitivity = 5.0f;
+    float _movementSensitivity = 25.0f;
 
     float _pitch = 0.0f;
-    float _yaw = -90.0f;
+    float _yaw = 0.0f;
     float _fov = 75.0f;
 
     float mouseLastXPosition = 400;
     float mouseLastYPosition = 300;
 
-    glm::vec3 _position{-30.0f, 50.0f, 3.0f};
+    glm::vec3 _position{-30.0f, 10.0f, 3.0f};
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
 

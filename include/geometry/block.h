@@ -9,6 +9,7 @@ enum BlockType: int {
     DIRT = 2,
     STONE = 3,
     BEDROCK = 4,
+    ERROR = 5,
 };
 
 class Block {

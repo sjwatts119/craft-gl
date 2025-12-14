@@ -12,6 +12,7 @@
 #include "core/coordinate.h"
 #include "glad/glad.h"
 #include "render/shader.h"
+#include "core/world.h"
 
 class RenderManager {
 private:
@@ -22,14 +23,12 @@ private:
 
     std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
 
-    void renderBlocks(const Camera* camera, const Window* window) const;
+    void renderBlocks(const Camera* camera, const Window* window, const World* world);
 
 public:
     explicit RenderManager(const Window* window);
 
     static void clear();
 
-    void addTestBlocks();
-
-    void render(const Camera* camera, const Window* window) const;
+    void render(const Camera* camera, const Window* window, const World* world);
 };

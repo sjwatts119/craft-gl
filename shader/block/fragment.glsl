@@ -12,6 +12,7 @@ out vec4 FragColour;
     DIRT = 2,
     STONE = 3,
     BEDROCK = 4,
+    ERROR = 5,
 */
 
 vec4 colourFromBlockType() {
@@ -30,6 +31,10 @@ vec4 colourFromBlockType() {
     // Bedrock
     else if (uBlockType == 4) {
         return vec4(0.131, 0.131, 0.131, 1.0f);
+    }
+    // Error
+    else if (uBlockType == 5) {
+        return vec4(1.0f, 0.0f, 1.0f, 1.0f);
     }
     // Air
     else {
