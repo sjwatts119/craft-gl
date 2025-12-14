@@ -31,5 +31,5 @@ public:
 
     void addTestBlocks();
 
-    void render(const Camera* camera, const Window* window);
+    void render(const Camera* camera, const Window* window) const;
 };

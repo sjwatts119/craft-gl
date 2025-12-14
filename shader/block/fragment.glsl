@@ -29,7 +29,7 @@ vec4 colourFromBlockType() {
     }
     // Bedrock
     else if (uBlockType == 4) {
-        return vec4(0.231, 0.231, 0.231, 1.0f);
+        return vec4(0.131, 0.131, 0.131, 1.0f);
     }
     // Air
     else {

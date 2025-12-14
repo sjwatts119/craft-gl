@@ -34,7 +34,7 @@ class Camera
 
     float _pitch = 0.0f;
     float _yaw = -90.0f;
-    float _fov = 45.0f;
+    float _fov = 75.0f;
 
     float mouseLastXPosition = 400;
     float mouseLastYPosition = 300;

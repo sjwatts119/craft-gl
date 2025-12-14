@@ -65,32 +65,26 @@ void RenderManager::renderBlocks(const Camera* camera, const Window* window) con
     _blockShader.setMat4("uViewMatrix", camera->getViewMatrix());
     _blockShader.setMat4("uProjectionMatrix", camera->getProjectionMatrix(window));
 
-    for (int x = 0; x < 16; x++) {
-        for (int y = 0; y < 100; y++) {
-            for (int z = 0; z < 16; z++) {
-                Coordinate coordinate {x, y, z};
+    for (auto& [coordinate, block]: _blocks) {
+        const auto type = block.getType();
 
-                const BlockType type = _blocks.find(coordinate)->second.getType();
-
-                if (type == AIR) {
-                    continue;
-                }
-
-                glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, coordinate.toVec3());
-
-                _blockShader.setMat4("uModelMatrix", modelMatrix);
-
-                _blockShader.setInt("uBlockType", type);
-
-                glDrawArrays(GL_TRIANGLES, 0, 36);
-            }
+        if (type == AIR) {
+            continue;
         }
+
+        glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, coordinate.toVec3());
+
+        _blockShader.setMat4("uModelMatrix", modelMatrix);
+
+        _blockShader.setInt("uBlockType", type);
+
+        glDrawArrays(GL_TRIANGLES, 0, vertices.size() / 3);
     }
 
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Camera* camera, const Window* window) {
+void RenderManager::render(const Camera* camera, const Window* window) const {
     renderBlocks(camera, window);
 
     // Foreach of stored types, render.
