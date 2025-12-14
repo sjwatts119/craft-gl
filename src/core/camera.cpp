@@ -170,7 +170,7 @@ glm::mat4 Camera::getViewMatrix() const
 
 glm::mat4 Camera::getProjectionMatrix(const int& width, const int& height) const
 {
-    return glm::mat4(glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f));
+    return glm::mat4(glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 250.0f));
 }
 
 glm::mat4 Camera::getProjectionMatrix(const Window* window) const

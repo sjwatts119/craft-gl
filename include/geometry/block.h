@@ -136,7 +136,7 @@ public:
     }
 
 public:
-    explicit Block(const BlockType& type);
+    Block(const BlockType type = AIR): _type(type) {};
 
     [[nodiscard]] BlockType getType() const;
 
