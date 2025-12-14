@@ -6,6 +6,8 @@
 
 #include <iostream>
 
+#include "render/window.h"
+
 enum CameraMode
 {
     FREE,
@@ -34,6 +36,9 @@ class Camera
     float _yaw = -90.0f;
     float _fov = 45.0f;
 
+    float mouseLastXPosition = 400;
+    float mouseLastYPosition = 300;
+
     glm::vec3 _position{0.0f, 0.0f, 3.0f};
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
@@ -57,6 +62,10 @@ class Camera
 public:
     explicit Camera(const CameraMode mode) : _mode(mode) {}
 
+    void processCursor(const Window* window);
+
+    void processKeyboard(const Window* window);
+
     void setBasisVectors();
 
     void aim(float yawOffset, float pitchOffset);
@@ -66,6 +75,10 @@ public:
     void zoom(float offset);
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
+
+    [[nodiscard]] glm::mat4 getProjectionMatrix(const int& width, const int& height) const;
+
+    [[nodiscard]] glm::mat4 getProjectionMatrix(const Window* window) const;
 
     [[nodiscard]] float getFov() const;
 

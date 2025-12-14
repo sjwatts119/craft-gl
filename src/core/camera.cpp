@@ -1,5 +1,61 @@
 #include <core/camera.h>
 
+#include "glm/ext/matrix_clip_space.hpp"
+#include "render/window.h"
+
+void Camera::processCursor(const Window* window) {
+    double xPosition, yPosition;
+
+    glfwGetCursorPos(window->getWindow(), &xPosition, &yPosition);
+
+    // Get the "amount" that the camera has moved since the last frame.
+    // Order of operations is important as it "inverts" the input direction
+    const float xOffset = static_cast<float>(xPosition) - mouseLastXPosition;
+    const float yOffset = mouseLastYPosition - static_cast<float>(yPosition);
+
+    // Store the current mouse position to calculate the next frame's offset.
+    mouseLastXPosition = static_cast<float>(xPosition);
+    mouseLastYPosition = static_cast<float>(yPosition);
+
+    aim(xOffset, yOffset);
+}
+
+void Camera::processKeyboard(const Window* window) {
+    /**
+     * Movement
+     */
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
+    {
+        move(FORWARD, window->getDeltaTime());
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
+    {
+        move(BACKWARD, window->getDeltaTime());
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
+    {
+        move(RIGHT, window->getDeltaTime());
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
+    {
+        move(LEFT, window->getDeltaTime());
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
+    {
+        move(UP, window->getDeltaTime());
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    {
+        move(DOWN, window->getDeltaTime());
+    }
+}
+
+
 void Camera::moveForward(const float speed) {
     if (_mode == FREE) {
         _position += speed * _forward;
@@ -51,6 +107,8 @@ void Camera::setBasisVectors()
 
 void Camera::aim(float yawOffset, float pitchOffset)
 {
+    std::cout << "aimed with yawOffset: " << yawOffset << " and pitchOffset: " << pitchOffset << std::endl;
+
     pitchOffset *= _aimSensitivity;
     yawOffset *= _aimSensitivity;
 
@@ -63,6 +121,7 @@ void Camera::aim(float yawOffset, float pitchOffset)
 
 void Camera::move(const CameraDirection direction, const float deltaTime)
 {
+    std::cout << "moved " << direction << std::endl;
     const float speed = _movementSensitivity * deltaTime;
 
     switch (direction)
@@ -107,6 +166,16 @@ void Camera::zoom(const float offset)
 glm::mat4 Camera::getViewMatrix() const
 {
     return glm::lookAt(_position, _position + _forward, _up);
+}
+
+glm::mat4 Camera::getProjectionMatrix(const int& width, const int& height) const
+{
+    return glm::mat4(glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 100.0f));
+}
+
+glm::mat4 Camera::getProjectionMatrix(const Window* window) const
+{
+    return getProjectionMatrix(window->getWidth(), window->getHeight());
 }
 
 float Camera::getFov() const

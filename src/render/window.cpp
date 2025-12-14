@@ -1,10 +1,12 @@
 #include <render/window.h>
 
+#include <utility>
+
 Window::Window(
     const int width,
     const int height,
-    const std::string &title
-): _width(width), _height(height), _title(title) {
+    std::string title
+): _width(width), _height(height), _title(std::move(title)) {
     initWindow();
 }
 
@@ -23,6 +25,8 @@ void Window::initWindow() {
         glfwTerminate();
         throw std::logic_error("Failed to create GLFW window");
     }
+
+    glfwSetInputMode(_window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     std::cout << "Created Window" << std::endl;
 }
@@ -59,9 +63,20 @@ void Window::destroy() {
     glfwTerminate();
 }
 
-
 bool Window::open() const {
     return !glfwWindowShouldClose(_window);
+}
+
+int Window::getWidth() const {
+    return _width;
+}
+
+int Window::getHeight() const {
+    return _height;
+}
+
+float Window::getDeltaTime() const {
+    return _deltaTime;
 }
 
 GLFWwindow* Window::getWindow() const {

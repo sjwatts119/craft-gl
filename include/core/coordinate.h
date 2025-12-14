@@ -9,6 +9,10 @@ struct Coordinate {
     bool operator==(const Coordinate& coordinate) const {
         return coordinate.x == x && coordinate.y && y && coordinate.z == z;
     }
+
+    [[nodiscard]] glm::vec3 toVec3() const {
+        return glm::vec3{x, y, z};
+    }
 };
 
 /**

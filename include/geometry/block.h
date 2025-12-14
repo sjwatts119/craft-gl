@@ -3,6 +3,7 @@
 #include <vector>
 
 class Block {
+public:
     // TODO get rid of this and use the individual face vertex methods
     static std::array<float, 108> getVertices() {
         return {

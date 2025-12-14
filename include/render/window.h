@@ -21,7 +21,7 @@ private:
     void updateDeltaTime();
 
 public:
-    Window(int width, int height, const std::string &title);
+    Window(int width, int height, std::string title);
 
     void makeCurrent() const;
 
@@ -34,6 +34,12 @@ public:
     static void destroy();
 
     [[nodiscard]] bool open() const;
+
+    [[nodiscard]] int getWidth() const;
+
+    [[nodiscard]] int getHeight() const;
+
+    [[nodiscard]] float getDeltaTime() const;
 
     [[nodiscard]] GLFWwindow* getWindow() const;
 };
