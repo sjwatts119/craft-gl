@@ -5,7 +5,7 @@
 RenderManager::RenderManager(const Window* window) {
     glViewport(0, 0, window->getWidth(), window->getHeight());
 
-    glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
+    glClearColor(0.43138f, 0.69412f, 1.0f, 1.0f);
 
     glEnable(GL_DEPTH_TEST);
 };
@@ -59,16 +59,11 @@ void RenderManager::renderBlocks(const Camera* camera, const Window* window) {
 
     for (int x = 0; x < 16; x++) {
         for (int z = 0; z < 16; z++) {
-            // std::cout << "rendering {" << x << ", y:" << 1.0f << ", z:" << z << "}" << std::endl;
-
             Coordinate coordinate {x, 1, z};
 
             glm::mat4 modelMatrix = glm::translate(glm::mat4{1.0f}, coordinate.toVec3());
 
-            // std::cout << coordinate.toVec3().x << " "  << coordinate.toVec3().y << " "<< coordinate.toVec3().z << " " << std::endl;
-
             shader.setMat4("uModelMatrix", modelMatrix);
-
 
             glDrawArrays(GL_TRIANGLES, 0, 36);
         }

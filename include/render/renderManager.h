@@ -15,7 +15,7 @@ class RenderManager {
 private:
     std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
 
-    void renderBlocks(const Camera* camera, const Window* window);
+    static void renderBlocks(const Camera* camera, const Window* window);
 
 public:
     explicit RenderManager(const Window* window);
@@ -24,5 +24,5 @@ public:
 
     void addTestBlocks();
 
-    void render(const Camera* camera, const Window* window);
+    static void render(const Camera* camera, const Window* window);
 };

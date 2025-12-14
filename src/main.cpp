@@ -20,7 +20,7 @@ int main() {
         camera.processCursor(&window);
         camera.processKeyboard(&window);
 
-        renderManager.render(&camera, &window);
+        RenderManager::render(&camera, &window);
 
         Window::poll();
         window.swapBuffers();
