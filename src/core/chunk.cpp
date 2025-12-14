@@ -1,14 +1,23 @@
 #include "core/chunk.h"
 
-Chunk::Chunk(const Coordinate coordinate) : _coordinate(coordinate), _blocks{} {
+#include "geometry/chunkMesh.h"
+
+Chunk::Chunk(const Coordinate coordinate)
+  : _coordinate(coordinate),
+    _blocks{},
+    _mesh{std::make_unique<ChunkMesh>(this)}
+{
     _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toVec3() * 16.0f);
     _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toVec3() * 16.0f);
 
     addTestBlocks();
+    generateMesh();
 }
 
-void Chunk::generateMesh() {
-    // _mesh = ChunkMesh{&_blocks};
+Chunk::~Chunk() = default;
+
+void Chunk::generateMesh() const {
+    _mesh->regenerateMesh();
 }
 
 glm::mat4 Chunk::localToWorldMatrix() const {

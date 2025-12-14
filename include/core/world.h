@@ -6,7 +6,7 @@
 
 class World {
 public:
-    std::pmr::unordered_map<Coordinate, Chunk, CoordinateHash> _chunks;
+    std::pmr::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks;
 
     World();
 

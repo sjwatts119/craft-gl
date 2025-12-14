@@ -15,7 +15,7 @@ const Block *World::blockAt(const Coordinate worldCoordinate) const {
         return nullptr;
     }
 
-    const Chunk& chunk = chunkResult->second;
+    const Chunk& chunk = *chunkResult->second;
     const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
 
     // std::cout << "World coordinate: {x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << "}" << std::endl;
@@ -26,18 +26,13 @@ const Block *World::blockAt(const Coordinate worldCoordinate) const {
 }
 
 void World::addTestChunks() {
-    // 0,0
-    // 0,1
-    // 1,0
-    // 1,1
-
-    for (int x = 0; x < 4; x++) {
-        for (int z = 0; z < 4; z++) {
+    for (int x = 0; x < 16; x++) {
+        for (int z = 0; z < 16; z++) {
             const Coordinate coordinate {x, 0, z};
 
-            Chunk chunk{coordinate};
+            auto chunk = std::make_unique<Chunk>(coordinate);
 
-            _chunks.insert({Coordinate {x, 0, z}, chunk});
+            _chunks.emplace(coordinate, std::move(chunk));
 
             std::cout << "added test chunk to world at localised position {x: " << x << " z: " << z << "}" << std::endl;
         }

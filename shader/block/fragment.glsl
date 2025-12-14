@@ -1,8 +1,7 @@
 #version 330 core
 
 in vec3 FragPosition;
-
-uniform int uBlockType;
+flat in int BlockType;
 
 out vec4 FragColour;
 
@@ -17,23 +16,23 @@ out vec4 FragColour;
 
 vec4 colourFromBlockType() {
     // Grass
-    if (uBlockType == 1) {
+    if (BlockType == 1) {
         return vec4(0.329f, 0.831f, 0.329f, 1.0f);
     }
     // Dirt
-    else if (uBlockType == 2) {
+    else if (BlockType == 2) {
         return vec4(0.561f, 0.294f, 0.0f, 1.0f);
     }
     // Stone
-    else if (uBlockType == 3) {
+    else if (BlockType == 3) {
         return vec4(0.541, 0.541, 0.541, 1.0f);
     }
     // Bedrock
-    else if (uBlockType == 4) {
+    else if (BlockType == 4) {
         return vec4(0.131, 0.131, 0.131, 1.0f);
     }
     // Error
-    else if (uBlockType == 5) {
+    else if (BlockType == 5) {
         return vec4(1.0f, 0.0f, 1.0f, 1.0f);
     }
     // Air

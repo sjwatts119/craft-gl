@@ -45,15 +45,28 @@ struct Coordinate {
         return coordinate.x == x && coordinate.y == y && coordinate.z == z;
     }
 
-    [[nodiscard]] std::array<Coordinate, 6> neighbours() const {
-        return std::array<Coordinate, 6> {
-            Coordinate{x + 1, y, z},
-            Coordinate{x - 1, y, z},
-            Coordinate{x, y + 1, z},
-            Coordinate{x, y - 1, z},
-            Coordinate{x, y, z + 1},
-            Coordinate{x, y, z - 1},
-        };
+    [[nodiscard]] Coordinate leftNeighbour() const {
+        return Coordinate{x - 1, y, z};
+    }
+
+    [[nodiscard]] Coordinate rightNeighbour() const {
+        return Coordinate{x + 1, y, z};
+    }
+
+    [[nodiscard]] Coordinate downNeighbour() const {
+        return Coordinate{x, y - 1, z};
+    }
+
+    [[nodiscard]] Coordinate upNeighbour() const {
+        return Coordinate{x, y + 1, z};
+    }
+
+    [[nodiscard]] Coordinate backNeighbour() const {
+        return Coordinate{x, y, z - 1};
+    }
+
+    [[nodiscard]] Coordinate frontNeighbour() const {
+        return Coordinate{x, y, z + 1};
     }
 
     [[nodiscard]] glm::vec3 toVec3() const {
