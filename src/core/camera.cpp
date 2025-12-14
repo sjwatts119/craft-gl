@@ -107,7 +107,7 @@ void Camera::setBasisVectors()
 
 void Camera::aim(float yawOffset, float pitchOffset)
 {
-    std::cout << "aimed with yawOffset: " << yawOffset << " and pitchOffset: " << pitchOffset << std::endl;
+    // std::cout << "aimed with yawOffset: " << yawOffset << " and pitchOffset: " << pitchOffset << std::endl;
 
     pitchOffset *= _aimSensitivity;
     yawOffset *= _aimSensitivity;
@@ -121,7 +121,7 @@ void Camera::aim(float yawOffset, float pitchOffset)
 
 void Camera::move(const CameraDirection direction, const float deltaTime)
 {
-    std::cout << "moved " << direction << std::endl;
+    // std::cout << "moved " << direction << std::endl;
     const float speed = _movementSensitivity * deltaTime;
 
     switch (direction)

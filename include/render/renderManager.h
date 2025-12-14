@@ -4,18 +4,25 @@
 #include <unordered_map>
 #include <iostream>
 
+#include "shader.h"
 #include "core/camera.h"
 #include "core/coordinate.h"
 #include "geometry/block.h"
 #include "glm/vec3.hpp"
 #include "core/coordinate.h"
 #include "glad/glad.h"
+#include "render/shader.h"
 
 class RenderManager {
 private:
+    Shader _blockShader{"../shader/block/vertex.glsl", "../shader/block/fragment.glsl"};
+
+    unsigned int _blockVboId;
+    unsigned int _blockVaoId;
+
     std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
 
-    static void renderBlocks(const Camera* camera, const Window* window);
+    void renderBlocks(const Camera* camera, const Window* window) const;
 
 public:
     explicit RenderManager(const Window* window);
@@ -24,5 +31,5 @@ public:
 
     void addTestBlocks();
 
-    static void render(const Camera* camera, const Window* window);
+    void render(const Camera* camera, const Window* window);
 };
