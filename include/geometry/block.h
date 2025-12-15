@@ -1,8 +1,12 @@
 #pragma once
+
 #include <array>
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+
+#include "AABB.h"
+#include "core/coordinate.h"
 
 enum BlockType: int {
     AIR = 0,

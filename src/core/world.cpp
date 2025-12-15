@@ -5,9 +5,7 @@ World::World() {
 }
 
 const Block *World::blockAt(const Coordinate worldCoordinate) const {
-    const auto coord = worldCoordinate.toVec3() / 16.0f;
-
-    const Coordinate chunkCoordinate{coord.x, coord.y, coord.z};
+    const auto chunkCoordinate = worldCoordinate.toChunkSpace();
 
     const auto chunkResult = _chunks.find(chunkCoordinate);
 

@@ -1,9 +1,16 @@
-#include <core/camera.h>
+#include <core/player.h>
 
+#include "geometry/ray.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "render/window.h"
 
-void Camera::processCursor(const Window* window) {
+void Player::update(const Window* window) {
+    aimingAt();
+    processCursor(window);
+    processKeyboard(window);
+}
+
+void Player::processCursor(const Window* window) {
     double xPosition, yPosition;
 
     glfwGetCursorPos(window->getWindow(), &xPosition, &yPosition);
@@ -20,7 +27,7 @@ void Camera::processCursor(const Window* window) {
     aim(xOffset, yOffset);
 }
 
-void Camera::processKeyboard(const Window* window) {
+void Player::processKeyboard(const Window* window) {
     /**
      * Movement
      */
@@ -55,8 +62,7 @@ void Camera::processKeyboard(const Window* window) {
     }
 }
 
-
-void Camera::moveForward(const float speed) {
+void Player::moveForward(const float speed) {
     if (_mode == FREE) {
         _position += speed * _forward;
 
@@ -66,7 +72,7 @@ void Camera::moveForward(const float speed) {
     _position += glm::cross(_right, _worldUp) * speed;
 }
 
-void Camera::moveBackward(const float speed) {
+void Player::moveBackward(const float speed) {
     if (_mode == FREE) {
         _position -= speed * _forward;
 
@@ -76,23 +82,23 @@ void Camera::moveBackward(const float speed) {
     _position -= glm::cross(_right, _worldUp) * speed;
 }
 
-void Camera::moveLeft(const float speed) {
+void Player::moveLeft(const float speed) {
     _position += glm::cross(_forward, _up) * speed;
 }
 
-void Camera::moveRight(const float speed) {
+void Player::moveRight(const float speed) {
     _position -= glm::cross(_forward, _up) * speed;
 }
 
-void Camera::moveUp(const float speed) {
+void Player::moveUp(const float speed) {
     _position += _worldUp * speed;
 }
 
-void Camera::moveDown(const float speed) {
+void Player::moveDown(const float speed) {
     _position -= _worldUp * speed;
 }
 
-void Camera::setBasisVectors()
+void Player::setBasisVectors()
 {
     glm::vec3 newCameraDirection;
 
@@ -105,7 +111,7 @@ void Camera::setBasisVectors()
     _up = glm::cross(_forward, _right);
 }
 
-void Camera::aim(float yawOffset, float pitchOffset)
+void Player::aim(float yawOffset, float pitchOffset)
 {
     // std::cout << "aimed with yawOffset: " << yawOffset << " and pitchOffset: " << pitchOffset << std::endl;
 
@@ -119,7 +125,7 @@ void Camera::aim(float yawOffset, float pitchOffset)
     setBasisVectors();
 }
 
-void Camera::move(const CameraDirection direction, const float deltaTime)
+void Player::move(const CameraDirection direction, const float deltaTime)
 {
     // std::cout << "moved " << direction << std::endl;
     const float speed = _movementSensitivity * deltaTime;
@@ -154,7 +160,7 @@ void Camera::move(const CameraDirection direction, const float deltaTime)
     setBasisVectors();
 }
 
-void Camera::zoom(const float offset)
+void Player::zoom(const float offset)
 {
     auto newFov = _fov - (offset * _zoomSensitivity);
 
@@ -163,27 +169,74 @@ void Camera::zoom(const float offset)
     _fov = newFov;
 }
 
-glm::mat4 Camera::getViewMatrix() const
+Block* Player::aimingAt() const {
+    const Ray ray {_position, _forward};
+
+    const auto playerChunkCoordinate = Coordinate{_position}.toChunkSpace();
+
+    const auto chunk = _world->_chunks.find(playerChunkCoordinate);
+
+    if (chunk == _world->_chunks.end()) {
+        std::cerr << "Couldn't find chunk when calculating aimingAt()" << std::endl;
+
+        return nullptr;
+    }
+
+    Block* closestBlock = nullptr;
+    float closestDistance = std::numeric_limits<float>::max();
+
+    // Start with the current chunk the player is in, then try surround chunks.
+    for (int x = 0; x < Chunk::_size; x++) {
+        for (int y = 0; y < Chunk::_size; y++) {
+            for (int z = 0; z < Chunk::_size; z++) {
+                Block& block = chunk->second->_blocks[x][y][z];
+
+                // Air doesn't count as being aimed at.
+                if (block.getType() == AIR) {
+                    continue;
+                }
+
+                const auto chunkWorldPosition = chunk->first;
+                const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x * 16 + x, chunkWorldPosition.y * 16 + y, chunkWorldPosition.z * 16 + z}}, ray);
+
+                if (intersectionDistance == -1.0f) {
+                    continue;
+                }
+
+                if (intersectionDistance >= closestDistance) {
+                    continue;
+                }
+
+                closestBlock = &block;
+                closestDistance = intersectionDistance;
+            }
+        }
+    }
+
+    return closestBlock;
+}
+
+glm::mat4 Player::getViewMatrix() const
 {
     return glm::lookAt(_position, _position + _forward, _up);
 }
 
-glm::mat4 Camera::getProjectionMatrix(const int& width, const int& height) const
+glm::mat4 Player::getProjectionMatrix(const int& width, const int& height) const
 {
     return glm::mat4(glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 250.0f));
 }
 
-glm::mat4 Camera::getProjectionMatrix(const Window* window) const
+glm::mat4 Player::getProjectionMatrix(const Window* window) const
 {
     return getProjectionMatrix(window->getWidth(), window->getHeight());
 }
 
-float Camera::getFov() const
+float Player::getFov() const
 {
     return _fov;
 }
 
-glm::vec3 Camera::getPosition() const
+glm::vec3 Player::getPosition() const
 {
     return _position;
 }

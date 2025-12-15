@@ -14,7 +14,7 @@ void RenderManager::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderManager::renderBlocks(const Camera* camera, const Window* window, const World* world) {
+void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) {
     for (auto& [chunkCoordinate, chunk]: world->_chunks) {
         glBindVertexArray(chunk->_mesh->_vaoId);
 
@@ -34,8 +34,8 @@ void RenderManager::renderBlocks(const Camera* camera, const Window* window, con
         _blockShader.use();
 
         _blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
-        _blockShader.setMat4("uViewMatrix", camera->getViewMatrix());
-        _blockShader.setMat4("uProjectionMatrix", camera->getProjectionMatrix(window));
+        _blockShader.setMat4("uViewMatrix", player->getViewMatrix());
+        _blockShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
 
         glDrawArrays(GL_TRIANGLES, 0, (chunk->_mesh->_vertices.size() * 3));
     }
@@ -43,8 +43,8 @@ void RenderManager::renderBlocks(const Camera* camera, const Window* window, con
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Camera* camera, const Window* window, const World* world) {
-    renderBlocks(camera, window, world);
+void RenderManager::render(const Player* player, const Window* window, const World* world) {
+    renderBlocks(player, window, world);
 
     // Foreach of stored types, render.
 

@@ -1,6 +1,6 @@
 #include <render/window.h>
 
-#include "core/camera.h"
+#include "core/player.h"
 #include "core/world.h"
 #include "render/renderManager.h"
 
@@ -9,18 +9,17 @@ int main() {
     window.makeCurrent();
 
     RenderManager renderManager{&window};
-    Camera camera{FPS};
     World world;
+    Player player{FPS, &world};
 
     while (window.open()) {
         window.update();
 
         RenderManager::clear();
 
-        camera.processCursor(&window);
-        camera.processKeyboard(&window);
+        player.update(&window);
 
-        renderManager.render(&camera, &window, &world);
+        renderManager.render(&player, &window, &world);
 
         Window::poll();
         window.swapBuffers();

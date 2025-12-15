@@ -25,6 +25,22 @@ struct Coordinate {
         z = static_cast<int>(vec3.z);
     }
 
+    [[nodiscard]] Coordinate toLocalSpace() const {
+        return Coordinate{
+            x % 16,
+            y % 16,
+            z % 16
+        };
+    }
+
+    [[nodiscard]] Coordinate toChunkSpace() const {
+        return Coordinate{
+            std::floor(static_cast<float>(x) / 16.0f),
+            std::floor(static_cast<float>(y) / 16.0f),
+            std::floor(static_cast<float>(z) / 16.0f)
+        };
+    }
+
     [[nodiscard]] bool isInBounds() const {
         if (x < 0 || x > 15) {
             return false;
@@ -71,6 +87,10 @@ struct Coordinate {
 
     [[nodiscard]] glm::vec3 toVec3() const {
         return glm::vec3{x, y, z};
+    }
+
+    [[nodiscard]] glm::ivec3 toIVec3() const {
+        return glm::ivec3{static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)};
     }
 };
 

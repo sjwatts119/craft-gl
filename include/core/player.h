@@ -6,6 +6,7 @@
 
 #include <iostream>
 
+#include "core/world.h"
 #include "render/window.h"
 
 enum CameraMode
@@ -24,7 +25,7 @@ enum CameraDirection
     DOWN,
 };
 
-class Camera
+class Player
 {
     CameraMode _mode;
 
@@ -47,6 +48,10 @@ class Camera
     glm::vec3 _up = _worldUp;
     glm::vec3 _right{1.0f, 0.0f, 0.0f};
 
+    World *_world;
+
+    Block *_aimingAt;
+
     void moveForward(float speed);
 
     void moveBackward(float speed);
@@ -60,7 +65,9 @@ class Camera
     void moveUp(float speed);
 
 public:
-    explicit Camera(const CameraMode mode) : _mode(mode) {}
+    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world) {}
+
+    void update(const Window* window);
 
     void processCursor(const Window* window);
 
@@ -73,6 +80,8 @@ public:
     void move(CameraDirection direction, float deltaTime);
 
     void zoom(float offset);
+
+    [[nodiscard]] Block* aimingAt() const;
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
 

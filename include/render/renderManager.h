@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "shader.h"
-#include "core/camera.h"
+#include "core/player.h"
 #include "core/coordinate.h"
 #include "geometry/block.h"
 #include "glm/vec3.hpp"
@@ -23,12 +23,12 @@ private:
 
     std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
 
-    void renderBlocks(const Camera* camera, const Window* window, const World* world);
+    void renderBlocks(const Player* player, const Window* window, const World* world);
 
 public:
     explicit RenderManager(const Window* window);
 
     static void clear();
 
-    void render(const Camera* camera, const Window* window, const World* world);
+    void render(const Player* player, const Window* window, const World* world);
 };

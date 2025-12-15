@@ -36,9 +36,11 @@ void Chunk::addTestBlocks() {
 
                 if (y >= 8) {
                     type = AIR;
-                } else if (x == 0 || z == 0 || x == 15 || z == 15) {
+                }
+                else if (x == 0 || z == 0 || x == 15 || z == 15) {
                     type = ERROR;
-                } else if (y == 0) {
+                }
+                else if (y == 0) {
                     type = BEDROCK;
                 } else if (y < 4) {
                     type = STONE;
