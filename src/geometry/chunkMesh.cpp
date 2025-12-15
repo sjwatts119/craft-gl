@@ -41,7 +41,7 @@ void ChunkMesh::regenerateMesh() {
                     for (const auto&[position, normal] : Block::getLeftVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
-                        BufferData bufferData {
+                        BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             block.getType(),
@@ -56,7 +56,7 @@ void ChunkMesh::regenerateMesh() {
                     for (const auto&[position, normal] : Block::getRightVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
-                        BufferData bufferData {
+                        BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             block.getType(),
@@ -71,7 +71,7 @@ void ChunkMesh::regenerateMesh() {
                     for (const auto&[position, normal] : Block::getBottomVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
-                        BufferData bufferData {
+                        BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             block.getType(),
@@ -86,7 +86,7 @@ void ChunkMesh::regenerateMesh() {
                     for (const auto&[position, normal] : Block::getTopVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
-                        BufferData bufferData {
+                        BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             block.getType(),
@@ -101,7 +101,7 @@ void ChunkMesh::regenerateMesh() {
                     for (const auto&[position, normal] : Block::getBackVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
-                        BufferData bufferData {
+                        BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             block.getType(),
@@ -116,7 +116,7 @@ void ChunkMesh::regenerateMesh() {
                     for (const auto&[position, normal] : Block::getFrontVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
-                        BufferData bufferData {
+                        BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             block.getType(),

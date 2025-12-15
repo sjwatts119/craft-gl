@@ -1,7 +1,5 @@
 #include <render/renderManager.h>
 
-#include "geometry/chunkMesh.h"
-
 RenderManager::RenderManager(const Window* window) {
     glViewport(0, 0, window->getWidth(), window->getHeight());
 
@@ -20,18 +18,18 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
 
         glBindBuffer(GL_ARRAY_BUFFER, chunk->_mesh->_vboId);
 
-        glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BufferData::size() * chunk->_mesh->_vertices.size()), chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * chunk->_mesh->_vertices.size()), chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
 
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BufferData::size()), static_cast<void *>(nullptr));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), static_cast<void *>(nullptr));
         glEnableVertexAttribArray(0);
 
-        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BufferData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
-        glVertexAttribIPointer(2, 1, GL_INT, static_cast<GLsizei>(BufferData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
+        glVertexAttribIPointer(2, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
 
-        glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BufferData::size()), reinterpret_cast<void *>((6 * sizeof(float)) + sizeof(int)));
+        glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((6 * sizeof(float)) + sizeof(int)));
         glEnableVertexAttribArray(3);
 
         _blockShader.use();
@@ -48,6 +46,30 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Player* player, const Window* window, const World* world) {
+void RenderManager::renderInterface(const Window *window, const World *world, const Interface *interface) {
+    glBindVertexArray(interface->_crosshair._vaoId);
+
+    glBindBuffer(GL_ARRAY_BUFFER, interface->_crosshair._vboId);
+
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(CrosshairData::size() * Crosshair::VERTICES.size()), Crosshair::VERTICES.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(CrosshairData::size()), static_cast<void *>(nullptr));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(CrosshairData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    _crosshairShader.use();
+
+    _crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
+
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(Crosshair::VERTICES.size()));
+
+    glBindVertexArray(0);
+}
+
+void RenderManager::render(const Player* player, const Window* window, const World* world, const Interface* interface) {
     renderBlocks(player, window, world);
+
+    renderInterface(window, world, interface);
 }

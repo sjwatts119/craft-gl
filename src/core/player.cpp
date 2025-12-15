@@ -1,10 +1,5 @@
 #include <core/player.h>
 
-#include "geometry/chunkMesh.h"
-#include "geometry/ray.h"
-#include "glm/ext/matrix_clip_space.hpp"
-#include "render/window.h"
-
 void Player::update(const Window* window) {
     processCursor(window);
     processMouse(window);

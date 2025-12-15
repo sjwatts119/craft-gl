@@ -1,13 +1,17 @@
 #pragma once
 
-#include "glm/fwd.hpp"
-#include "glm/vec3.hpp"
-#include "glm/ext/matrix_transform.hpp"
-
 #include <iostream>
 #include <optional>
 
+#include "glm/fwd.hpp"
+#include "glm/vec3.hpp"
+#include "glm/ext/matrix_transform.hpp"
+#include "glm/ext/matrix_clip_space.hpp"
+
 #include "core/world.h"
+#include "render/window.h"
+#include "geometry/chunkMesh.h"
+#include "geometry/ray.h"
 #include "render/window.h"
 
 enum CameraMode

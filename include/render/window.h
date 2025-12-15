@@ -8,6 +8,7 @@ class Window {
 private:
     int _width;
     int _height;
+    float _aspectRatio;
 
     std::string _title;
 
@@ -38,6 +39,8 @@ public:
     [[nodiscard]] int getWidth() const;
 
     [[nodiscard]] int getHeight() const;
+
+    [[nodiscard]] float getAspectRatio() const;
 
     [[nodiscard]] float getDeltaTime() const;
 

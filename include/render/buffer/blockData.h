@@ -1,9 +1,8 @@
 #pragma once
 
-#include "vertexData.h"
 #include "geometry/block.h"
 
-struct BufferData {
+struct BlockData {
     float x, y, z;
     float normalX, normalY, normalZ;
     BlockType type;

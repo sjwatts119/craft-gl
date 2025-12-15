@@ -7,6 +7,8 @@ Window::Window(
     const int height,
     std::string title
 ): _width(width), _height(height), _title(std::move(title)) {
+    _aspectRatio = static_cast<float>(width) / static_cast<float>(height);
+
     initWindow();
 }
 
@@ -73,6 +75,10 @@ int Window::getWidth() const {
 
 int Window::getHeight() const {
     return _height;
+}
+
+float Window::getAspectRatio() const {
+    return _aspectRatio;
 }
 
 float Window::getDeltaTime() const {
