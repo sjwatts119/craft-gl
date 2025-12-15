@@ -1,15 +1,8 @@
 #pragma once
 
-#include "geometry/block.h"
+#include <glm/vec3.hpp>
 
 struct VertexData {
-    float x;
-    float y;
-    float z;
-    BlockType type;
-    int highlighted = 0;
-
-    static size_t size() {
-        return sizeof(float) + sizeof(float) + sizeof(float) + sizeof(int) + sizeof(highlighted);
-    }
+    glm::vec3 position;
+    glm::vec3 normal;
 };

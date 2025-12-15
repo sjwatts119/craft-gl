@@ -1,5 +1,7 @@
 #include <render/shader.h>
 
+#include "material/light.h"
+
 std::string Shader::readShaderFile(const char *path) {
     std::string contents;
     std::ifstream fileStream;
@@ -123,4 +125,11 @@ void Shader::setVec3(const std::string &name, const glm::vec3 &vector) const
 
 void Shader::setMat4(const std::string &name, const glm::mat4 &matrix) const {
     glUniformMatrix4fv(glGetUniformLocation(_id, name.c_str()), 1, GL_FALSE, glm::value_ptr(matrix));
+}
+
+void Shader::setLight(const std::string &name, const Light &light) const {
+    setVec3(name + ".position", light.position);
+    setVec3(name + ".ambient", light.ambient);
+    setVec3(name + ".diffuse", light.specular);
+    setVec3(name + ".specular", light.specular);
 }

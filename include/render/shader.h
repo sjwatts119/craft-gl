@@ -11,6 +11,7 @@
 
 #include "glm/fwd.hpp"
 #include "glm/gtc/type_ptr.hpp"
+#include "material/light.h"
 
 class Shader {
 private:
@@ -63,4 +64,6 @@ public:
      * Set a mat4 uniform in the shader.
      */
     void setMat4(const std::string &name, const glm::mat4 &matrix) const;
+
+    void setLight(const std::string &name, const Light &light) const;
 };

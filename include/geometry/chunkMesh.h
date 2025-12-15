@@ -5,7 +5,7 @@
 #include "core/chunk.h"
 #include "geometry/block.h"
 #include "core/coordinate.h"
-#include "render/vertexData.h"
+#include "render/bufferData.h"
 
 class ChunkMesh {
 private:
@@ -16,7 +16,7 @@ public:
     GLuint _vaoId{};
 
     glm::ivec3 _highlightedBlockIndex {-1};
-    std::vector<VertexData> _vertices;
+    std::vector<BufferData> _vertices;
 
     explicit ChunkMesh(Chunk* chunk);
 

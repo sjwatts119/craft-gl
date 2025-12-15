@@ -64,3 +64,8 @@ void World::update() {
         chunk->_mesh->regenerateMesh();
     }
 }
+
+const Light& World::getSun() const {
+    return _sun;
+}
+

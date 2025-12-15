@@ -1,6 +1,15 @@
 #version 330 core
 
+struct LightStruct {
+    vec3 position;
+    vec3 ambient;
+    vec3 diffuse;
+    vec3 specular;
+};
+
 in vec3 FragPosition;
+in vec3 Normal;
+in LightStruct Sun;
 flat in int BlockType;
 flat in int IsHighlighted;
 
@@ -48,12 +57,38 @@ vec4 colourFromBlockType() {
 
 void main()
 {
+    vec3 normal = normalize(Normal);
+    vec3 cameraPosition = vec3(0.0f);
+
+    /** BASE **/
     vec4 baseColour = colourFromBlockType();
 
+    /** AMBIENT **/
+    vec4 ambientLight = baseColour * vec4(Sun.ambient, 1.0f);
+
+    /** DIFFUSE **/
+    vec3 lightDirection = normalize(Sun.position - FragPosition);
+    float diffuseStrength = max(dot(normal, lightDirection), 0.0f);
+    vec4 diffuseLight = baseColour * (vec4(Sun.diffuse, 1.0f) * diffuseStrength);
+
+    /** SPECULAR **/
+    float shininess = 5.0f;
+
+    // Get the direction from this fragment to the camera
+    vec3 cameraDirection = normalize(cameraPosition - FragPosition);
+    // Get the reflected direction from the fragment surface
+    vec3 reflectionDirection = reflect(-lightDirection, normal);
+    // How in-line this is with the current camera direction is the amount of specular strength.
+    float specularAmount = pow(max(dot(cameraDirection, reflectionDirection), 0.0f), shininess);
+    vec4 specularLight = specularAmount * baseColour;
+
+    vec4 litColour = ambientLight + diffuseLight;
+
+    /** HIGHLIGHT MODIFIER **/
     if (IsHighlighted == 0) {
-        FragColour = baseColour;
+        FragColour = litColour;
         return;
     }
 
-    FragColour = darken(baseColour);
+    FragColour = darken(litColour);
 }

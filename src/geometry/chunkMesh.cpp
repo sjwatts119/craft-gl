@@ -38,110 +38,92 @@ void ChunkMesh::regenerateMesh() {
                 auto frontNeighbour = localCoordinate.frontNeighbour();
 
                 if (!leftNeighbour.isInBounds() || _chunk->_blocks[leftNeighbour.x][leftNeighbour.y][leftNeighbour.z].getType() == AIR) {
-                    auto faceVertices = Block::getLeftVertices();
+                    for (const auto&[position, normal] : Block::getLeftVertices()) {
+                        auto localVertices = position + localCoordinate.toVec3();
 
-                    for (const auto& vertex : faceVertices) {
-                        auto localVertices = vertex + localCoordinate.toVec3();
-
-                        VertexData vertexData {
-                            localVertices.x,
-                            localVertices.y,
-                            localVertices.z,
+                        BufferData bufferData {
+                            localVertices.x, localVertices.y, localVertices.z,
+                            normal.x, normal.y, normal.z,
                             block.getType(),
                             isHighlighted
                         };
 
-                        _vertices.push_back(vertexData);
+                        _vertices.push_back(bufferData);
                     }
                 }
 
                 if (!rightNeighbour.isInBounds() || _chunk->_blocks[rightNeighbour.x][rightNeighbour.y][rightNeighbour.z].getType() == AIR) {
-                    auto faceVertices = Block::getRightVertices();
+                    for (const auto&[position, normal] : Block::getRightVertices()) {
+                        auto localVertices = position + localCoordinate.toVec3();
 
-                    for (const auto& vertex : faceVertices) {
-                        auto localVertices = vertex + localCoordinate.toVec3();
-
-                        VertexData vertexData {
-                            localVertices.x,
-                            localVertices.y,
-                            localVertices.z,
+                        BufferData bufferData {
+                            localVertices.x, localVertices.y, localVertices.z,
+                            normal.x, normal.y, normal.z,
                             block.getType(),
                             isHighlighted
                         };
 
-                        _vertices.push_back(vertexData);
+                        _vertices.push_back(bufferData);
                     }
                 }
 
                 if (!downNeighbour.isInBounds() || _chunk->_blocks[downNeighbour.x][downNeighbour.y][downNeighbour.z].getType() == AIR) {
-                    auto faceVertices = Block::getBottomVertices();
+                    for (const auto&[position, normal] : Block::getBottomVertices()) {
+                        auto localVertices = position + localCoordinate.toVec3();
 
-                    for (const auto& vertex : faceVertices) {
-                        auto localVertices = vertex + localCoordinate.toVec3();
-
-                        VertexData vertexData {
-                            localVertices.x,
-                            localVertices.y,
-                            localVertices.z,
+                        BufferData bufferData {
+                            localVertices.x, localVertices.y, localVertices.z,
+                            normal.x, normal.y, normal.z,
                             block.getType(),
                             isHighlighted
                         };
 
-                        _vertices.push_back(vertexData);
+                        _vertices.push_back(bufferData);
                     }
                 }
 
                 if (!upNeighbour.isInBounds() || _chunk->_blocks[upNeighbour.x][upNeighbour.y][upNeighbour.z].getType() == AIR) {
-                    auto faceVertices = Block::getTopVertices();
+                    for (const auto&[position, normal] : Block::getTopVertices()) {
+                        auto localVertices = position + localCoordinate.toVec3();
 
-                    for (const auto& vertex : faceVertices) {
-                        auto localVertices = vertex + localCoordinate.toVec3();
-
-                        VertexData vertexData {
-                            localVertices.x,
-                            localVertices.y,
-                            localVertices.z,
+                        BufferData bufferData {
+                            localVertices.x, localVertices.y, localVertices.z,
+                            normal.x, normal.y, normal.z,
                             block.getType(),
                             isHighlighted
                         };
 
-                        _vertices.push_back(vertexData);
+                        _vertices.push_back(bufferData);
                     }
                 }
 
                 if (!backNeighbour.isInBounds() || _chunk->_blocks[backNeighbour.x][backNeighbour.y][backNeighbour.z].getType() == AIR) {
-                    auto faceVertices = Block::getBackVertices();
+                    for (const auto&[position, normal] : Block::getBackVertices()) {
+                        auto localVertices = position + localCoordinate.toVec3();
 
-                    for (const auto& vertex : faceVertices) {
-                        auto localVertices = vertex + localCoordinate.toVec3();
-
-                        VertexData vertexData {
-                            localVertices.x,
-                            localVertices.y,
-                            localVertices.z,
+                        BufferData bufferData {
+                            localVertices.x, localVertices.y, localVertices.z,
+                            normal.x, normal.y, normal.z,
                             block.getType(),
                             isHighlighted
                         };
 
-                        _vertices.push_back(vertexData);
+                        _vertices.push_back(bufferData);
                     }
                 }
 
                 if (!frontNeighbour.isInBounds() || _chunk->_blocks[frontNeighbour.x][frontNeighbour.y][frontNeighbour.z].getType() == AIR) {
-                    auto faceVertices = Block::getFrontVertices();
+                    for (const auto&[position, normal] : Block::getFrontVertices()) {
+                        auto localVertices = position + localCoordinate.toVec3();
 
-                    for (const auto& vertex : faceVertices) {
-                        auto localVertices = vertex + localCoordinate.toVec3();
-
-                        VertexData vertexData {
-                            localVertices.x,
-                            localVertices.y,
-                            localVertices.z,
+                        BufferData bufferData {
+                            localVertices.x, localVertices.y, localVertices.z,
+                            normal.x, normal.y, normal.z,
                             block.getType(),
                             isHighlighted
                         };
 
-                        _vertices.push_back(vertexData);
+                        _vertices.push_back(bufferData);
                     }
                 }
             }

@@ -7,6 +7,7 @@
 
 #include "AABB.h"
 #include "core/coordinate.h"
+#include "render/vertexData.h"
 
 enum BlockType: int {
     AIR = 0,
@@ -22,59 +23,59 @@ private:
     BlockType _type;
     bool _highlighted;
 
-    static constexpr std::array<glm::vec3, 6> TOP_VERTICES = {{
-        {-0.5f,  0.5f, -0.5f},
-        { 0.5f,  0.5f, -0.5f},
-        { 0.5f,  0.5f,  0.5f},
-        { 0.5f,  0.5f,  0.5f},
-        {-0.5f,  0.5f,  0.5f},
-        {-0.5f,  0.5f, -0.5f}
-    }};
+static constexpr std::array<VertexData, 6> TOP_VERTICES = {{
+    {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f}},
+    {{-0.5f,  0.5f,  0.5f}, {0.0f,  1.0f,  0.0f}},
+    {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f}}
+}};
 
-    static constexpr std::array<glm::vec3, 6> BOTTOM_VERTICES = {{
-        {-0.5f, -0.5f, -0.5f},
-        { 0.5f, -0.5f, -0.5f},
-        { 0.5f, -0.5f,  0.5f},
-        { 0.5f, -0.5f,  0.5f},
-        {-0.5f, -0.5f,  0.5f},
-        {-0.5f, -0.5f, -0.5f}
-    }};
+static constexpr std::array<VertexData, 6> BOTTOM_VERTICES = {{
+    {{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f,  0.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {0.0f, -1.0f,  0.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {0.0f, -1.0f,  0.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {0.0f, -1.0f,  0.0f}},
+    {{-0.5f, -0.5f,  0.5f}, {0.0f, -1.0f,  0.0f}},
+    {{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f,  0.0f}}
+}};
 
-    static constexpr std::array<glm::vec3, 6> BACK_VERTICES = {{
-        {-0.5f, -0.5f, -0.5f},
-        { 0.5f, -0.5f, -0.5f},
-        { 0.5f,  0.5f, -0.5f},
-        { 0.5f,  0.5f, -0.5f},
-        {-0.5f,  0.5f, -0.5f},
-        {-0.5f, -0.5f, -0.5f}
-    }};
+static constexpr std::array<VertexData, 6> BACK_VERTICES = {{
+    {{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {0.0f,  0.0f, -1.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {0.0f,  0.0f, -1.0f}},
+    {{-0.5f,  0.5f, -0.5f}, {0.0f,  0.0f, -1.0f}},
+    {{-0.5f, -0.5f, -0.5f}, {0.0f,  0.0f, -1.0f}}
+}};
 
-    static constexpr std::array<glm::vec3, 6> FRONT_VERTICES = {{
-        {-0.5f, -0.5f,  0.5f},
-        { 0.5f, -0.5f,  0.5f},
-        { 0.5f,  0.5f,  0.5f},
-        { 0.5f,  0.5f,  0.5f},
-        {-0.5f,  0.5f,  0.5f},
-        {-0.5f, -0.5f,  0.5f}
-    }};
+static constexpr std::array<VertexData, 6> FRONT_VERTICES = {{
+    {{-0.5f, -0.5f,  0.5f}, {0.0f,  0.0f,  1.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {0.0f,  0.0f,  1.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {0.0f,  0.0f,  1.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {0.0f,  0.0f,  1.0f}},
+    {{-0.5f,  0.5f,  0.5f}, {0.0f,  0.0f,  1.0f}},
+    {{-0.5f, -0.5f,  0.5f}, {0.0f,  0.0f,  1.0f}}
+}};
 
-    static constexpr std::array<glm::vec3, 6> LEFT_VERTICES = {{
-        {-0.5f,  0.5f,  0.5f},
-        {-0.5f,  0.5f, -0.5f},
-        {-0.5f, -0.5f, -0.5f},
-        {-0.5f, -0.5f, -0.5f},
-        {-0.5f, -0.5f,  0.5f},
-        {-0.5f,  0.5f,  0.5f}
-    }};
+static constexpr std::array<VertexData, 6> LEFT_VERTICES = {{
+    {{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f}},
+    {{-0.5f,  0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f}},
+    {{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f}},
+    {{-0.5f, -0.5f, -0.5f}, {-1.0f,  0.0f,  0.0f}},
+    {{-0.5f, -0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f}},
+    {{-0.5f,  0.5f,  0.5f}, {-1.0f,  0.0f,  0.0f}}
+}};
 
-    static constexpr std::array<glm::vec3, 6> RIGHT_VERTICES = {{
-        { 0.5f,  0.5f,  0.5f},
-        { 0.5f,  0.5f, -0.5f},
-        { 0.5f, -0.5f, -0.5f},
-        { 0.5f, -0.5f, -0.5f},
-        { 0.5f, -0.5f,  0.5f},
-        { 0.5f,  0.5f,  0.5f}
-    }};
+static constexpr std::array<VertexData, 6> RIGHT_VERTICES = {{
+    {{ 0.5f,  0.5f,  0.5f}, {1.0f,  0.0f,  0.0f}},
+    {{ 0.5f,  0.5f, -0.5f}, {1.0f,  0.0f,  0.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {1.0f,  0.0f,  0.0f}},
+    {{ 0.5f, -0.5f, -0.5f}, {1.0f,  0.0f,  0.0f}},
+    {{ 0.5f, -0.5f,  0.5f}, {1.0f,  0.0f,  0.0f}},
+    {{ 0.5f,  0.5f,  0.5f}, {1.0f,  0.0f,  0.0f}}
+}};
 
 public:
     Block(const BlockType type = AIR): _type(type), _highlighted(false) {};
@@ -83,27 +84,27 @@ public:
 
     void setType(const BlockType& type);
 
-    static constexpr const std::array<glm::vec3, 6>& getTopVertices() {
+    static constexpr const std::array<VertexData, 6>& getTopVertices() {
         return TOP_VERTICES;
     }
 
-    static constexpr const std::array<glm::vec3, 6>& getBottomVertices() {
+    static constexpr const std::array<VertexData, 6>& getBottomVertices() {
         return BOTTOM_VERTICES;
     }
 
-    static constexpr const std::array<glm::vec3, 6>& getBackVertices() {
+    static constexpr const std::array<VertexData, 6>& getBackVertices() {
         return BACK_VERTICES;
     }
 
-    static constexpr const std::array<glm::vec3, 6>& getFrontVertices() {
+    static constexpr const std::array<VertexData, 6>& getFrontVertices() {
         return FRONT_VERTICES;
     }
 
-    static constexpr const std::array<glm::vec3, 6>& getLeftVertices() {
+    static constexpr const std::array<VertexData, 6>& getLeftVertices() {
         return LEFT_VERTICES;
     }
 
-    static constexpr const std::array<glm::vec3, 6>& getRightVertices() {
+    static constexpr const std::array<VertexData, 6>& getRightVertices() {
         return RIGHT_VERTICES;
     }
 };
