@@ -205,66 +205,94 @@ void Player::clearAimingAtBlock() {
 }
 
 Block* Player::setAimingAtBlock() {
-    const Ray ray {_position, _forward};
-
     const auto playerChunkCoordinate = Coordinate{_position}.toChunkSpace();
+    const auto currentChunkAttempt = _world->_chunks.find(playerChunkCoordinate);
 
-    const auto chunk = _world->_chunks.find(playerChunkCoordinate);
-
-    if (chunk == _world->_chunks.end()) {
+    if (currentChunkAttempt == _world->_chunks.end()) {
         std::cerr << "Player not in a chunk or chunk with current coordinate not found" << std::endl;
 
         return nullptr;
     }
 
+    const std::array<Coordinate, 9> testableChunkCoordinates {
+        Coordinate{playerChunkCoordinate.x, playerChunkCoordinate.y, playerChunkCoordinate.z},
+        Coordinate{playerChunkCoordinate.x+1, playerChunkCoordinate.y, playerChunkCoordinate.z},
+        Coordinate{playerChunkCoordinate.x-1, playerChunkCoordinate.y, playerChunkCoordinate.z},
+        Coordinate{playerChunkCoordinate.x, playerChunkCoordinate.y, playerChunkCoordinate.z+1},
+        Coordinate{playerChunkCoordinate.x, playerChunkCoordinate.y, playerChunkCoordinate.z-1},
+        Coordinate{playerChunkCoordinate.x-1, playerChunkCoordinate.y, playerChunkCoordinate.z-1},
+        Coordinate{playerChunkCoordinate.x-1, playerChunkCoordinate.y, playerChunkCoordinate.z+1},
+        Coordinate{playerChunkCoordinate.x+1, playerChunkCoordinate.y, playerChunkCoordinate.z-1},
+        Coordinate{playerChunkCoordinate.x+1, playerChunkCoordinate.y, playerChunkCoordinate.z+1},
+    };
+
+    const Ray ray {_position, _forward};
     Block* closestBlock = nullptr;
     float closestDistance = std::numeric_limits<float>::max();
-
     glm::ivec3 highlightedBlockIndex{-1};
 
-    const auto chunkWorldPosition = chunk->first;
+    std::optional<Coordinate> aimedAtChunkCoordinate;
+    const Chunk* aimedAtChunk = nullptr;
 
-    // Start with the current chunk the player is in, then try surround chunks.
-    for (int x = 0; x < Chunk::_size; x++) {
-        for (int y = 0; y < Chunk::_size; y++) {
-            for (int z = 0; z < Chunk::_size; z++) {
-                Block& block = chunk->second->_blocks[x][y][z];
+    // Test current and surrounding chunks
+    for (auto& testableChunkCoordinate : testableChunkCoordinates) {
+        const auto testableChunkAttempt = _world->_chunks.find(testableChunkCoordinate);
 
-                // Air doesn't count as being aimed at.
-                if (block.getType() == AIR) {
-                    continue;
+        if (testableChunkAttempt == _world->_chunks.end()) {
+            continue;
+        }
+
+        Chunk* testableChunk = testableChunkAttempt->second.get();
+        const auto chunkWorldPosition = testableChunkCoordinate.toIVec3() * Chunk::_size;
+
+        for (int x = 0; x < Chunk::_size; x++) {
+            for (int y = 0; y < Chunk::_size; y++) {
+                for (int z = 0; z < Chunk::_size; z++) {
+                    Block& block = testableChunk->_blocks[x][y][z];
+
+                    // Air doesn't count as being aimed at.
+                    if (block.getType() == AIR) {
+                        continue;
+                    }
+
+                    const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}, ray);
+
+                    // no intersection
+                    if (intersectionDistance == -1.0f) {
+                        continue;
+                    }
+
+                    // closer intersection already found
+                    if (intersectionDistance >= closestDistance) {
+                        continue;
+                    }
+
+                    // intersection is out of player reach
+                    if (intersectionDistance > _reach) {
+                        continue;
+                    }
+
+                    closestBlock = &block;
+                    closestDistance = intersectionDistance;
+                    highlightedBlockIndex = {x, y, z};
+                    aimedAtChunk = testableChunk;
+                    aimedAtChunkCoordinate = testableChunkCoordinate;
                 }
-
-                const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x * 16 + x, chunkWorldPosition.y * 16 + y, chunkWorldPosition.z * 16 + z}}, ray);
-
-                if (intersectionDistance == -1.0f) {
-                    continue;
-                }
-
-                if (intersectionDistance >= closestDistance) {
-                    continue;
-                }
-
-                if (intersectionDistance > _reach) {
-                    continue;
-                }
-
-                closestBlock = &block;
-                closestDistance = intersectionDistance;
-                highlightedBlockIndex = {x, y, z};
             }
         }
     }
 
-    if (closestBlock == nullptr) {
+    // no intersection found, return nullptr
+    if (closestBlock == nullptr || aimedAtChunk == nullptr) {
         _highlightedBlockWorldCoordinate = std::nullopt;
+
         return closestBlock;
     }
 
-    _highlightedBlockWorldCoordinate = Coordinate{chunkWorldPosition.toIVec3() * Chunk::_size + highlightedBlockIndex};
+    _highlightedBlockWorldCoordinate = Coordinate{aimedAtChunkCoordinate.value().toIVec3() * Chunk::_size + highlightedBlockIndex};
+    aimedAtChunk->_mesh->setHighlightedBlock(highlightedBlockIndex);
+    aimedAtChunk->_mesh->markAsDirty();
 
-    chunk->second->_mesh->setHighlightedBlock(highlightedBlockIndex);
-    chunk->second->_mesh->markAsDirty();
     return closestBlock;
 }
 
