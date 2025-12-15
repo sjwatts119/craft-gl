@@ -6,11 +6,11 @@
 #include "render/window.h"
 
 void Player::update(const Window* window) {
-    aimingAt(); // TODO cache highlighted block and don't regen mesh if it hasn't changed.
-
     processCursor(window);
     processMouse(window);
     processKeyboard(window);
+
+    setAimingAtBlock(); // TODO cache highlighted block and don't regen mesh if it hasn't changed.
 }
 
 void Player::processCursor(const Window* window) {
@@ -35,11 +35,7 @@ void Player::processMouse(const Window* window) {
 
     // Prevent holding down the button
     if (mouse1IsPressed && !_mouse1WasPressed) {
-        if (_highlightedBlockWorldCoordinate == std::nullopt) {
-            return;
-        }
-
-        _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
+        destroyHighlightedBlock();
     }
 
     _mouse1WasPressed = mouse1IsPressed;
@@ -61,12 +57,12 @@ void Player::processKeyboard(const Window* window) {
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
     {
-        move(RIGHT, window->getDeltaTime());
+        move(LEFT, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
     {
-        move(LEFT, window->getDeltaTime());
+        move(RIGHT, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
@@ -101,11 +97,11 @@ void Player::moveBackward(const float speed) {
 }
 
 void Player::moveLeft(const float speed) {
-    _position += glm::cross(_forward, _up) * speed;
+    _position -= glm::cross(_forward, _up) * speed;
 }
 
 void Player::moveRight(const float speed) {
-    _position -= glm::cross(_forward, _up) * speed;
+    _position += glm::cross(_forward, _up) * speed;
 }
 
 void Player::moveUp(const float speed) {
@@ -187,11 +183,15 @@ void Player::zoom(const float offset)
     _fov = newFov;
 }
 
-void Player::destroyHighlightedBlock() {
+void Player::destroyHighlightedBlock() const {
+    if (_highlightedBlockWorldCoordinate == std::nullopt) {
+        return;
+    }
 
+    _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
 }
 
-Block* Player::aimingAt() {
+Block* Player::setAimingAtBlock() {
     const Ray ray {_position, _forward};
 
     const auto playerChunkCoordinate = Coordinate{_position}.toChunkSpace();
@@ -199,7 +199,7 @@ Block* Player::aimingAt() {
     const auto chunk = _world->_chunks.find(playerChunkCoordinate);
 
     if (chunk == _world->_chunks.end()) {
-        std::cerr << "Couldn't find chunk when calculating aimingAt()" << std::endl;
+        std::cerr << "Couldn't find chunk when calculating setAimingAtBlock()" << std::endl;
 
         return nullptr;
     }

@@ -16,11 +16,11 @@ struct AABB {
     }
 
     explicit AABB(const Coordinate coordinate) {
-        minX = static_cast<float>(coordinate.x);
-        minY = static_cast<float>(coordinate.y);
-        minZ = static_cast<float>(coordinate.z);
-        maxX = static_cast<float>(coordinate.x + 1);
-        maxY = static_cast<float>(coordinate.y + 1);
-        maxZ = static_cast<float>(coordinate.z + 1);
+        minX = static_cast<float>(coordinate.x) - 0.5f;
+        minY = static_cast<float>(coordinate.y) - 0.5f;
+        minZ = static_cast<float>(coordinate.z) - 0.5f;
+        maxX = static_cast<float>(coordinate.x) + 0.5f;
+        maxY = static_cast<float>(coordinate.y) + 0.5f;
+        maxZ = static_cast<float>(coordinate.z) + 0.5f;
     }
 };

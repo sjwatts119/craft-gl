@@ -89,9 +89,9 @@ public:
 
     void zoom(float offset);
 
-    void destroyHighlightedBlock();
+    void destroyHighlightedBlock() const;
 
-    [[nodiscard]] Block* aimingAt();
+    [[nodiscard]] Block* setAimingAtBlock();
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
 
