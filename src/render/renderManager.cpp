@@ -14,24 +14,21 @@ void RenderManager::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) {
+void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) const {
     for (auto& [chunkCoordinate, chunk]: world->_chunks) {
         glBindVertexArray(chunk->_mesh->_vaoId);
 
-        // Bind the VBO to the context
         glBindBuffer(GL_ARRAY_BUFFER, chunk->_mesh->_vboId);
 
-        // Upload the vertex data to the GPU
-        glBufferData(GL_ARRAY_BUFFER, VertexData::size() * chunk->_mesh->_vertices.size(), chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
+        glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(VertexData::size() * chunk->_mesh->_vertices.size()), chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
 
-        // Set the layout/stride information on the bound VAO for this data
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, VertexData::size(), static_cast<void *>(nullptr));
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(VertexData::size()), static_cast<void *>(nullptr));
         glEnableVertexAttribArray(0);
 
-        glVertexAttribIPointer(1, 1, GL_INT, VertexData::size(), reinterpret_cast<void *>(3 * sizeof(float)));
+        glVertexAttribIPointer(1, 1, GL_INT, static_cast<GLsizei>(VertexData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
-        glVertexAttribIPointer(2, 1, GL_INT, VertexData::size(), reinterpret_cast<void *>((3 * sizeof(float)) + sizeof(int)));
+        glVertexAttribIPointer(2, 1, GL_INT, static_cast<GLsizei>(VertexData::size()), reinterpret_cast<void *>((3 * sizeof(float)) + sizeof(int)));
         glEnableVertexAttribArray(2);
 
         _blockShader.use();
@@ -40,7 +37,7 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
         _blockShader.setMat4("uViewMatrix", player->getViewMatrix());
         _blockShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
 
-        glDrawArrays(GL_TRIANGLES, 0, (chunk->_mesh->_vertices.size() * 3));
+        glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(chunk->_mesh->_vertices.size()));
     }
 
     glBindVertexArray(0);
@@ -48,9 +45,5 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
 
 void RenderManager::render(const Player* player, const Window* window, const World* world) {
     renderBlocks(player, window, world);
-
-    // Foreach of stored types, render.
-
-
 }
 

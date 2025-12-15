@@ -5,7 +5,7 @@ ChunkMesh::ChunkMesh(Chunk* chunk) : _chunk(chunk) {
     glGenBuffers(1, &_vboId);
 }
 
-bool ChunkMesh::isDirty() {
+bool ChunkMesh::isDirty() const {
     return _dirty;
 }
 

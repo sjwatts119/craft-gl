@@ -20,7 +20,7 @@ public:
 
     explicit ChunkMesh(Chunk* chunk);
 
-    bool isDirty();
+    [[nodiscard]] bool isDirty() const;
 
     void markAsDirty();
 

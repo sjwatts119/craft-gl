@@ -77,7 +77,7 @@ private:
     }};
 
 public:
-    explicit Block(const BlockType type = AIR): _type(type) {};
+    Block(const BlockType type = AIR): _type(type), _highlighted(false) {};
 
     [[nodiscard]] BlockType getType() const;
 

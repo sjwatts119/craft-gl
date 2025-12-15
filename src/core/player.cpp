@@ -10,6 +10,7 @@ void Player::update(const Window* window) {
     processMouse(window);
     processKeyboard(window);
 
+    clearAimingAtBlock();
     setAimingAtBlock(); // TODO cache highlighted block and don't regen mesh if it hasn't changed.
 }
 
@@ -31,7 +32,7 @@ void Player::processCursor(const Window* window) {
 }
 
 void Player::processMouse(const Window* window) {
-    bool mouse1IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
+    const bool mouse1IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
 
     // Prevent holding down the button
     if (mouse1IsPressed && !_mouse1WasPressed) {
@@ -191,6 +192,23 @@ void Player::destroyHighlightedBlock() const {
     _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
 }
 
+void Player::clearAimingAtBlock() {
+    if (_highlightedBlockWorldCoordinate == std::nullopt) {
+        return;
+    }
+
+    const auto chunk = _world->_chunks.find(_highlightedBlockWorldCoordinate.value().toChunkSpace());
+
+    if (chunk == _world->_chunks.end()) {
+        return;
+    }
+
+    chunk->second->_mesh->unsetHighlightedBlock();
+    chunk->second->_mesh->markAsDirty();
+
+    _highlightedBlockWorldCoordinate = std::nullopt;
+}
+
 Block* Player::setAimingAtBlock() {
     const Ray ray {_position, _forward};
 
@@ -204,16 +222,12 @@ Block* Player::setAimingAtBlock() {
         return nullptr;
     }
 
-    chunk->second->_mesh->unsetHighlightedBlock();
-    chunk->second->_mesh->markAsDirty();
-
     Block* closestBlock = nullptr;
     float closestDistance = std::numeric_limits<float>::max();
 
     glm::ivec3 highlightedBlockIndex{-1};
 
     const auto chunkWorldPosition = chunk->first;
-
 
     // Start with the current chunk the player is in, then try surround chunks.
     for (int x = 0; x < Chunk::_size; x++) {
@@ -248,12 +262,10 @@ Block* Player::setAimingAtBlock() {
         return closestBlock;
     }
 
+    _highlightedBlockWorldCoordinate = Coordinate{chunkWorldPosition.toIVec3() * Chunk::_size + highlightedBlockIndex};
+
     chunk->second->_mesh->setHighlightedBlock(highlightedBlockIndex);
-    _highlightedBlockWorldCoordinate = Coordinate{
-        chunkWorldPosition.x * Chunk::_size + highlightedBlockIndex.x,
-        chunkWorldPosition.y * Chunk::_size + highlightedBlockIndex.y,
-        chunkWorldPosition.z * Chunk::_size + highlightedBlockIndex.z
-    };
+    chunk->second->_mesh->markAsDirty();
     return closestBlock;
 }
 

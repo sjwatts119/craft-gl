@@ -91,6 +91,8 @@ public:
 
     void destroyHighlightedBlock() const;
 
+    void clearAimingAtBlock();
+
     [[nodiscard]] Block* setAimingAtBlock();
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;

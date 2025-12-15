@@ -7,8 +7,8 @@ World::World() {
 }
 
 void World::addTestChunks() {
-    for (int x = 0; x < 16; x++) {
-        for (int z = 0; z < 16; z++) {
+    for (int x = -8; x < 8; x++) {
+        for (int z = -8; z < 8; z++) {
             const Coordinate coordinate {x, 0, z};
 
             auto chunk = std::make_unique<Chunk>(coordinate);
@@ -39,7 +39,7 @@ const Block *World::blockAt(const Coordinate worldCoordinate) const {
     return &chunk._blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z];
 }
 
-void World::destroyBlock(Coordinate worldCoordinate) {
+void World::destroyBlock(const Coordinate worldCoordinate) {
     const auto chunkCoordinate = worldCoordinate.toChunkSpace();
 
     const auto chunkResult = _chunks.find(chunkCoordinate);
