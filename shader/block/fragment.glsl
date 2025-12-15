@@ -25,7 +25,13 @@ out vec4 FragColour;
 */
 
 vec4 darken(vec4 colour) {
-    return colour - vec4(0.2f, 0.2f, 0.2f, 1.0f);
+    float darkenFactor = 0.6f;
+
+    float r = colour.r - (colour.r * darkenFactor);
+    float g = colour.g - (colour.g * darkenFactor);
+    float b = colour.b - (colour.b * darkenFactor);
+
+    return colour - vec4(r, g, b, colour.a);
 }
 
 vec4 colourFromBlockType() {

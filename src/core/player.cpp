@@ -238,6 +238,7 @@ Block* Player::setAimingAtBlock() {
     for (auto& testableChunkCoordinate : testableChunkCoordinates) {
         const auto testableChunkAttempt = _world->_chunks.find(testableChunkCoordinate);
 
+        // chunk is out of bounds or not found
         if (testableChunkAttempt == _world->_chunks.end()) {
             continue;
         }
@@ -250,20 +251,25 @@ Block* Player::setAimingAtBlock() {
                 for (int z = 0; z < Chunk::_size; z++) {
                     Block& block = testableChunk->_blocks[x][y][z];
 
-                    // Air doesn't count as being aimed at.
+                    // air doesn't count as being aimed at.
                     if (block.getType() == AIR) {
+                        continue;
+                    }
+
+                    // block is further than the player's reach
+                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _position) > _reach) {
                         continue;
                     }
 
                     const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}, ray);
 
-                    // no intersection
-                    if (intersectionDistance == -1.0f) {
+                    // closer intersection already found
+                    if (intersectionDistance >= closestDistance) {
                         continue;
                     }
 
-                    // closer intersection already found
-                    if (intersectionDistance >= closestDistance) {
+                    // no intersection
+                    if (intersectionDistance == -1.0f) {
                         continue;
                     }
 
@@ -272,6 +278,7 @@ Block* Player::setAimingAtBlock() {
                         continue;
                     }
 
+                    // store block we are aiming it
                     closestBlock = &block;
                     closestDistance = intersectionDistance;
                     highlightedBlockIndex = {x, y, z};
@@ -320,5 +327,3 @@ glm::vec3 Player::getPosition() const
 {
     return _position;
 }
-
-
