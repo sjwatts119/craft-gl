@@ -10,13 +10,23 @@
 class ChunkMesh {
 private:
     Chunk* _chunk;
+    bool _dirty = true;
 public:
     GLuint _vboId{};
     GLuint _vaoId{};
 
+    glm::ivec3 _highlightedBlockIndex {-1};
     std::vector<VertexData> _vertices;
 
     explicit ChunkMesh(Chunk* chunk);
 
+    bool isDirty();
+
+    void markAsDirty();
+
     void regenerateMesh();
+
+    void setHighlightedBlock(glm::ivec3 index);
+
+    void unsetHighlightedBlock();
 };

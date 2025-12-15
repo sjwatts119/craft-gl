@@ -31,6 +31,9 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
         glVertexAttribIPointer(1, 1, GL_INT, VertexData::size(), reinterpret_cast<void *>(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
+        glVertexAttribIPointer(2, 1, GL_INT, VertexData::size(), reinterpret_cast<void *>((3 * sizeof(float)) + sizeof(int)));
+        glEnableVertexAttribArray(2);
+
         _blockShader.use();
 
         _blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());

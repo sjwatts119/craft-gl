@@ -10,7 +10,11 @@ public:
 
     World();
 
+    void addTestChunks();
+
     const Block *blockAt(Coordinate worldCoordinate) const;
 
-    void addTestChunks();
+    void destroyBlock(Coordinate worldCoordinate);
+
+    void update();
 };

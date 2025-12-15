@@ -20,6 +20,8 @@ public:
     static constexpr int _size = 16;
     static constexpr int _blockCount = _size * _size * _size;
 
+    glm::ivec3 highlightedBlock{-1};
+
     Block _blocks[_size][_size][_size];
     std::unique_ptr<ChunkMesh> _mesh;
 
@@ -33,4 +35,6 @@ public:
     [[nodiscard]] glm::mat4 worldToLocalMatrix() const;
 
     void addTestBlocks();
+
+    void destroyBlock(Coordinate localCoordinate);
 };

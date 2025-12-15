@@ -2,6 +2,7 @@
 
 in vec3 FragPosition;
 flat in int BlockType;
+flat in int IsHighlighted;
 
 out vec4 FragColour;
 
@@ -13,6 +14,10 @@ out vec4 FragColour;
     BEDROCK = 4,
     ERROR = 5,
 */
+
+vec4 darken(vec4 colour) {
+    return colour - vec4(0.2f, 0.2f, 0.2f, 1.0f);
+}
 
 vec4 colourFromBlockType() {
     // Grass
@@ -43,5 +48,12 @@ vec4 colourFromBlockType() {
 
 void main()
 {
-    FragColour = colourFromBlockType();
+    vec4 baseColour = colourFromBlockType();
+
+    if (IsHighlighted == 0) {
+        FragColour = baseColour;
+        return;
+    }
+
+    FragColour = darken(baseColour);
 }

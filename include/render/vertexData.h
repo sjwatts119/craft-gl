@@ -7,8 +7,9 @@ struct VertexData {
     float y;
     float z;
     BlockType type;
+    int highlighted = 0;
 
     static size_t size() {
-        return sizeof(float) + sizeof(float) + sizeof(float) + sizeof(int);
+        return sizeof(float) + sizeof(float) + sizeof(float) + sizeof(int) + sizeof(highlighted);
     }
 };

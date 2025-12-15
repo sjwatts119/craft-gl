@@ -18,6 +18,7 @@ int main() {
         RenderManager::clear();
 
         player.update(&window);
+        world.update();
 
         renderManager.render(&player, &window, &world);
 

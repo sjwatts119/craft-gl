@@ -5,6 +5,7 @@
 #include "glm/ext/matrix_transform.hpp"
 
 #include <iostream>
+#include <optional>
 
 #include "core/world.h"
 #include "render/window.h"
@@ -40,6 +41,9 @@ class Player
     float mouseLastXPosition = 400;
     float mouseLastYPosition = 300;
 
+    bool _mouse1WasPressed = false;
+    bool _mouse2WasPressed = false;
+
     glm::vec3 _position{-30.0f, 10.0f, 3.0f};
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
@@ -51,6 +55,8 @@ class Player
     World *_world;
 
     Block *_aimingAt;
+
+    std::optional<Coordinate> _highlightedBlockWorldCoordinate;
 
     void moveForward(float speed);
 
@@ -71,6 +77,8 @@ public:
 
     void processCursor(const Window* window);
 
+    void processMouse(const Window* window);
+
     void processKeyboard(const Window* window);
 
     void setBasisVectors();
@@ -81,7 +89,9 @@ public:
 
     void zoom(float offset);
 
-    [[nodiscard]] Block* aimingAt() const;
+    void destroyHighlightedBlock();
+
+    [[nodiscard]] Block* aimingAt();
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
 

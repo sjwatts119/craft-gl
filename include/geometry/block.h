@@ -20,6 +20,7 @@ enum BlockType: int {
 class Block {
 private:
     BlockType _type;
+    bool _highlighted;
 
     static constexpr std::array<glm::vec3, 6> TOP_VERTICES = {{
         {-0.5f,  0.5f, -0.5f},

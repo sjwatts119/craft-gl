@@ -5,6 +5,14 @@ ChunkMesh::ChunkMesh(Chunk* chunk) : _chunk(chunk) {
     glGenBuffers(1, &_vboId);
 }
 
+bool ChunkMesh::isDirty() {
+    return _dirty;
+}
+
+void ChunkMesh::markAsDirty() {
+    _dirty = true;
+}
+
 void ChunkMesh::regenerateMesh() {
     _vertices.clear();
 
@@ -12,15 +20,15 @@ void ChunkMesh::regenerateMesh() {
         for (int y = 0; y < Chunk::_size; y++) {
             for (int z = 0; z < Chunk::_size; z++) {
                 auto block = _chunk->_blocks[x][y][z];
-
                 const auto type = block.getType();
+
                 if (type == AIR) {
                     continue;
                 }
 
+                bool isHighlighted = glm::ivec3{x, y, z} == _highlightedBlockIndex;
+
                 auto localCoordinate = Coordinate{glm::vec3{x, y, z}};
-                // auto worldCoordinate = Coordinate{_chunk->_coordinate.toVec3() * static_cast<float>(Chunk::_size) + glm::vec3{x, y, z}};
-                // glm::mat4 modelToLocalChunkMatrix = glm::translate(glm::mat4{1.0f}, worldCoordinate.toVec3());
 
                 auto leftNeighbour = localCoordinate.leftNeighbour();
                 auto rightNeighbour = localCoordinate.rightNeighbour();
@@ -39,7 +47,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x,
                             localVertices.y,
                             localVertices.z,
-                            block.getType()
+                            block.getType(),
+                            isHighlighted
                         };
 
                         _vertices.push_back(vertexData);
@@ -56,7 +65,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x,
                             localVertices.y,
                             localVertices.z,
-                            block.getType()
+                            block.getType(),
+                            isHighlighted
                         };
 
                         _vertices.push_back(vertexData);
@@ -73,7 +83,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x,
                             localVertices.y,
                             localVertices.z,
-                            block.getType()
+                            block.getType(),
+                            isHighlighted
                         };
 
                         _vertices.push_back(vertexData);
@@ -90,7 +101,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x,
                             localVertices.y,
                             localVertices.z,
-                            block.getType()
+                            block.getType(),
+                            isHighlighted
                         };
 
                         _vertices.push_back(vertexData);
@@ -107,7 +119,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x,
                             localVertices.y,
                             localVertices.z,
-                            block.getType()
+                            block.getType(),
+                            isHighlighted
                         };
 
                         _vertices.push_back(vertexData);
@@ -124,7 +137,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x,
                             localVertices.y,
                             localVertices.z,
-                            block.getType()
+                            block.getType(),
+                            isHighlighted
                         };
 
                         _vertices.push_back(vertexData);
@@ -134,5 +148,15 @@ void ChunkMesh::regenerateMesh() {
         }
     }
 
-    std::cout << "Generated mesh with vertex count: " << _vertices.size() << std::endl;
+    _dirty = false;
+
+    // std::cout << "Generated mesh with vertex count: " << _vertices.size() << std::endl;
+}
+
+void ChunkMesh::setHighlightedBlock(const glm::ivec3 index) {
+    _highlightedBlockIndex = index;
+}
+
+void ChunkMesh::unsetHighlightedBlock() {
+    _highlightedBlockIndex = glm::ivec3{-1};
 }

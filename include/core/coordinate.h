@@ -25,6 +25,12 @@ struct Coordinate {
         z = static_cast<int>(vec3.z);
     }
 
+    explicit Coordinate(const glm::ivec3 ivec3) {
+        x = ivec3.x;
+        y = ivec3.y;
+        z = ivec3.z;
+    }
+
     [[nodiscard]] Coordinate toLocalSpace() const {
         return Coordinate{
             x % 16,

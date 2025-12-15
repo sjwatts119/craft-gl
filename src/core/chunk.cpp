@@ -57,3 +57,10 @@ void Chunk::addTestBlocks() {
 
     std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
 }
+
+void Chunk::destroyBlock(const Coordinate localCoordinate) {
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = Block{AIR};
+
+    std::cout << "destroyed x: " << localCoordinate.x << " y: " << localCoordinate.y << " z: " << localCoordinate.z << std::endl;
+    _mesh->markAsDirty();
+}

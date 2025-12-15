@@ -1,12 +1,15 @@
 #include <core/player.h>
 
+#include "geometry/chunkMesh.h"
 #include "geometry/ray.h"
 #include "glm/ext/matrix_clip_space.hpp"
 #include "render/window.h"
 
 void Player::update(const Window* window) {
-    aimingAt();
+    aimingAt(); // TODO cache highlighted block and don't regen mesh if it hasn't changed.
+
     processCursor(window);
+    processMouse(window);
     processKeyboard(window);
 }
 
@@ -25,6 +28,21 @@ void Player::processCursor(const Window* window) {
     mouseLastYPosition = static_cast<float>(yPosition);
 
     aim(xOffset, yOffset);
+}
+
+void Player::processMouse(const Window* window) {
+    bool mouse1IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
+
+    // Prevent holding down the button
+    if (mouse1IsPressed && !_mouse1WasPressed) {
+        if (_highlightedBlockWorldCoordinate == std::nullopt) {
+            return;
+        }
+
+        _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
+    }
+
+    _mouse1WasPressed = mouse1IsPressed;
 }
 
 void Player::processKeyboard(const Window* window) {
@@ -169,7 +187,11 @@ void Player::zoom(const float offset)
     _fov = newFov;
 }
 
-Block* Player::aimingAt() const {
+void Player::destroyHighlightedBlock() {
+
+}
+
+Block* Player::aimingAt() {
     const Ray ray {_position, _forward};
 
     const auto playerChunkCoordinate = Coordinate{_position}.toChunkSpace();
@@ -182,8 +204,16 @@ Block* Player::aimingAt() const {
         return nullptr;
     }
 
+    chunk->second->_mesh->unsetHighlightedBlock();
+    chunk->second->_mesh->markAsDirty();
+
     Block* closestBlock = nullptr;
     float closestDistance = std::numeric_limits<float>::max();
+
+    glm::ivec3 highlightedBlockIndex{-1};
+
+    const auto chunkWorldPosition = chunk->first;
+
 
     // Start with the current chunk the player is in, then try surround chunks.
     for (int x = 0; x < Chunk::_size; x++) {
@@ -196,7 +226,6 @@ Block* Player::aimingAt() const {
                     continue;
                 }
 
-                const auto chunkWorldPosition = chunk->first;
                 const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x * 16 + x, chunkWorldPosition.y * 16 + y, chunkWorldPosition.z * 16 + z}}, ray);
 
                 if (intersectionDistance == -1.0f) {
@@ -209,10 +238,22 @@ Block* Player::aimingAt() const {
 
                 closestBlock = &block;
                 closestDistance = intersectionDistance;
+                highlightedBlockIndex = {x, y, z};
             }
         }
     }
 
+    if (closestBlock == nullptr) {
+        _highlightedBlockWorldCoordinate = std::nullopt;
+        return closestBlock;
+    }
+
+    chunk->second->_mesh->setHighlightedBlock(highlightedBlockIndex);
+    _highlightedBlockWorldCoordinate = Coordinate{
+        chunkWorldPosition.x * Chunk::_size + highlightedBlockIndex.x,
+        chunkWorldPosition.y * Chunk::_size + highlightedBlockIndex.y,
+        chunkWorldPosition.z * Chunk::_size + highlightedBlockIndex.z
+    };
     return closestBlock;
 }
 
