@@ -212,7 +212,7 @@ Block* Player::setAimingAtBlock() {
     const auto chunk = _world->_chunks.find(playerChunkCoordinate);
 
     if (chunk == _world->_chunks.end()) {
-        std::cerr << "Couldn't find chunk when calculating setAimingAtBlock()" << std::endl;
+        std::cerr << "Player not in a chunk or chunk with current coordinate not found" << std::endl;
 
         return nullptr;
     }
@@ -242,6 +242,10 @@ Block* Player::setAimingAtBlock() {
                 }
 
                 if (intersectionDistance >= closestDistance) {
+                    continue;
+                }
+
+                if (intersectionDistance > _reach) {
                     continue;
                 }
 

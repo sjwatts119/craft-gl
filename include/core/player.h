@@ -48,6 +48,8 @@ class Player
     bool _mouse1WasPressed = false;
     bool _mouse2WasPressed = false;
 
+    float _reach = 5.0f;
+
     glm::vec3 _position{-30.0f, 10.0f, 3.0f};
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
