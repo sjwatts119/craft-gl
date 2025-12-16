@@ -16,9 +16,9 @@ void ChunkMesh::markAsDirty() {
 void ChunkMesh::regenerateMesh() {
     _vertices.clear();
 
-    for (int x = 0; x < Chunk::_size; x++) {
-        for (int y = 0; y < Chunk::_size; y++) {
-            for (int z = 0; z < Chunk::_size; z++) {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
                 auto block = _chunk->_blocks[x][y][z];
                 const auto type = block.getType();
 

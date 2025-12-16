@@ -1,6 +1,8 @@
 #pragma once
 
 #include <core/coordinate.h>
+#include <glm/vec3.hpp>
+#include <iostream>
 
 struct AABB {
     float minX, minY, minZ;
@@ -15,31 +17,35 @@ struct AABB {
         maxZ = max.z;
     }
 
-    explicit AABB(const Coordinate coordinate) {
-        minX = static_cast<float>(coordinate.x);
-        minY = static_cast<float>(coordinate.y);
-        minZ = static_cast<float>(coordinate.z);
-        maxX = static_cast<float>(coordinate.x);
-        maxY = static_cast<float>(coordinate.y);
-        maxZ = static_cast<float>(coordinate.z);
+    static AABB forBlock(const Coordinate &coord) {
+        return {
+            {
+                static_cast<float>(coord.x) - 0.5f,
+                static_cast<float>(coord.y) - 0.5f,
+                static_cast<float>(coord.z) - 0.5f
+            },
+            {
+                static_cast<float>(coord.x) + 0.5f,
+                static_cast<float>(coord.y) + 0.5f,
+                static_cast<float>(coord.z) + 0.5f
+            }
+        };
     }
 
-    AABB& adjustToBlockPosition() {
-        minX -= 0.5f;
-        minY -= 0.5f;
-        minZ -= 0.5f;
-        maxX += 0.5f;
-        maxY += 0.5f;
-        maxZ += 0.5f;
+    static AABB forChunk(const Coordinate &chunkCoord) {
+        const auto globalCoord = chunkCoord.toGlobalFromChunk(Coordinate{0, 0, 0});
 
-        return *this;
-    }
-
-    AABB& expandToChunk() {
-        maxX += 16;
-        maxY += 16;
-        maxZ += 16; // TODO USE CHUNK SIZE ON CHUNK CLASS
-
-        return *this;
+        return {
+            {
+                static_cast<float>(globalCoord.x) - 0.5f,
+                static_cast<float>(globalCoord.y) - 0.5f,
+                static_cast<float>(globalCoord.z) - 0.5f
+            },
+            {
+                static_cast<float>(globalCoord.x) + CHUNK_SIZE - 0.5f,
+                static_cast<float>(globalCoord.y) + CHUNK_SIZE - 0.5f,
+                static_cast<float>(globalCoord.z) + CHUNK_SIZE - 0.5f
+            }
+        };
     }
 };

@@ -21,7 +21,7 @@ void World::addTestChunks() {
 }
 
 const Block *World::blockAt(const Coordinate worldCoordinate) const {
-    const auto chunkCoordinate = worldCoordinate.toChunkSpace();
+    const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
 
     const auto chunkResult = _chunks.find(chunkCoordinate);
 
@@ -40,7 +40,7 @@ const Block *World::blockAt(const Coordinate worldCoordinate) const {
 }
 
 void World::destroyBlock(const Coordinate worldCoordinate) {
-    const auto chunkCoordinate = worldCoordinate.toChunkSpace();
+    const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
 
     const auto chunkResult = _chunks.find(chunkCoordinate);
 
@@ -50,6 +50,10 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
 
     Chunk& chunk = *chunkResult->second;
     const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
+
+    auto globalCoordinate = chunkCoordinate.toGlobalFromChunk(localCoordinate);
+    std::cout << "destroyed x: " << globalCoordinate.x << " y: " << globalCoordinate.y << " z: " << globalCoordinate.z << std::endl;
+
 
     chunk.destroyBlock(localCoordinate);
 }

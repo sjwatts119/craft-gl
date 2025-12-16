@@ -7,8 +7,8 @@ Chunk::Chunk(const Coordinate coordinate)
     _blocks{},
     _mesh{std::make_unique<ChunkMesh>(this)}
 {
-    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toVec3() * 16.0f);
-    _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toVec3() * 16.0f);
+    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toVec3() * static_cast<float>(CHUNK_SIZE));
+    _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toVec3() * static_cast<float>(CHUNK_SIZE));
 
     addTestBlocks();
     generateMesh();
@@ -29,9 +29,9 @@ glm::mat4 Chunk::worldToLocalMatrix() const {
 }
 
 void Chunk::addTestBlocks() {
-    for (int x = 0; x < _size; x++) {
-        for (int y = 0; y < _size; y++) {
-            for (int z = 0; z < _size; z++) {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
                 BlockType type;
 
                 if (y >= 8) {
@@ -61,6 +61,5 @@ void Chunk::addTestBlocks() {
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = Block{AIR};
 
-    std::cout << "destroyed x: " << localCoordinate.x << " y: " << localCoordinate.y << " z: " << localCoordinate.z << std::endl;
     _mesh->markAsDirty();
 }

@@ -6,6 +6,7 @@
 #include <memory>
 
 #include "coordinate.h"
+#include "staticData.h"
 #include "geometry/block.h"
 
 class ChunkMesh;
@@ -17,12 +18,9 @@ private:
 public:
     Coordinate _coordinate;
 
-    static constexpr int _size = 16;
-    static constexpr int _blockCount = _size * _size * _size;
-
     glm::ivec3 highlightedBlock{-1};
 
-    Block _blocks[_size][_size][_size];
+    Block _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 
     explicit Chunk(Coordinate coordinate);

@@ -192,7 +192,7 @@ void Player::clearAimingAtBlock() {
         return;
     }
 
-    const auto chunk = _world->_chunks.find(_highlightedBlockWorldCoordinate.value().toChunkSpace());
+    const auto chunk = _world->_chunks.find(_highlightedBlockWorldCoordinate.value().toChunkFromWorld());
 
     if (chunk == _world->_chunks.end()) {
         return;
@@ -205,7 +205,7 @@ void Player::clearAimingAtBlock() {
 }
 
 Block* Player::setAimingAtBlock() {
-    const auto playerChunkCoordinate = Coordinate{_position}.toChunkSpace();
+    const auto playerChunkCoordinate = Coordinate{_position}.toChunkFromWorld();
     const auto currentChunkAttempt = _world->_chunks.find(playerChunkCoordinate);
 
     if (currentChunkAttempt == _world->_chunks.end()) {
@@ -244,17 +244,19 @@ Block* Player::setAimingAtBlock() {
         }
 
         Chunk* testableChunk = testableChunkAttempt->second.get();
-        const auto chunkWorldPosition = testableChunkCoordinate.toIVec3() * Chunk::_size;
 
         // intersection test the ray with a bounding box on the entire chunk, if no collision, avoid testing any blocks.
-        const auto chunkAABB = AABB{Coordinate{chunkWorldPosition.x, chunkWorldPosition.y, chunkWorldPosition.z}}.expandToChunk();
+        const auto chunkAABB = AABB::forChunk({Coordinate{testableChunkCoordinate.x, testableChunkCoordinate.y, testableChunkCoordinate.z}});
+
         if (Ray::distanceToAABB(chunkAABB, ray) == -1.0f) {
             continue;
         }
 
-        for (int x = 0; x < Chunk::_size; x++) {
-            for (int y = 0; y < Chunk::_size; y++) {
-                for (int z = 0; z < Chunk::_size; z++) {
+        const auto chunkWorldPosition = testableChunkCoordinate.toLocalFromChunk().toIVec3();
+
+        for (int x = 0; x < CHUNK_SIZE; x++) {
+            for (int y = 0; y < CHUNK_SIZE; y++) {
+                for (int z = 0; z < CHUNK_SIZE; z++) {
                     Block& block = testableChunk->_blocks[x][y][z];
 
                     // air doesn't count as being aimed at.
@@ -267,7 +269,7 @@ Block* Player::setAimingAtBlock() {
                         continue;
                     }
 
-                    const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}.adjustToBlockPosition(), ray);
+                    const auto intersectionDistance = Ray::distanceToAABB(AABB::forBlock({Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}), ray);
 
                     // closer intersection already found
                     if (intersectionDistance >= closestDistance) {
@@ -302,7 +304,9 @@ Block* Player::setAimingAtBlock() {
         return closestBlock;
     }
 
-    _highlightedBlockWorldCoordinate = Coordinate{aimedAtChunkCoordinate.value().toIVec3() * Chunk::_size + highlightedBlockIndex};
+    auto worldCoordinate = Coordinate{aimedAtChunkCoordinate.value().toGlobalFromChunk(Coordinate{highlightedBlockIndex})};
+    _highlightedBlockWorldCoordinate = worldCoordinate;
+
     aimedAtChunk->_mesh->setHighlightedBlock(highlightedBlockIndex);
     aimedAtChunk->_mesh->markAsDirty();
 

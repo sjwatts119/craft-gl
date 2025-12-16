@@ -2,6 +2,8 @@
 #include <string>
 #include <glm/glm.hpp>
 
+#include "staticData.h"
+
 struct Coordinate {
     int x;
     int y;
@@ -25,38 +27,55 @@ struct Coordinate {
         z = static_cast<int>(vec3.z);
     }
 
-    explicit Coordinate(const glm::ivec3 ivec3) {
-        x = ivec3.x;
-        y = ivec3.y;
-        z = ivec3.z;
+    explicit Coordinate(const glm::ivec3 iVec3) {
+        x = iVec3.x;
+        y = iVec3.y;
+        z = iVec3.z;
     }
 
-    [[nodiscard]] Coordinate toLocalSpace() const {
+    /**
+     * Transform a coordinate from world coordinates to chunk coordinates (16, 0, 0) => (1, 0, 0)
+     */
+    [[nodiscard]] Coordinate toChunkFromWorld() const {
         return Coordinate{
-            x % 16,
-            y % 16,
-            z % 16
+            std::floor(static_cast<float>(x) / CHUNK_SIZE),
+            std::floor(static_cast<float>(y) / CHUNK_SIZE),
+            std::floor(static_cast<float>(z) / CHUNK_SIZE)
         };
     }
 
-    [[nodiscard]] Coordinate toChunkSpace() const {
+    /**
+     * Transform a coordinate from chunk coordinates to local coordinates (1, 0, 0) => (16, 0, 0)
+     */
+    [[nodiscard]] Coordinate toLocalFromChunk() const {
         return Coordinate{
-            std::floor(static_cast<float>(x) / 16.0f),
-            std::floor(static_cast<float>(y) / 16.0f),
-            std::floor(static_cast<float>(z) / 16.0f)
+            x * CHUNK_SIZE,
+            y * CHUNK_SIZE,
+            z * CHUNK_SIZE
+        };
+    }
+
+    /**
+     * Transform a coordinate from local coordinates to global coordinates (1, 0, 0) + localOffset(5, 0, 0) => (21, 0, 0)
+     */
+    [[nodiscard]] Coordinate toGlobalFromChunk(const Coordinate& localOffset) const {
+        return Coordinate{
+            x * CHUNK_SIZE + localOffset.x,
+            y * CHUNK_SIZE + localOffset.y,
+            z * CHUNK_SIZE + localOffset.z
         };
     }
 
     [[nodiscard]] bool isInBounds() const {
-        if (x < 0 || x > 15) {
+        if (x < 0 || x >= CHUNK_SIZE) {
             return false;
         }
 
-        if (y < 0 || y > 15) {
+        if (y < 0 || y >= CHUNK_SIZE) {
             return false;
         }
 
-        if (z < 0 || z > 15) {
+        if (z < 0 || z >= CHUNK_SIZE) {
             return false;
         }
 
