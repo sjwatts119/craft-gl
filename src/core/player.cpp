@@ -246,6 +246,12 @@ Block* Player::setAimingAtBlock() {
         Chunk* testableChunk = testableChunkAttempt->second.get();
         const auto chunkWorldPosition = testableChunkCoordinate.toIVec3() * Chunk::_size;
 
+        // intersection test the ray with a bounding box on the entire chunk, if no collision, avoid testing any blocks.
+        const auto chunkAABB = AABB{Coordinate{chunkWorldPosition.x, chunkWorldPosition.y, chunkWorldPosition.z}}.expandToChunk();
+        if (Ray::distanceToAABB(chunkAABB, ray) == -1.0f) {
+            continue;
+        }
+
         for (int x = 0; x < Chunk::_size; x++) {
             for (int y = 0; y < Chunk::_size; y++) {
                 for (int z = 0; z < Chunk::_size; z++) {
@@ -261,7 +267,7 @@ Block* Player::setAimingAtBlock() {
                         continue;
                     }
 
-                    const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}, ray);
+                    const auto intersectionDistance = Ray::distanceToAABB(AABB{Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}.adjustToBlockPosition(), ray);
 
                     // closer intersection already found
                     if (intersectionDistance >= closestDistance) {

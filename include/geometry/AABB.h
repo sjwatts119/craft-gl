@@ -16,11 +16,30 @@ struct AABB {
     }
 
     explicit AABB(const Coordinate coordinate) {
-        minX = static_cast<float>(coordinate.x) - 0.5f;
-        minY = static_cast<float>(coordinate.y) - 0.5f;
-        minZ = static_cast<float>(coordinate.z) - 0.5f;
-        maxX = static_cast<float>(coordinate.x) + 0.5f;
-        maxY = static_cast<float>(coordinate.y) + 0.5f;
-        maxZ = static_cast<float>(coordinate.z) + 0.5f;
+        minX = static_cast<float>(coordinate.x);
+        minY = static_cast<float>(coordinate.y);
+        minZ = static_cast<float>(coordinate.z);
+        maxX = static_cast<float>(coordinate.x);
+        maxY = static_cast<float>(coordinate.y);
+        maxZ = static_cast<float>(coordinate.z);
+    }
+
+    AABB& adjustToBlockPosition() {
+        minX -= 0.5f;
+        minY -= 0.5f;
+        minZ -= 0.5f;
+        maxX += 0.5f;
+        maxY += 0.5f;
+        maxZ += 0.5f;
+
+        return *this;
+    }
+
+    AABB& expandToChunk() {
+        maxX += 16;
+        maxY += 16;
+        maxZ += 16; // TODO USE CHUNK SIZE ON CHUNK CLASS
+
+        return *this;
     }
 };
