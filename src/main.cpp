@@ -6,7 +6,7 @@
 #include "render/renderManager.h"
 
 int main() {
-    Window window{SCREEN_WIDTH, SCREEN_HEIGHT, "craft-gl"};
+    Window window{SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE};
     window.makeCurrent();
 
     RenderManager renderManager{&window};

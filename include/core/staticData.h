@@ -7,3 +7,6 @@ static constexpr int BLOCK_COUNT = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 
 static constexpr int SCREEN_WIDTH = 1920;
 static constexpr int SCREEN_HEIGHT = 1080;
+
+// Screen Title
+static constexpr auto SCREEN_TITLE = "craft-gl";

@@ -269,8 +269,9 @@ Block* Player::setAimingAtBlock() {
                         continue;
                     }
 
-                    // block is further than the player's reach
-                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _position) > _reach) {
+                    // block is at least a block away from player reach so early out
+                    // we do more precise distance checks after ray-AABB intersection test
+                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _position) > _reach + 1) {
                         continue;
                     }
 
