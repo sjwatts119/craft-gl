@@ -91,12 +91,10 @@ void Chunk::destroyBlock(const Coordinate localCoordinate) {
     _mesh->markAsDirty();
 }
 
-void Chunk::placeBlock(const Coordinate localCoordinate, const BlockFace face) {
+void Chunk::placeBlock(const Coordinate localCoordinate) {
     const Block newBlock{GRASS};
 
-    const auto placeCoordinate = localCoordinate.moveTowards(face);
-
-    _blocks[placeCoordinate.x][placeCoordinate.y][placeCoordinate.z] = newBlock;
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = newBlock;
 
     _mesh->markAsDirty();
 }

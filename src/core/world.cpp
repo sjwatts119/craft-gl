@@ -69,28 +69,28 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
     Chunk& chunk = *chunkResult->second;
     const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
 
-    const auto globalCoordinate = chunkCoordinate.toGlobalFromChunk(localCoordinate);
-    std::cout << "destroyed x: " << globalCoordinate.x << " y: " << globalCoordinate.y << " z: " << globalCoordinate.z << std::endl;
+    std::cout << "destroyed x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << std::endl;
 
     chunk.destroyBlock(localCoordinate);
 }
 
 void World::placeBlock(const Coordinate worldCoordinate, const BlockFace face) {
-    const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
+    // push the coordinate to the position of the new block
+    const auto newWorldCoordinate = worldCoordinate.moveTowards(face);
 
-    const auto chunkResult = _chunks.find(chunkCoordinate);
+    // get that chunk, it might not be in the same chunk as the block we are placing against
+    const auto chunkResult = _chunks.find(newWorldCoordinate.toChunkFromWorld());
 
     if (chunkResult == _chunks.end()) {
         return;
     }
 
     Chunk& chunk = *chunkResult->second;
-    const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
+    const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(newWorldCoordinate.toVec3(), 1.0f))};
 
-    const auto globalCoordinate = chunkCoordinate.toGlobalFromChunk(localCoordinate);
-    std::cout << "placed block at x: " << globalCoordinate.x << " y: " << globalCoordinate.y << " z: " << globalCoordinate.z << std::endl;
+    std::cout << "placed x: " << newWorldCoordinate.x << " y: " << newWorldCoordinate.y << " z: " << newWorldCoordinate.z << std::endl;
 
-    chunk.placeBlock(localCoordinate, face);
+    chunk.placeBlock(localCoordinate);
 }
 
 void World::update() {

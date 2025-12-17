@@ -41,5 +41,5 @@ public:
 
     void destroyBlock(Coordinate localCoordinate);
 
-    void placeBlock(Coordinate localCoordinate, BlockFace face);
+    void placeBlock(Coordinate localCoordinate);
 };

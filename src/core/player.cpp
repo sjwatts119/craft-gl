@@ -345,8 +345,6 @@ Block* Player::setAimingAtBlock() {
     aimedAtChunk->_mesh->setHighlightedBlock(highlightedBlockIndex);
     aimedAtChunk->_mesh->markAsDirty();
 
-    std::cout << "Aiming at face: " << hitFace.value() << " of block at world coordinate {x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << "}" << std::endl;
-
     return closestBlock;
 }
 

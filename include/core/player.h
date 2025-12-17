@@ -49,7 +49,7 @@ class Player
     bool _mouse1WasPressed = false;
     bool _mouse2WasPressed = false;
 
-    float _reach = 5.0f;
+    float _reach = 10.0f;
 
     glm::vec3 _position{0.0f, 38.0f, 0.0f};
 
