@@ -9,10 +9,10 @@ int main() {
     Window window{SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE};
     window.makeCurrent();
 
-    RenderManager renderManager{&window};
+    const RenderManager renderManager{&window};
     World world;
     Player player{FPS, &world};
-    Interface interface;
+    const Interface interface;
 
     while (window.open()) {
         window.update();

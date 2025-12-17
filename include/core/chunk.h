@@ -24,6 +24,13 @@ public:
     Block _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 
+    Chunk* _leftNeighbour{nullptr};
+    Chunk* _rightNeighbour{nullptr};
+    Chunk* _downNeighbour{nullptr};
+    Chunk* _upNeighbour{nullptr};
+    Chunk* _backNeighbour{nullptr};
+    Chunk* _frontNeighbour{nullptr};
+
     explicit Chunk(Coordinate coordinate);
     ~Chunk();
 

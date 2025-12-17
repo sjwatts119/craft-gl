@@ -88,7 +88,7 @@ void Chunk::addTestBlocksTop() {
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = Block{AIR};
 
-    _mesh->markAsDirty();
+    _mesh->markAsDirtyWithNeighbours();
 }
 
 void Chunk::placeBlock(const Coordinate localCoordinate) {
@@ -96,5 +96,5 @@ void Chunk::placeBlock(const Coordinate localCoordinate) {
 
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = newBlock;
 
-    _mesh->markAsDirty();
+    _mesh->markAsDirtyWithNeighbours();
 }

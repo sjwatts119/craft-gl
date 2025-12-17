@@ -21,6 +21,8 @@ public:
 
     void addTestChunks();
 
+    void referenceNeighbours();
+
     const Block *blockAt(Coordinate worldCoordinate) const;
 
     void destroyBlock(Coordinate worldCoordinate);

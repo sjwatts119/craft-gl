@@ -4,12 +4,13 @@
 
 World::World() {
     addTestChunks();
+    referenceNeighbours();
 }
 
 void World::addTestChunks() {
-    for (int x = -4; x < 4; x++) {
-        for (int y = 0; y < 3; y++) {
-            for (int z = -4; z < 4; z++) {
+    for (int x = (CHUNK_COUNT_X / -2); x < (CHUNK_COUNT_X / 2); x++) {
+        for (int y = 0; y < CHUNK_COUNT_Y; y++) {
+            for (int z = CHUNK_COUNT_Z / -2; z < CHUNK_COUNT_Z / 2; z++) {
                 const Coordinate coordinate {x, y, z};
 
                 auto chunk = std::make_unique<Chunk>(coordinate);
@@ -33,6 +34,53 @@ void World::addTestChunks() {
                 _chunks.emplace(coordinate, std::move(chunk));
 
                 std::cout << "added test chunk to world at localised position {x: " << x << " y: " << y << " z: " << z << "}" << std::endl;
+            }
+        }
+    }
+}
+
+void World::referenceNeighbours() {
+    for (int x = (CHUNK_COUNT_X / -2); x < (CHUNK_COUNT_X / 2); x++) {
+        for (int y = 0; y < CHUNK_COUNT_Y; y++) {
+            for (int z = CHUNK_COUNT_Z / -2; z < CHUNK_COUNT_Z / 2; z++) {
+                const Coordinate coordinate {x, y, z};
+
+                for (int faceIndex = 0; faceIndex < 6; faceIndex++) {
+                    const BlockFace face {faceIndex};
+
+                    const auto neighbourChunkCoordinate = coordinate.moveTowards(face);
+
+                    auto neighbourChunkResult = _chunks.find(neighbourChunkCoordinate);
+
+                    if (neighbourChunkResult == _chunks.end()) {
+                        continue;
+                    }
+
+                    Chunk* neighbourChunk = neighbourChunkResult->second.get();
+
+                    switch (face) {
+                        case FACE_LEFT:
+                            _chunks[coordinate]->_leftNeighbour = neighbourChunk;
+                            break;
+                        case FACE_RIGHT:
+                            _chunks[coordinate]->_rightNeighbour = neighbourChunk;
+                            break;
+                        case FACE_BOTTOM:
+                            _chunks[coordinate]->_downNeighbour = neighbourChunk;
+                            break;
+                        case FACE_TOP:
+                            _chunks[coordinate]->_upNeighbour = neighbourChunk;
+                            break;
+                        case FACE_BACK:
+                            _chunks[coordinate]->_backNeighbour = neighbourChunk;
+                            break;
+                        case FACE_FRONT:
+                            _chunks[coordinate]->_frontNeighbour = neighbourChunk;
+                            break;
+                        default:
+                            break;
+                    }
+                }
             }
         }
     }

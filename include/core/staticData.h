@@ -10,3 +10,7 @@ static constexpr int SCREEN_HEIGHT = 1080;
 
 // Screen Title
 static constexpr auto SCREEN_TITLE = "craft-gl";
+
+static constexpr int CHUNK_COUNT_X = 11;
+static constexpr int CHUNK_COUNT_Y = 3;
+static constexpr int CHUNK_COUNT_Z = 11;

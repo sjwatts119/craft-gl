@@ -24,6 +24,8 @@ public:
 
     void markAsDirty();
 
+    void markAsDirtyWithNeighbours();
+
     void regenerateMesh();
 
     void setHighlightedBlock(glm::ivec3 index);
