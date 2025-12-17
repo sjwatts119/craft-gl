@@ -114,18 +114,18 @@ public:
         return RIGHT_VERTICES;
     }
 
-    int getTextureId(const BlockFace face) {
+    int getTextureId(const BlockFace face) const {
         switch (_type) {
             case AIR:
                 return -1; // No texture
             case GRASS:
                 switch (face) {
                 case FACE_TOP:
-                        return static_cast<int>(BlockTextureId::GRASS_TOP);
+                    return static_cast<int>(BlockTextureId::GRASS_TOP);
                 case FACE_BOTTOM:
-                        return static_cast<int>(BlockTextureId::DIRT);
+                    return static_cast<int>(BlockTextureId::DIRT);
                 default:
-                        return static_cast<int>(BlockTextureId::GRASS_SIDE);
+                    return static_cast<int>(BlockTextureId::GRASS_SIDE);
                 }
             case DIRT:
                 return static_cast<int>(BlockTextureId::DIRT);

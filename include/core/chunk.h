@@ -46,6 +46,8 @@ public:
 
     void addTestBlocksTop();
 
+    void addTestBlocksAir();
+
     void destroyBlock(Coordinate localCoordinate);
 
     void placeBlock(Coordinate localCoordinate);

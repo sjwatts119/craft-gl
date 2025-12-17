@@ -85,6 +85,18 @@ void Chunk::addTestBlocksTop() {
     // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
 }
 
+void Chunk::addTestBlocksAir() {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                _blocks[x][y][z] = Block{AIR};
+            }
+        }
+    }
+
+    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
+}
+
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = Block{AIR};
 

@@ -42,7 +42,6 @@ void ChunkMesh::markAsDirtyWithNeighbours() {
 }
 
 void ChunkMesh::regenerateMesh() {
-
     _vertices.clear();
 
     for (int x = 0; x < CHUNK_SIZE; x++) {

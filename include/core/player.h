@@ -51,7 +51,7 @@ class Player
 
     float _reach = 10.0f;
 
-    glm::vec3 _position{0.0f, 38.0f, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 5.8f, 0.0f};
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
 
