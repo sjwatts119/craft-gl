@@ -5,8 +5,7 @@ void Player::update(const Window* window) {
     processMouse(window);
     processKeyboard(window);
 
-    clearAimingAtBlock();
-    setAimingAtBlock(); // TODO cache highlighted block and don't regen mesh if it hasn't changed.
+    setAimingAtBlock();
 }
 
 void Player::processCursor(const Window* window) {
@@ -216,6 +215,7 @@ void Player::placeBlock() const {
 void Player::clearAimingAtBlock() {
     // player is not aiming at a block
     if (_highlightedBlockWorldCoordinate == std::nullopt || _highlightedBlockFace == std::nullopt) {
+        _highlightedBlockWorldCoordinate = std::nullopt;
         _highlightedBlockFace = std::nullopt;
         return;
     }
@@ -236,14 +236,15 @@ void Player::clearAimingAtBlock() {
     _highlightedBlockFace = std::nullopt;
 }
 
-Block* Player::setAimingAtBlock() {
+void Player::setAimingAtBlock() {
     const auto playerChunkCoordinate = Coordinate{_position}.toChunkFromWorld();
     const auto currentChunkAttempt = _world->_chunks.find(playerChunkCoordinate);
 
     if (currentChunkAttempt == _world->_chunks.end()) {
         std::cerr << "Player not in a chunk or chunk with current coordinate not found" << std::endl;
 
-        return nullptr;
+        clearAimingAtBlock();
+        return;
     }
 
     std::vector<Coordinate> testableChunkCoordinates;
@@ -333,19 +334,25 @@ Block* Player::setAimingAtBlock() {
 
     // no intersection found, return nullptr
     if (closestBlock == nullptr || aimedAtChunk == nullptr) {
-        _highlightedBlockWorldCoordinate = std::nullopt;
+        clearAimingAtBlock();
 
-        return closestBlock;
+        return;
     }
 
     auto worldCoordinate = Coordinate{aimedAtChunkCoordinate.value().toGlobalFromChunk(Coordinate{highlightedBlockIndex})};
+
+    // don't regenerate the mesh if the highlighted block hasn't changed
+    if (_highlightedBlockWorldCoordinate == worldCoordinate && _highlightedBlockFace == hitFace) {
+        return;
+    }
+
+    clearAimingAtBlock();
+
     _highlightedBlockWorldCoordinate = worldCoordinate;
     _highlightedBlockFace = hitFace;
 
     aimedAtChunk->_mesh->setHighlightedBlock(highlightedBlockIndex);
     aimedAtChunk->_mesh->markAsDirty();
-
-    return closestBlock;
 }
 
 glm::mat4 Player::getViewMatrix() const

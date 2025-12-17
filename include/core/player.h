@@ -103,7 +103,7 @@ public:
 
     void clearAimingAtBlock();
 
-    [[nodiscard]] Block* setAimingAtBlock();
+    void setAimingAtBlock();
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
 
