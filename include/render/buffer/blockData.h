@@ -5,6 +5,7 @@
 struct BlockData {
     float x, y, z;
     float normalX, normalY, normalZ;
+    float texU, texV;
     BlockType type;
     int highlighted = 0;
 
@@ -12,6 +13,7 @@ struct BlockData {
         return
             sizeof(float) + sizeof(float) + sizeof(float) + // pos
             sizeof(float) + sizeof(float) + sizeof(float) + // normal
+            sizeof(float) + sizeof(float) + // tex coords
             sizeof(int) + // type
             sizeof(highlighted); // highlighted
     }

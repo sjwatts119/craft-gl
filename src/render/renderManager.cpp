@@ -13,6 +13,18 @@ void RenderManager::clear() {
 }
 
 void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) {
+    _shaderManager._blockShader.use();
+
+    _textureManager._bedrockTexture.use(GL_TEXTURE0);
+    _textureManager._dirtTexture.use(GL_TEXTURE1);
+    _textureManager._stoneTexture.use(GL_TEXTURE2);
+    _textureManager._grassTexture.use(GL_TEXTURE3);
+
+    _shaderManager._blockShader.setInt("uBedrockTexture", 0);
+    _shaderManager._blockShader.setInt("uDirtTexture", 1);
+    _shaderManager._blockShader.setInt("uStoneTexture", 2);
+    _shaderManager._blockShader.setInt("uGrassTexture", 3);
+
     for (auto& [chunkCoordinate, chunk]: world->_chunks) {
         glBindVertexArray(chunk->_mesh->_vaoId);
 
@@ -26,19 +38,21 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
         glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
         glEnableVertexAttribArray(1);
 
-        glVertexAttribIPointer(2, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
 
-        glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((6 * sizeof(float)) + sizeof(int)));
+        glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(8 * sizeof(float)));
         glEnableVertexAttribArray(3);
 
-        _blockShader.use();
+        glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((8 * sizeof(float)) + sizeof(int)));
+        glEnableVertexAttribArray(4);
 
-        _blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
-        _blockShader.setMat4("uViewMatrix", player->getViewMatrix());
-        _blockShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
+        _shaderManager._blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
+        _shaderManager._blockShader.setMat4("uViewMatrix", player->getViewMatrix());
+        _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
 
-        _blockShader.setLight("uSun" , world->getSun());
+        _shaderManager._blockShader.setLight("uSun" , world->getSun());
+
 
         glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(chunk->_mesh->_vertices.size()));
     }
@@ -59,9 +73,12 @@ void RenderManager::renderInterface(const Window *window, const World *world, co
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(CrosshairData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    _crosshairShader.use();
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(CrosshairData::size()), reinterpret_cast<void *>(5 * sizeof(float)));
+    glEnableVertexAttribArray(2);
 
-    _crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
+    _shaderManager._crosshairShader.use();
+
+    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
 
     glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(Crosshair::VERTICES.size()));
 

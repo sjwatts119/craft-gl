@@ -38,12 +38,13 @@ void ChunkMesh::regenerateMesh() {
                 auto frontNeighbour = localCoordinate.frontNeighbour();
 
                 if (!leftNeighbour.isInBounds() || _chunk->_blocks[leftNeighbour.x][leftNeighbour.y][leftNeighbour.z].getType() == AIR) {
-                    for (const auto&[position, normal] : Block::getLeftVertices()) {
+                    for (const auto&[position, normal, texCoords] : Block::getLeftVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
                         BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
+                            texCoords.x, texCoords.y,
                             block.getType(),
                             isHighlighted
                         };
@@ -53,12 +54,13 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (!rightNeighbour.isInBounds() || _chunk->_blocks[rightNeighbour.x][rightNeighbour.y][rightNeighbour.z].getType() == AIR) {
-                    for (const auto&[position, normal] : Block::getRightVertices()) {
+                    for (const auto&[position, normal, texCoords] : Block::getRightVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
                         BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
+                            texCoords.x, texCoords.y,
                             block.getType(),
                             isHighlighted
                         };
@@ -68,12 +70,13 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (!downNeighbour.isInBounds() || _chunk->_blocks[downNeighbour.x][downNeighbour.y][downNeighbour.z].getType() == AIR) {
-                    for (const auto&[position, normal] : Block::getBottomVertices()) {
+                    for (const auto&[position, normal, texCoords] : Block::getBottomVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
                         BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
+                            texCoords.x, texCoords.y,
                             block.getType(),
                             isHighlighted
                         };
@@ -83,12 +86,13 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (!upNeighbour.isInBounds() || _chunk->_blocks[upNeighbour.x][upNeighbour.y][upNeighbour.z].getType() == AIR) {
-                    for (const auto&[position, normal] : Block::getTopVertices()) {
+                    for (const auto&[position, normal, texCoords] : Block::getTopVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
                         BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
+                            texCoords.x, texCoords.y,
                             block.getType(),
                             isHighlighted
                         };
@@ -98,12 +102,13 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (!backNeighbour.isInBounds() || _chunk->_blocks[backNeighbour.x][backNeighbour.y][backNeighbour.z].getType() == AIR) {
-                    for (const auto&[position, normal] : Block::getBackVertices()) {
+                    for (const auto&[position, normal, texCoords] : Block::getBackVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
                         BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
+                            texCoords.x, texCoords.y,
                             block.getType(),
                             isHighlighted
                         };
@@ -113,12 +118,13 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (!frontNeighbour.isInBounds() || _chunk->_blocks[frontNeighbour.x][frontNeighbour.y][frontNeighbour.z].getType() == AIR) {
-                    for (const auto&[position, normal] : Block::getFrontVertices()) {
+                    for (const auto&[position, normal, texCoords] : Block::getFrontVertices()) {
                         auto localVertices = position + localCoordinate.toVec3();
 
                         BlockData bufferData {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
+                            texCoords.x, texCoords.y,
                             block.getType(),
                             isHighlighted
                         };

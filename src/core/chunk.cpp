@@ -7,8 +7,8 @@ Chunk::Chunk(const Coordinate coordinate)
     _blocks{},
     _mesh{std::make_unique<ChunkMesh>(this)}
 {
-    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toVec3() * static_cast<float>(CHUNK_SIZE));
-    _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toVec3() * static_cast<float>(CHUNK_SIZE));
+    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toGlobalFromChunk(Coordinate{0, 0, 0}).toVec3());
+    _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toGlobalFromChunk(Coordinate{0, 0, 0}).toVec3());
 
     addTestBlocks();
     generateMesh();
@@ -37,16 +37,19 @@ void Chunk::addTestBlocks() {
                 if (y >= 8) {
                     type = AIR;
                 }
-                else if (x == 0 || z == 0 || x == 15 || z == 15) {
-                    type = ERROR;
-                }
+                // else if (x == 0 || z == 0 || x == 15 || z == 15) {
+                //     type = ERROR;
+                // }
                 else if (y == 0) {
                     type = BEDROCK;
-                } else if (y < 4) {
+                }
+                else if (y < 4) {
                     type = STONE;
-                } else if (y < 7) {
+                }
+                else if (y < 7) {
                     type = DIRT;
-                } else {
+                }
+                else {
                     type = GRASS;
                 }
 

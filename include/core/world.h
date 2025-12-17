@@ -9,9 +9,9 @@ class World {
 private:
     Light _sun {
     glm::vec3 {0.0f, 255.0f, 0.0f},
-    glm::vec3 {0.2f, 0.2f, 0.2f},
-     glm::vec3(0.5f, 0.5f, 0.5f),
-    glm::vec3(1.0f, 1.0f, 1.0f)
+    glm::vec3 {0.1f, 0.1f, 0.1f},
+     glm::vec3(0.3f, 0.3f, 0.3f),
+    glm::vec3(0.6f, 0.6f, 0.6f)
     };
 public:
     std::pmr::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks;

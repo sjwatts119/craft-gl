@@ -5,6 +5,8 @@
 #include <iostream>
 
 #include "shader.h"
+#include "shaderManager.h"
+#include "textureManager.h"
 #include "core/player.h"
 #include "core/coordinate.h"
 #include "geometry/block.h"
@@ -20,8 +22,8 @@
 
 class RenderManager {
 private:
-    Shader _blockShader{"../shader/block/vertex.glsl", "../shader/block/fragment.glsl"};
-    Shader _crosshairShader{"../shader/crosshair/vertex.glsl", "../shader/crosshair/fragment.glsl"};
+    ShaderManager _shaderManager;
+    TextureManager _textureManager;
 
     std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
 

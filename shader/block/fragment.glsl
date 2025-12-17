@@ -9,9 +9,15 @@ struct LightStruct {
 
 in vec3 FragPosition;
 in vec3 Normal;
+in vec2 TexCoords;
 in LightStruct Sun;
 flat in int BlockType;
 flat in int IsHighlighted;
+
+uniform sampler2D uBedrockTexture;
+uniform sampler2D uDirtTexture;
+uniform sampler2D uStoneTexture;
+uniform sampler2D uGrassTexture;
 
 out vec4 FragColour;
 
@@ -37,19 +43,19 @@ vec4 darken(vec4 colour) {
 vec4 colourFromBlockType() {
     // Grass
     if (BlockType == 1) {
-        return vec4(0.329f, 0.831f, 0.329f, 1.0f);
+        return texture(uGrassTexture, TexCoords);
     }
     // Dirt
     else if (BlockType == 2) {
-        return vec4(0.561f, 0.294f, 0.0f, 1.0f);
+        return texture(uDirtTexture, TexCoords);
     }
     // Stone
     else if (BlockType == 3) {
-        return vec4(0.541, 0.541, 0.541, 1.0f);
+        return texture(uStoneTexture, TexCoords);
     }
     // Bedrock
     else if (BlockType == 4) {
-        return vec4(0.131, 0.131, 0.131, 1.0f);
+        return texture(uBedrockTexture, TexCoords);
     }
     // Error
     else if (BlockType == 5) {

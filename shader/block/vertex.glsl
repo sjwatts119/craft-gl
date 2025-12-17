@@ -9,8 +9,9 @@ struct LightStruct {
 
 layout (location = 0) in vec3 lPosition;
 layout (location = 1) in vec3 lNormal;
-layout (location = 2) in int lBlockType;
-layout (location = 3) in int lIsHighlighted;
+layout (location = 2) in vec2 lTexCoords;
+layout (location = 3) in int lBlockType;
+layout (location = 4) in int lIsHighlighted;
 
 uniform mat4 uModelMatrix;
 uniform mat4 uViewMatrix;
@@ -19,6 +20,7 @@ uniform LightStruct uSun;
 
 out vec3 FragPosition;
 out vec3 Normal;
+out vec2 TexCoords;
 
 flat out int BlockType;
 flat out int IsHighlighted;
@@ -41,4 +43,5 @@ void main() {
     Normal = uniformlyScaleNormal(lNormal, uViewMatrix * uModelMatrix);
     BlockType = lBlockType;
     IsHighlighted = lIsHighlighted;
+    TexCoords = lTexCoords;
 }
