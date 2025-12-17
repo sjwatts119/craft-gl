@@ -42,15 +42,16 @@ class Player
     float _yaw = 0.0f;
     float _fov = 75.0f;
 
-    float mouseLastXPosition = 400;
-    float mouseLastYPosition = 300;
+    bool _firstMouseInput = true;
+    float _mouseLastXPosition = SCREEN_WIDTH / 2.0f;
+    float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
 
     bool _mouse1WasPressed = false;
     bool _mouse2WasPressed = false;
 
     float _reach = 5.0f;
 
-    glm::vec3 _position{-30.0f, 10.0f, 3.0f};
+    glm::vec3 _position{0.0f, 38.0f, 0.0f};
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
 

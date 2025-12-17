@@ -4,8 +4,8 @@
 
 class TextureManager {
 public:
-    Texture _bedrockTexture{"../asset/texture/block/bedrock.png", GL_RGBA, true};
-    Texture _dirtTexture{"../asset/texture/block/dirt.png", GL_RGBA, true};
-    Texture _stoneTexture{"../asset/texture/block/stone.png", GL_RGBA, true};
-    Texture _grassTexture{"../asset/texture/block/grass.png", GL_RGBA, true};
+    Texture _bedrockTexture{"../asset/texture/goodVibes/block/bedrock.png", GL_RGBA, true};
+    Texture _dirtTexture{"../asset/texture/goodVibes/block/dirt.png", GL_RGBA, true};
+    Texture _stoneTexture{"../asset/texture/goodVibes/block/stone.png", GL_RGBA, true};
+    Texture _grassTexture{"../asset/texture/goodVibes/block/grass.png", GL_RGBA, true};
 };

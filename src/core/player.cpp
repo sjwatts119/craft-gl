@@ -11,17 +11,23 @@ void Player::update(const Window* window) {
 
 void Player::processCursor(const Window* window) {
     double xPosition, yPosition;
-
     glfwGetCursorPos(window->getWindow(), &xPosition, &yPosition);
+
+    // Prevent jerky first frame from huge offset when user clicks in the window.
+    if (_firstMouseInput) {
+        _mouseLastXPosition = static_cast<float>(xPosition);
+        _mouseLastYPosition = static_cast<float>(yPosition);
+        _firstMouseInput = false;
+    }
 
     // Get the "amount" that the camera has moved since the last frame.
     // Order of operations is important as it "inverts" the input direction
-    const float xOffset = static_cast<float>(xPosition) - mouseLastXPosition;
-    const float yOffset = mouseLastYPosition - static_cast<float>(yPosition);
+    const float xOffset = static_cast<float>(xPosition) - _mouseLastXPosition;
+    const float yOffset = _mouseLastYPosition - static_cast<float>(yPosition);
 
     // Store the current mouse position to calculate the next frame's offset.
-    mouseLastXPosition = static_cast<float>(xPosition);
-    mouseLastYPosition = static_cast<float>(yPosition);
+    _mouseLastXPosition = static_cast<float>(xPosition);
+    _mouseLastYPosition = static_cast<float>(yPosition);
 
     aim(xOffset, yOffset);
 }
@@ -216,6 +222,7 @@ Block* Player::setAimingAtBlock() {
 
     std::vector<Coordinate> testableChunkCoordinates;
 
+    // Get current chunk and also surrounding chunks in 3 x 3 x 3 area
     for (int x = -1; x <= 1; x++) {
         for (int y = -1; y <= 1; y++) {
             for (int z = -1; z <= 1; z++) {
