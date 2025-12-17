@@ -8,12 +8,13 @@
 
 class World {
 private:
-    Light _sun {
-    glm::vec3 {0.0f, 255.0f, 0.0f},
-    glm::vec3 {0.2f, 0.2f, 0.2f},
-     glm::vec3(0.3f, 0.3f, 0.3f),
-    glm::vec3(0.6f, 0.6f, 0.6f)
+    Light _sun{
+        glm::vec3{0.0f, 255.0f, 0.0f},
+        glm::vec3{0.2f, 0.2f, 0.2f},
+        glm::vec3(0.3f, 0.3f, 0.3f),
+        glm::vec3(0.6f, 0.6f, 0.6f)
     };
+
 public:
     std::pmr::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks;
 
@@ -31,5 +32,5 @@ public:
 
     void update();
 
-    const Light& getSun() const;
+    const Light &getSun() const;
 };

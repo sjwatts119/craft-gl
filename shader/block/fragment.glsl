@@ -22,8 +22,8 @@ out vec4 FragColour;
     ERROR = -2,
     AIR = -1,
 
-    GRASS_TOP = 0,
-    GRASS_SIDE = 1,
+    GRASS_BLOCK_TOP = 0,
+    GRASS_BLOCK_SIDE = 1,
     DIRT = 2,
     STONE = 3,
     BEDROCK = 4,

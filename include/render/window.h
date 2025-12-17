@@ -15,7 +15,7 @@ private:
     float _deltaTime = 0.0f;
     float _lastFrame = 0.0f;
 
-    GLFWwindow* _window;
+    GLFWwindow *_window;
 
     void initWindow();
 
@@ -44,5 +44,5 @@ public:
 
     [[nodiscard]] float getDeltaTime() const;
 
-    [[nodiscard]] GLFWwindow* getWindow() const;
+    [[nodiscard]] GLFWwindow *getWindow() const;
 };

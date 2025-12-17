@@ -60,7 +60,7 @@ struct Coordinate {
     /**
      * Transform a coordinate from local coordinates to global coordinates (1, 0, 0) + localOffset(5, 0, 0) => (21, 0, 0)
      */
-    [[nodiscard]] Coordinate toGlobalFromChunk(const Coordinate& localOffset) const {
+    [[nodiscard]] Coordinate toGlobalFromChunk(const Coordinate &localOffset) const {
         return Coordinate{
             x * CHUNK_SIZE + localOffset.x,
             y * CHUNK_SIZE + localOffset.y,
@@ -84,7 +84,7 @@ struct Coordinate {
         return true;
     }
 
-    bool operator==(const Coordinate& coordinate) const {
+    bool operator==(const Coordinate &coordinate) const {
         return coordinate.x == x && coordinate.y == y && coordinate.z == z;
     }
 
@@ -146,7 +146,7 @@ struct Coordinate {
  * @see https://www.codegenes.net/blog/c-unordered-map-using-a-custom-class-type-as-the-key/
  */
 struct CoordinateHash {
-    size_t operator()(const Coordinate& coordinate) const {
+    size_t operator()(const Coordinate &coordinate) const {
         const size_t x = std::hash<int>{}(coordinate.x);
         const size_t y = std::hash<int>{}(coordinate.y);
         const size_t z = std::hash<int>{}(coordinate.z);

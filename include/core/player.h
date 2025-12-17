@@ -14,14 +14,12 @@
 #include "geometry/ray.h"
 #include "render/window.h"
 
-enum CameraMode
-{
+enum CameraMode {
     FREE,
     FPS,
 };
 
-enum CameraDirection
-{
+enum CameraDirection {
     FORWARD,
     RIGHT,
     LEFT,
@@ -30,8 +28,7 @@ enum CameraDirection
     DOWN,
 };
 
-class Player
-{
+class Player {
     CameraMode _mode;
 
     float _zoomSensitivity = 2.0f;
@@ -79,15 +76,16 @@ class Player
     void moveUp(float speed);
 
 public:
-    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world) {}
+    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world) {
+    }
 
-    void update(const Window* window);
+    void update(const Window *window);
 
-    void processCursor(const Window* window);
+    void processCursor(const Window *window);
 
-    void processMouse(const Window* window);
+    void processMouse(const Window *window);
 
-    void processKeyboard(const Window* window);
+    void processKeyboard(const Window *window);
 
     void setBasisVectors();
 
@@ -107,9 +105,9 @@ public:
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
 
-    [[nodiscard]] glm::mat4 getProjectionMatrix(const int& width, const int& height) const;
+    [[nodiscard]] glm::mat4 getProjectionMatrix(const int &width, const int &height) const;
 
-    [[nodiscard]] glm::mat4 getProjectionMatrix(const Window* window) const;
+    [[nodiscard]] glm::mat4 getProjectionMatrix(const Window *window) const;
 
     [[nodiscard]] float getFov() const;
 

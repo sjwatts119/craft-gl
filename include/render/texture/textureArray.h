@@ -15,6 +15,7 @@ private:
     bool _flip = false;
 
     unsigned int _id;
+
 public:
     TextureArray(std::vector<std::string> paths, int format, bool flip = false);
 

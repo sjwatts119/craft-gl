@@ -5,8 +5,8 @@
 #include <vector>
 
 enum class BlockTextureId : int {
-    GRASS_TOP = 0,
-    GRASS_SIDE = 1,
+    GRASS_BLOCK_TOP = 0,
+    GRASS_BLOCK_SIDE = 1,
     DIRT = 2,
     STONE = 3,
     BEDROCK = 4,
@@ -15,9 +15,9 @@ enum class BlockTextureId : int {
 };
 
 namespace BlockTextureList {
-    inline constexpr std::array<const char*, 6> TEXTURES = {
-        "../asset/texture/block/goodVibes/grass_top.png",
-        "../asset/texture/block/goodVibes/grass_side.png",
+    inline constexpr std::array<const char *, 6> TEXTURES = {
+        "../asset/texture/block/goodVibes/grass_block_top.png",
+        "../asset/texture/block/goodVibes/grass_block_side.png",
         "../asset/texture/block/goodVibes/dirt.png",
         "../asset/texture/block/goodVibes/stone.png",
         "../asset/texture/block/goodVibes/bedrock.png",
@@ -31,7 +31,7 @@ namespace BlockTextureList {
     inline std::vector<std::string> allPaths() {
         std::vector<std::string> paths;
         paths.reserve(TEXTURES.size());
-        for (const auto& path : TEXTURES) {
+        for (const auto &path: TEXTURES) {
             paths.emplace_back(path);
         }
         return paths;

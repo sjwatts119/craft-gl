@@ -9,16 +9,17 @@
 
 class ChunkMesh {
 private:
-    Chunk* _chunk;
+    Chunk *_chunk;
     bool _dirty = true;
+
 public:
     GLuint _vboId{};
     GLuint _vaoId{};
 
-    glm::ivec3 _highlightedBlockIndex {-1};
+    glm::ivec3 _highlightedBlockIndex{-1};
     std::vector<BlockData> _vertices;
 
-    explicit ChunkMesh(Chunk* chunk);
+    explicit ChunkMesh(Chunk *chunk);
 
     [[nodiscard]] bool isDirty() const;
 

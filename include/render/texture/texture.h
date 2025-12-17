@@ -16,8 +16,9 @@ private:
     bool _flip = false;
 
     unsigned int _id;
+
 public:
-    Texture(std::string  path, int format, bool flip = false);
+    Texture(std::string path, int format, bool flip = false);
 
     void setup();
 

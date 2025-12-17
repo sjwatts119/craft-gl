@@ -14,7 +14,9 @@ private:
 public:
     static constexpr float RAY_EPSILON = 0.0001f;
 
-    Ray(const glm::vec3 start, const glm::vec3 direction) : _start(start), _direction(direction), _inverseDirection(1.0f / direction) {}
+    Ray(const glm::vec3 start, const glm::vec3 direction) : _start(start), _direction(direction),
+                                                            _inverseDirection(1.0f / direction) {
+    }
 
     // -1.0f for no intersection
     static float distanceToAABB(const AABB &aabb, const Ray &ray) {
