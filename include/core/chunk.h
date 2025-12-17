@@ -32,7 +32,11 @@ public:
 
     [[nodiscard]] glm::mat4 worldToLocalMatrix() const;
 
-    void addTestBlocks();
+    void addTestBlocksBottom();
+
+    void addTestBlocksMiddle();
+
+    void addTestBlocksTop();
 
     void destroyBlock(Coordinate localCoordinate);
 };

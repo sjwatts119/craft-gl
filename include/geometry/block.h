@@ -22,6 +22,7 @@ class Block {
 private:
     BlockType _type;
     bool _highlighted;
+    bool _destructible;
 
 static constexpr std::array<VertexData, 6> TOP_VERTICES = {{
     {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f}, {0.0f, 1.0f}},

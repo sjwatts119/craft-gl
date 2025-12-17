@@ -7,15 +7,33 @@ World::World() {
 }
 
 void World::addTestChunks() {
-    for (int x = -8; x < 8; x++) {
-        for (int z = -8; z < 8; z++) {
-            const Coordinate coordinate {x, 0, z};
+    for (int x = -4; x < 4; x++) {
+        for (int y = 0; y < 3; y++) {
+            for (int z = -4; z < 4; z++) {
+                const Coordinate coordinate {x, y, z};
 
-            auto chunk = std::make_unique<Chunk>(coordinate);
+                auto chunk = std::make_unique<Chunk>(coordinate);
 
-            _chunks.emplace(coordinate, std::move(chunk));
+                switch (y) {
+                    case 0:
+                        chunk->addTestBlocksBottom();
+                        break;
+                    case 1:
+                        chunk->addTestBlocksMiddle();
+                        break;
+                    case 2:
+                        chunk->addTestBlocksTop();
+                        break;
+                    default:
+                        break;
+                }
 
-            std::cout << "added test chunk to world at localised position {x: " << x << " z: " << z << "}" << std::endl;
+                chunk->_mesh->markAsDirty();
+
+                _chunks.emplace(coordinate, std::move(chunk));
+
+                std::cout << "added test chunk to world at localised position {x: " << x << " y: " << y << " z: " << z << "}" << std::endl;
+            }
         }
     }
 }
@@ -51,9 +69,8 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
     Chunk& chunk = *chunkResult->second;
     const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
 
-    auto globalCoordinate = chunkCoordinate.toGlobalFromChunk(localCoordinate);
+    const auto globalCoordinate = chunkCoordinate.toGlobalFromChunk(localCoordinate);
     std::cout << "destroyed x: " << globalCoordinate.x << " y: " << globalCoordinate.y << " z: " << globalCoordinate.z << std::endl;
-
 
     chunk.destroyBlock(localCoordinate);
 }

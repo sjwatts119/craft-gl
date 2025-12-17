@@ -214,17 +214,15 @@ Block* Player::setAimingAtBlock() {
         return nullptr;
     }
 
-    const std::array<Coordinate, 9> testableChunkCoordinates {
-        Coordinate{playerChunkCoordinate.x, playerChunkCoordinate.y, playerChunkCoordinate.z},
-        Coordinate{playerChunkCoordinate.x+1, playerChunkCoordinate.y, playerChunkCoordinate.z},
-        Coordinate{playerChunkCoordinate.x-1, playerChunkCoordinate.y, playerChunkCoordinate.z},
-        Coordinate{playerChunkCoordinate.x, playerChunkCoordinate.y, playerChunkCoordinate.z+1},
-        Coordinate{playerChunkCoordinate.x, playerChunkCoordinate.y, playerChunkCoordinate.z-1},
-        Coordinate{playerChunkCoordinate.x-1, playerChunkCoordinate.y, playerChunkCoordinate.z-1},
-        Coordinate{playerChunkCoordinate.x-1, playerChunkCoordinate.y, playerChunkCoordinate.z+1},
-        Coordinate{playerChunkCoordinate.x+1, playerChunkCoordinate.y, playerChunkCoordinate.z-1},
-        Coordinate{playerChunkCoordinate.x+1, playerChunkCoordinate.y, playerChunkCoordinate.z+1},
-    };
+    std::vector<Coordinate> testableChunkCoordinates;
+
+    for (int x = -1; x <= 1; x++) {
+        for (int y = -1; y <= 1; y++) {
+            for (int z = -1; z <= 1; z++) {
+                testableChunkCoordinates.emplace_back(playerChunkCoordinate.x + x, playerChunkCoordinate.y + y, playerChunkCoordinate.z + z);
+            }
+        }
+    }
 
     const Ray ray {_position, _forward};
     Block* closestBlock = nullptr;

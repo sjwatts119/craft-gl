@@ -10,7 +10,7 @@ Chunk::Chunk(const Coordinate coordinate)
     _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toGlobalFromChunk(Coordinate{0, 0, 0}).toVec3());
     _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toGlobalFromChunk(Coordinate{0, 0, 0}).toVec3());
 
-    addTestBlocks();
+    // addTestBlocks();
     generateMesh();
 }
 
@@ -28,29 +28,16 @@ glm::mat4 Chunk::worldToLocalMatrix() const {
     return _worldToLocalMatrix;
 }
 
-void Chunk::addTestBlocks() {
+void Chunk::addTestBlocksBottom() {
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 BlockType type;
 
-                if (y >= 8) {
-                    type = AIR;
-                }
-                // else if (x == 0 || z == 0 || x == 15 || z == 15) {
-                //     type = ERROR;
-                // }
-                else if (y == 0) {
+                if (y == 0) {
                     type = BEDROCK;
-                }
-                else if (y < 4) {
+                } else {
                     type = STONE;
-                }
-                else if (y < 7) {
-                    type = DIRT;
-                }
-                else {
-                    type = GRASS;
                 }
 
                 _blocks[x][y][z] = Block{type};
@@ -58,7 +45,43 @@ void Chunk::addTestBlocks() {
         }
     }
 
-    std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
+    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
+}
+
+void Chunk::addTestBlocksMiddle() {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                BlockType type = STONE;
+
+                _blocks[x][y][z] = Block{type};
+            }
+        }
+    }
+
+    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
+}
+
+void Chunk::addTestBlocksTop() {
+    for (int x = 0; x < CHUNK_SIZE; x++) {
+        for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int z = 0; z < CHUNK_SIZE; z++) {
+                BlockType type;
+
+                if (y < 3) {
+                    type = DIRT;
+                } else if (y == 3) {
+                    type = GRASS;
+                } else {
+                    type = AIR;
+                }
+
+                _blocks[x][y][z] = Block{type};
+            }
+        }
+    }
+
+    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
 }
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {

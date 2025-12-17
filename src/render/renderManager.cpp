@@ -12,7 +12,7 @@ void RenderManager::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) {
+void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) const {
     _shaderManager._blockShader.use();
 
     _textureManager._bedrockTexture.use(GL_TEXTURE0);
@@ -53,14 +53,13 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
 
         _shaderManager._blockShader.setLight("uSun" , world->getSun());
 
-
         glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(chunk->_mesh->_vertices.size()));
     }
 
     glBindVertexArray(0);
 }
 
-void RenderManager::renderInterface(const Window *window, const World *world, const Interface *interface) {
+void RenderManager::renderInterface(const Window *window, const World *world, const Interface *interface) const {
     glBindVertexArray(interface->_crosshair._vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, interface->_crosshair._vboId);
@@ -85,7 +84,7 @@ void RenderManager::renderInterface(const Window *window, const World *world, co
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Player* player, const Window* window, const World* world, const Interface* interface) {
+void RenderManager::render(const Player* player, const Window* window, const World* world, const Interface* interface) const {
     renderBlocks(player, window, world);
 
     renderInterface(window, world, interface);

@@ -27,14 +27,14 @@ private:
 
     std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
 
-    void renderBlocks(const Player* player, const Window* window, const World* world);
+    void renderBlocks(const Player* player, const Window* window, const World* world) const;
 
-    void renderInterface(const Window *window, const World *world, const Interface *interface);
+    void renderInterface(const Window *window, const World *world, const Interface *interface) const;
 
 public:
     explicit RenderManager(const Window* window);
 
     static void clear();
 
-    void render(const Player* player, const Window* window, const World* world, const Interface* interface);
+    void render(const Player* player, const Window* window, const World* world, const Interface* interface) const;
 };
