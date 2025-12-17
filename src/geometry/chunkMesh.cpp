@@ -122,7 +122,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block.getType(),
+                            block.getTextureId(FACE_LEFT),
                             isHighlighted
                         };
 
@@ -138,7 +138,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block.getType(),
+                            block.getTextureId(FACE_RIGHT),
                             isHighlighted
                         };
 
@@ -154,7 +154,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block.getType(),
+                            block.getTextureId(FACE_BOTTOM),
                             isHighlighted
                         };
 
@@ -170,7 +170,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block.getType(),
+                            block.getTextureId(FACE_TOP),
                             isHighlighted
                         };
 
@@ -186,7 +186,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block.getType(),
+                            block.getTextureId(FACE_BACK),
                             isHighlighted
                         };
 
@@ -202,7 +202,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block.getType(),
+                            block.getTextureId(FACE_FRONT),
                             isHighlighted
                         };
 

@@ -50,6 +50,8 @@ void TextureArray::setup() {
         // iterate over the rest of the paths, read them in and upload them (starting from layer 1)
         for (size_t i = 1; i < _paths.size(); i++) {
 
+                std::cout << "Loading texture array layer " << i << " from path: " << _paths[i] << std::endl;
+
                 unsigned char* imageData = stbi_load(_paths[i].c_str(), &_width, &_height, &_channels, 0);
 
                 if (!imageData) {
@@ -59,7 +61,7 @@ void TextureArray::setup() {
                 }
 
                 // upload the image to the texture array at layer i
-                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, i, static_cast<GLsizei>(_width), static_cast<GLsizei>(_height), 1, _format, GL_UNSIGNED_BYTE, imageData);
+                glTexSubImage3D(GL_TEXTURE_2D_ARRAY, 0, 0, 0, static_cast<GLint>(i), static_cast<GLsizei>(_width), static_cast<GLsizei>(_height), 1, _format, GL_UNSIGNED_BYTE, imageData);
 
                 stbi_image_free(imageData);
         }
