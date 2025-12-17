@@ -10,20 +10,21 @@
 #include "render/vertexData.h"
 
 enum BlockType: int {
-    ERROR = -1,
-    AIR = 0,
-    GRASS = 1,
-    DIRT = 2,
-    STONE = 3,
-    BEDROCK = 4,
-    DIAMOND_BLOCK = 5
+    ERROR = -2,
+    AIR = -1,
+
+    GRASS = 0,
+    DIRT = 1,
+    STONE = 2,
+    BEDROCK = 3,
+    DIAMOND_BLOCK = 4
 };
 
 class Block {
 private:
     BlockType _type;
     bool _highlighted;
-    bool _destructible;
+    bool _destructible; // TODO : implement indestructible blocks
 
 static constexpr std::array<VertexData, 6> TOP_VERTICES = {{
     {{-0.5f,  0.5f, -0.5f}, {0.0f,  1.0f,  0.0f}, {0.0f, 1.0f}},

@@ -1,12 +1,22 @@
 #pragma once
 
 #include "texture.h"
+#include "textureArray.h"
 
 class TextureManager {
 public:
-    Texture _bedrockTexture{"../asset/texture/block/goodVibes/bedrock.png", GL_RGBA, true};
-    Texture _dirtTexture{"../asset/texture/block/goodVibes/dirt.png", GL_RGBA, true};
-    Texture _stoneTexture{"../asset/texture/block/goodVibes/stone.png", GL_RGBA, true};
-    Texture _grassTexture{"../asset/texture/block/goodVibes/grass.png", GL_RGBA, true};
-    Texture _diamondBlockTexture{"../asset/texture/block/goodVibes/diamond_block.png", GL_RGBA, true};
+    /**
+     * ORDER IS SENSITIVE, must match enum definition "BlockType" in block.h (from 0)
+     */
+    TextureArray _blockTextures{
+        {
+            "../asset/texture/block/goodVibes/grass.png",
+            "../asset/texture/block/goodVibes/dirt.png",
+            "../asset/texture/block/goodVibes/stone.png",
+            "../asset/texture/block/goodVibes/bedrock.png",
+            "../asset/texture/block/goodVibes/diamond_block.png",
+        },
+        GL_RGBA,
+        true
+    };
 };

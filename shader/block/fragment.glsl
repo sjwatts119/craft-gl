@@ -14,21 +14,19 @@ in LightStruct Sun;
 flat in int BlockType;
 flat in int IsHighlighted;
 
-uniform sampler2D uBedrockTexture;
-uniform sampler2D uDirtTexture;
-uniform sampler2D uStoneTexture;
-uniform sampler2D uGrassTexture;
-uniform sampler2D uDiamondBlockTexture;
+uniform sampler2DArray uBlockTextures;
 
 out vec4 FragColour;
 
 /*
-    ERROR = -1,
-    AIR = 0,
-    GRASS = 1,
-    DIRT = 2,
-    STONE = 3,
-    BEDROCK = 4,
+    ERROR = -2,
+    AIR = -1,
+
+    GRASS = 0,
+    DIRT = 1,
+    STONE = 2,
+    BEDROCK = 3,
+    DIAMOND_BLOCK = 4
 */
 
 vec4 darken(vec4 colour) {
@@ -43,32 +41,16 @@ vec4 darken(vec4 colour) {
 
 vec4 colourFromBlockType() {
     // Error
-    if (BlockType == -1) {
+    if (BlockType == -2) {
         return vec4(1.0f, 0.0f, 1.0f, 1.0f);
     }
-    // Grass
-    else if (BlockType == 1) {
-        return texture(uGrassTexture, TexCoords);
-    }
-    // Dirt
-    else if (BlockType == 2) {
-        return texture(uDirtTexture, TexCoords);
-    }
-    // Stone
-    else if (BlockType == 3) {
-        return texture(uStoneTexture, TexCoords);
-    }
-    // Bedrock
-    else if (BlockType == 4) {
-        return texture(uBedrockTexture, TexCoords);
-    }
-    else if (BlockType == 5) {
-        return texture(uDiamondBlockTexture, TexCoords);
-    }
     // Air
-    else {
+    else if (BlockType == -1) {
         return vec4(0.0f, 0.0f, 0.0f, 0.0f);
     }
+    else {
+        return texture(uBlockTextures, vec3(TexCoords, BlockType));
+    };
 }
 
 void main()
