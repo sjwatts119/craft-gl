@@ -10,12 +10,13 @@
 #include "render/vertexData.h"
 
 enum BlockType: int {
+    ERROR = -1,
     AIR = 0,
     GRASS = 1,
     DIRT = 2,
     STONE = 3,
     BEDROCK = 4,
-    ERROR = 5,
+    DIAMOND_BLOCK = 5
 };
 
 class Block {

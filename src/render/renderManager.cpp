@@ -19,11 +19,13 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
     _textureManager._dirtTexture.use(GL_TEXTURE1);
     _textureManager._stoneTexture.use(GL_TEXTURE2);
     _textureManager._grassTexture.use(GL_TEXTURE3);
+    _textureManager._diamondBlockTexture.use(GL_TEXTURE4);
 
     _shaderManager._blockShader.setInt("uBedrockTexture", 0);
     _shaderManager._blockShader.setInt("uDirtTexture", 1);
     _shaderManager._blockShader.setInt("uStoneTexture", 2);
     _shaderManager._blockShader.setInt("uGrassTexture", 3);
+    _shaderManager._blockShader.setInt("uDiamondBlockTexture", 4);
 
     for (auto& [chunkCoordinate, chunk]: world->_chunks) {
         glBindVertexArray(chunk->_mesh->_vaoId);

@@ -92,7 +92,7 @@ void Chunk::destroyBlock(const Coordinate localCoordinate) {
 }
 
 void Chunk::placeBlock(const Coordinate localCoordinate) {
-    const Block newBlock{GRASS};
+    const Block newBlock{DIAMOND_BLOCK};
 
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = newBlock;
 

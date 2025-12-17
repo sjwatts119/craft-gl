@@ -18,16 +18,17 @@ uniform sampler2D uBedrockTexture;
 uniform sampler2D uDirtTexture;
 uniform sampler2D uStoneTexture;
 uniform sampler2D uGrassTexture;
+uniform sampler2D uDiamondBlockTexture;
 
 out vec4 FragColour;
 
 /*
+    ERROR = -1,
     AIR = 0,
     GRASS = 1,
     DIRT = 2,
     STONE = 3,
     BEDROCK = 4,
-    ERROR = 5,
 */
 
 vec4 darken(vec4 colour) {
@@ -41,8 +42,12 @@ vec4 darken(vec4 colour) {
 }
 
 vec4 colourFromBlockType() {
+    // Error
+    if (BlockType == -1) {
+        return vec4(1.0f, 0.0f, 1.0f, 1.0f);
+    }
     // Grass
-    if (BlockType == 1) {
+    else if (BlockType == 1) {
         return texture(uGrassTexture, TexCoords);
     }
     // Dirt
@@ -57,9 +62,8 @@ vec4 colourFromBlockType() {
     else if (BlockType == 4) {
         return texture(uBedrockTexture, TexCoords);
     }
-    // Error
     else if (BlockType == 5) {
-        return vec4(1.0f, 0.0f, 1.0f, 1.0f);
+        return texture(uDiamondBlockTexture, TexCoords);
     }
     // Air
     else {
@@ -84,15 +88,15 @@ void main()
     vec4 diffuseLight = baseColour * (vec4(Sun.diffuse, 1.0f) * diffuseStrength);
 
     /** SPECULAR **/
-    float shininess = 5.0f;
-
-    // Get the direction from this fragment to the camera
-    vec3 cameraDirection = normalize(cameraPosition - FragPosition);
-    // Get the reflected direction from the fragment surface
-    vec3 reflectionDirection = reflect(-lightDirection, normal);
-    // How in-line this is with the current camera direction is the amount of specular strength.
-    float specularAmount = pow(max(dot(cameraDirection, reflectionDirection), 0.0f), shininess);
-    vec4 specularLight = specularAmount * baseColour;
+//    float shininess = 5.0f;
+//
+//    // Get the direction from this fragment to the camera
+//    vec3 cameraDirection = normalize(cameraPosition - FragPosition);
+//    // Get the reflected direction from the fragment surface
+//    vec3 reflectionDirection = reflect(-lightDirection, normal);
+//    // How in-line this is with the current camera direction is the amount of specular strength.
+//    float specularAmount = pow(max(dot(cameraDirection, reflectionDirection), 0.0f), shininess);
+//    vec4 specularLight = specularAmount * baseColour;
 
     vec4 litColour = ambientLight + diffuseLight;
 
