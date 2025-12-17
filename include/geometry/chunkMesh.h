@@ -31,4 +31,8 @@ public:
     void setHighlightedBlock(glm::ivec3 index);
 
     void unsetHighlightedBlock();
+
+    void bind() const;
+
+    void render() const;
 };

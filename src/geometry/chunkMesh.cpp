@@ -224,3 +224,30 @@ void ChunkMesh::setHighlightedBlock(const glm::ivec3 index) {
 void ChunkMesh::unsetHighlightedBlock() {
     _highlightedBlockIndex = glm::ivec3{-1};
 }
+
+void ChunkMesh::bind() const {
+    glBindVertexArray(_chunk->_mesh->_vaoId);
+
+    glBindBuffer(GL_ARRAY_BUFFER, _chunk->_mesh->_vboId);
+
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _chunk->_mesh->_vertices.size()), _chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
+
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), static_cast<void *>(nullptr));
+    glEnableVertexAttribArray(0);
+
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
+    glEnableVertexAttribArray(1);
+
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
+    glEnableVertexAttribArray(2);
+
+    glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(8 * sizeof(float)));
+    glEnableVertexAttribArray(3);
+
+    glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((8 * sizeof(float)) + sizeof(int)));
+    glEnableVertexAttribArray(4);
+}
+
+void ChunkMesh::render() const {
+    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_chunk->_mesh->_vertices.size()));
+}

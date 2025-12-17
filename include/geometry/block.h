@@ -9,7 +9,7 @@
 #include "AABB.h"
 #include "core/coordinate.h"
 #include "material/blockTextureList.h"
-#include "render/vertexData.h"
+#include "render/buffer/vertexData.h"
 #include "geometry/blockFace.h"
 
 enum BlockType: int {

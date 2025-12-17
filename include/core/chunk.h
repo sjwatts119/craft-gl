@@ -51,4 +51,6 @@ public:
     void destroyBlock(Coordinate localCoordinate);
 
     void placeBlock(Coordinate localCoordinate);
+
+    void bind();
 };

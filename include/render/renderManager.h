@@ -4,9 +4,9 @@
 #include <unordered_map>
 #include <iostream>
 
-#include "shader.h"
-#include "shaderManager.h"
-#include "textureManager.h"
+#include "shader/shader.h"
+#include "shader/shaderManager.h"
+#include "texture/textureManager.h"
 #include "core/player.h"
 #include "core/coordinate.h"
 #include "geometry/block.h"
@@ -14,7 +14,7 @@
 #include "core/coordinate.h"
 #include "core/interface.h"
 #include "glad/glad.h"
-#include "render/shader.h"
+#include "render/shader/shader.h"
 #include "render/buffer/crosshairData.h"
 #include "core/world.h"
 #include "core/interface.h"
@@ -29,7 +29,7 @@ private:
 
     void renderBlocks(const Player* player, const Window* window, const World* world) const;
 
-    void renderInterface(const Window *window, const World *world, const Interface *interface) const;
+    void renderInterface(const Window *window, const Interface *interface) const;
 
 public:
     explicit RenderManager(const Window* window);
