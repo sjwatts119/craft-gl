@@ -33,6 +33,7 @@ void Player::processCursor(const Window* window) {
 }
 
 void Player::processMouse(const Window* window) {
+    /** Left mouse button **/
     const bool mouse1IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
 
     // Prevent holding down the button
@@ -41,6 +42,16 @@ void Player::processMouse(const Window* window) {
     }
 
     _mouse1WasPressed = mouse1IsPressed;
+
+    /** Right mouse button **/
+    const bool mouse2IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS;
+
+    // Prevent holding down the button
+    if (mouse2IsPressed && !_mouse2WasPressed) {
+        placeBlock();
+    }
+
+    _mouse2WasPressed = mouse2IsPressed;
 }
 
 void Player::processKeyboard(const Window* window) {
@@ -193,14 +204,28 @@ void Player::destroyHighlightedBlock() const {
     _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
 }
 
+void Player::placeBlock() const {
+    if (_highlightedBlockWorldCoordinate == std::nullopt || _highlightedBlockFace == std::nullopt) {
+        return;
+    }
+
+    _world->placeBlock(_highlightedBlockWorldCoordinate.value(), _highlightedBlockFace.value());
+}
+
+
 void Player::clearAimingAtBlock() {
-    if (_highlightedBlockWorldCoordinate == std::nullopt) {
+    // player is not aiming at a block
+    if (_highlightedBlockWorldCoordinate == std::nullopt || _highlightedBlockFace == std::nullopt) {
+        _highlightedBlockFace = std::nullopt;
         return;
     }
 
     const auto chunk = _world->_chunks.find(_highlightedBlockWorldCoordinate.value().toChunkFromWorld());
 
+    // chunk is out of bounds or not found
     if (chunk == _world->_chunks.end()) {
+        _highlightedBlockWorldCoordinate = std::nullopt;
+        _highlightedBlockFace = std::nullopt;
         return;
     }
 
@@ -208,6 +233,7 @@ void Player::clearAimingAtBlock() {
     chunk->second->_mesh->markAsDirty();
 
     _highlightedBlockWorldCoordinate = std::nullopt;
+    _highlightedBlockFace = std::nullopt;
 }
 
 Block* Player::setAimingAtBlock() {
@@ -233,6 +259,7 @@ Block* Player::setAimingAtBlock() {
 
     const Ray ray {_position, _forward};
     Block* closestBlock = nullptr;
+    std::optional<BlockFace> hitFace;
     float closestDistance = std::numeric_limits<float>::max();
     glm::ivec3 highlightedBlockIndex{-1};
 
@@ -298,6 +325,7 @@ Block* Player::setAimingAtBlock() {
                     highlightedBlockIndex = {x, y, z};
                     aimedAtChunk = testableChunk;
                     aimedAtChunkCoordinate = testableChunkCoordinate;
+                    hitFace = Ray::getHitFace(AABB::forBlock({Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}), ray, intersectionDistance);
                 }
             }
         }
@@ -312,9 +340,12 @@ Block* Player::setAimingAtBlock() {
 
     auto worldCoordinate = Coordinate{aimedAtChunkCoordinate.value().toGlobalFromChunk(Coordinate{highlightedBlockIndex})};
     _highlightedBlockWorldCoordinate = worldCoordinate;
+    _highlightedBlockFace = hitFace;
 
     aimedAtChunk->_mesh->setHighlightedBlock(highlightedBlockIndex);
     aimedAtChunk->_mesh->markAsDirty();
+
+    std::cout << "Aiming at face: " << hitFace.value() << " of block at world coordinate {x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << "}" << std::endl;
 
     return closestBlock;
 }

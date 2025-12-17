@@ -8,6 +8,7 @@
 #include "coordinate.h"
 #include "staticData.h"
 #include "geometry/block.h"
+#include "geometry/blockFace.h"
 
 class ChunkMesh;
 
@@ -18,7 +19,7 @@ private:
 public:
     Coordinate _coordinate;
 
-    glm::ivec3 highlightedBlock{-1};
+    glm::ivec3 _highlightedBlock{-1};
 
     Block _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
@@ -39,4 +40,6 @@ public:
     void addTestBlocksTop();
 
     void destroyBlock(Coordinate localCoordinate);
+
+    void placeBlock(Coordinate localCoordinate, BlockFace face);
 };

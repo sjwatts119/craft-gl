@@ -3,6 +3,8 @@
 #include <glm/glm.hpp>
 
 #include "staticData.h"
+#include "geometry/block.h"
+#include "geometry/blockFace.h"
 
 struct Coordinate {
     int x;
@@ -108,6 +110,25 @@ struct Coordinate {
 
     [[nodiscard]] Coordinate frontNeighbour() const {
         return Coordinate{x, y, z + 1};
+    }
+
+    [[nodiscard]] Coordinate moveTowards(const BlockFace face) const {
+        switch (face) {
+            case FACE_LEFT:
+                return leftNeighbour();
+            case FACE_RIGHT:
+                return rightNeighbour();
+            case FACE_BOTTOM:
+                return downNeighbour();
+            case FACE_TOP:
+                return upNeighbour();
+            case FACE_BACK:
+                return backNeighbour();
+            case FACE_FRONT:
+                return frontNeighbour();
+            default:
+                return *this;
+        }
     }
 
     [[nodiscard]] glm::vec3 toVec3() const {

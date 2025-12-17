@@ -1,5 +1,6 @@
 #include "core/chunk.h"
 
+#include "geometry/blockFace.h"
 #include "geometry/chunkMesh.h"
 
 Chunk::Chunk(const Coordinate coordinate)
@@ -86,6 +87,16 @@ void Chunk::addTestBlocksTop() {
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = Block{AIR};
+
+    _mesh->markAsDirty();
+}
+
+void Chunk::placeBlock(const Coordinate localCoordinate, const BlockFace face) {
+    const Block newBlock{GRASS};
+
+    const auto placeCoordinate = localCoordinate.moveTowards(face);
+
+    _blocks[placeCoordinate.x][placeCoordinate.y][placeCoordinate.z] = newBlock;
 
     _mesh->markAsDirty();
 }

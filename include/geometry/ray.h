@@ -3,6 +3,7 @@
 #include <glm/vec3.hpp>
 
 #include "AABB.h"
+#include "blockFace.h"
 
 class Ray {
 private:
@@ -11,6 +12,8 @@ private:
     glm::vec3 _inverseDirection;
 
 public:
+    static constexpr float RAY_EPSILON = 0.0001f;
+
     Ray(const glm::vec3 start, const glm::vec3 direction) : _start(start), _direction(direction), _inverseDirection(1.0f / direction) {}
 
     // -1.0f for no intersection
@@ -38,5 +41,30 @@ public:
         }
 
         return -1.0f;
+    }
+
+    static BlockFace getHitFace(const AABB &aabb, const Ray &ray, const float distance) {
+        const glm::vec3 hitPoint = ray._start + ray._direction * distance;
+
+        if (std::abs(hitPoint.y - aabb.maxY) < RAY_EPSILON) {
+            return FACE_TOP;
+        }
+        if (std::abs(hitPoint.y - aabb.minY) < RAY_EPSILON) {
+            return FACE_BOTTOM;
+        }
+        if (std::abs(hitPoint.z - aabb.minZ) < RAY_EPSILON) {
+            return FACE_BACK;
+        }
+        if (std::abs(hitPoint.z - aabb.maxZ) < RAY_EPSILON) {
+            return FACE_FRONT;
+        }
+        if (std::abs(hitPoint.x - aabb.minX) < RAY_EPSILON) {
+            return FACE_LEFT;
+        }
+        if (std::abs(hitPoint.x - aabb.maxX) < RAY_EPSILON) {
+            return FACE_RIGHT;
+        }
+
+        return FACE_NONE;
     }
 };

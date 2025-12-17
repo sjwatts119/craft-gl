@@ -3,6 +3,7 @@
 
 #include "chunk.h"
 #include "coordinate.h"
+#include "geometry/blockFace.h"
 #include "material/light.h"
 
 class World {
@@ -23,6 +24,8 @@ public:
     const Block *blockAt(Coordinate worldCoordinate) const;
 
     void destroyBlock(Coordinate worldCoordinate);
+
+    void placeBlock(Coordinate worldCoordinate, BlockFace face);
 
     void update();
 

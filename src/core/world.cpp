@@ -75,6 +75,24 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
     chunk.destroyBlock(localCoordinate);
 }
 
+void World::placeBlock(const Coordinate worldCoordinate, const BlockFace face) {
+    const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
+
+    const auto chunkResult = _chunks.find(chunkCoordinate);
+
+    if (chunkResult == _chunks.end()) {
+        return;
+    }
+
+    Chunk& chunk = *chunkResult->second;
+    const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
+
+    const auto globalCoordinate = chunkCoordinate.toGlobalFromChunk(localCoordinate);
+    std::cout << "placed block at x: " << globalCoordinate.x << " y: " << globalCoordinate.y << " z: " << globalCoordinate.z << std::endl;
+
+    chunk.placeBlock(localCoordinate, face);
+}
+
 void World::update() {
     // Regenerate chunk meshes for dirty chunks
     for (auto& [chunkCoordinate, chunk] : _chunks) {

@@ -64,6 +64,7 @@ class Player
     Block *_aimingAt;
 
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
+    std::optional<BlockFace> _highlightedBlockFace;
 
     void moveForward(float speed);
 
@@ -97,6 +98,8 @@ public:
     void zoom(float offset);
 
     void destroyHighlightedBlock() const;
+
+    void placeBlock() const;
 
     void clearAimingAtBlock();
 
