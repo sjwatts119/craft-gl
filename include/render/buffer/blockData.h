@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstddef>
+
 struct BlockData {
     float x, y, z;
     float normalX, normalY, normalZ;

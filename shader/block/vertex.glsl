@@ -27,10 +27,6 @@ flat out int IsHighlighted;
 
 out LightStruct Sun;
 
-vec3 uniformlyScaleNormal(vec3 normal, mat4 matrix) {
-    return mat3(transpose(inverse(matrix))) * normal;
-}
-
 void main() {
     // Transform frag position into camera space
     gl_Position = uProjectionMatrix * uViewMatrix * uModelMatrix * vec4(lPosition, 1.0f);
@@ -40,7 +36,7 @@ void main() {
     Sun.position = (uViewMatrix * vec4(Sun.position, 1.0f)).xyz;
 
     FragPosition = vec3(uViewMatrix * uModelMatrix * vec4(lPosition, 1.0f));
-    Normal = uniformlyScaleNormal(lNormal, uViewMatrix * uModelMatrix);
+    Normal = mat3(uViewMatrix * uModelMatrix) * lNormal;
     TexIndex = lTexIndex;
     IsHighlighted = lIsHighlighted;
     TexCoords = lTexCoords;

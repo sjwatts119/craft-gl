@@ -1,11 +1,18 @@
 #include <render/renderManager.h>
 
 RenderManager::RenderManager(const Window* window) {
+    // Viewport
     glViewport(0, 0, window->getWidth(), window->getHeight());
 
+    // Clear color (sky blue)
     glClearColor(0.43138f, 0.69412f, 1.0f, 1.0f);
 
+    // Depth testing
     glEnable(GL_DEPTH_TEST);
+
+    // Back-face culling
+    glCullFace(GL_BACK);
+    glEnable(GL_CULL_FACE);
 };
 
 void RenderManager::clear() {
