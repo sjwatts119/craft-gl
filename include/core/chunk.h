@@ -15,7 +15,6 @@ class ChunkMesh;
 class Chunk {
 private:
     glm::mat4 _localToWorldMatrix{};
-    glm::mat4 _worldToLocalMatrix{};
 
 public:
     Coordinate _coordinate;
@@ -39,8 +38,6 @@ public:
     void generateMesh() const;
 
     [[nodiscard]] glm::mat4 localToWorldMatrix() const;
-
-    [[nodiscard]] glm::mat4 worldToLocalMatrix() const;
 
     void addTestBlocksBottom();
 

@@ -285,7 +285,7 @@ void Player::setAimingAtBlock() {
             continue;
         }
 
-        const auto chunkWorldPosition = testableChunkCoordinate.toLocalFromChunk().toIVec3();
+        const auto chunkWorldPosition = testableChunkCoordinate.toWorldFromChunk().toIVec3();
 
         for (int x = 0; x < CHUNK_SIZE; x++) {
             for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -339,7 +339,7 @@ void Player::setAimingAtBlock() {
         return;
     }
 
-    auto worldCoordinate = Coordinate{aimedAtChunkCoordinate.value().toGlobalFromChunk(Coordinate{highlightedBlockIndex})};
+    auto worldCoordinate = aimedAtChunkCoordinate.value().toWorldFromChunk(Coordinate{highlightedBlockIndex});
 
     // don't regenerate the mesh if the highlighted block hasn't changed
     if (_highlightedBlockWorldCoordinate == worldCoordinate && _highlightedBlockFace == hitFace) {

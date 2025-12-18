@@ -94,7 +94,7 @@ const Block *World::blockAt(const Coordinate worldCoordinate) const {
     }
 
     const Chunk& chunk = *chunkResult->second;
-    const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
+    const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
     // std::cout << "World coordinate: {x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << "}" << std::endl;
     // std::cout << "Chunk coordinate: {x: " << chunkCoordinate.x << " y: " << chunkCoordinate.y << " z: " << chunkCoordinate.z << "}" << std::endl;
@@ -113,7 +113,7 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
     }
 
     Chunk& chunk = *chunkResult->second;
-    const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(worldCoordinate.toVec3(), 1.0f))};
+    const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
     std::cout << "destroyed x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << std::endl;
 
@@ -132,7 +132,7 @@ void World::placeBlock(const Coordinate worldCoordinate, const BlockFace face) {
     }
 
     Chunk& chunk = *chunkResult->second;
-    const Coordinate localCoordinate {xyz(chunk.worldToLocalMatrix() * glm::vec4(newWorldCoordinate.toVec3(), 1.0f))};
+    const auto localCoordinate = newWorldCoordinate.toLocalFromWorld();
 
     std::cout << "placed x: " << newWorldCoordinate.x << " y: " << newWorldCoordinate.y << " z: " << newWorldCoordinate.z << std::endl;
 

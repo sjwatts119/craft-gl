@@ -8,8 +8,7 @@ Chunk::Chunk(const Coordinate coordinate)
     _blocks{},
     _mesh{std::make_unique<ChunkMesh>(this)}
 {
-    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toGlobalFromChunk(Coordinate{0, 0, 0}).toVec3());
-    _worldToLocalMatrix = glm::translate(glm::mat4(1.0f), -_coordinate.toGlobalFromChunk(Coordinate{0, 0, 0}).toVec3());
+    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toWorldFromChunk().toVec3());
 
     // addTestBlocks();
     generateMesh();
@@ -23,10 +22,6 @@ void Chunk::generateMesh() const {
 
 glm::mat4 Chunk::localToWorldMatrix() const {
     return _localToWorldMatrix;
-}
-
-glm::mat4 Chunk::worldToLocalMatrix() const {
-    return _worldToLocalMatrix;
 }
 
 void Chunk::addTestBlocksBottom() {

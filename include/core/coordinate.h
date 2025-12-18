@@ -1,12 +1,25 @@
 #pragma once
+
 #include <string>
 #include <glm/glm.hpp>
+#include <ostream>
 
 #include "staticData.h"
 #include "geometry/block.h"
 #include "geometry/blockFace.h"
 
 struct Coordinate {
+private:
+    /**
+     * always get a positive mod result, positiveMod(-1, 16) => 15 or positiveMod(17, 16) => 1
+     *
+     * thanks https://stackoverflow.com/questions/14997165/fastest-way-to-get-a-positive-modulo-in-c-c
+     */
+    static int positiveMod(const int i, const int n) {
+        return (i % n + n) % n;
+    }
+
+public:
     int x;
     int y;
     int z;
@@ -36,7 +49,7 @@ struct Coordinate {
     }
 
     /**
-     * Transform a coordinate from world coordinates to chunk coordinates (16, 0, 0) => (1, 0, 0)
+     * Transform a coordinate from world coordinates to chunk coordinates (21, 0, 0) => (1, 0, 0)
      */
     [[nodiscard]] Coordinate toChunkFromWorld() const {
         return Coordinate{
@@ -47,9 +60,20 @@ struct Coordinate {
     }
 
     /**
-     * Transform a coordinate from chunk coordinates to local coordinates (1, 0, 0) => (16, 0, 0)
+     * Transform a coordinate from world coordinates to local coordinates (21, 0, 0) => (5, 0, 0)
      */
-    [[nodiscard]] Coordinate toLocalFromChunk() const {
+    [[nodiscard]] Coordinate toLocalFromWorld() const {
+        return Coordinate{
+            positiveMod(x, CHUNK_SIZE),
+            positiveMod(y, CHUNK_SIZE),
+            positiveMod(z, CHUNK_SIZE)
+        };
+    }
+
+    /**
+     * Transform a coordinate from chunk coordinates to world coordinates (1, 0, 0) => (16, 0, 0)
+     */
+    [[nodiscard]] Coordinate toWorldFromChunk() const {
         return Coordinate{
             x * CHUNK_SIZE,
             y * CHUNK_SIZE,
@@ -58,9 +82,9 @@ struct Coordinate {
     }
 
     /**
-     * Transform a coordinate from local coordinates to global coordinates (1, 0, 0) + localOffset(5, 0, 0) => (21, 0, 0)
+     * Transform a coordinate from chunk coordinates to world coordinates (1, 0, 0) + localOffset(5, 0, 0) => (21, 0, 0)
      */
-    [[nodiscard]] Coordinate toGlobalFromChunk(const Coordinate &localOffset) const {
+    [[nodiscard]] Coordinate toWorldFromChunk(const Coordinate &localOffset) const {
         return Coordinate{
             x * CHUNK_SIZE + localOffset.x,
             y * CHUNK_SIZE + localOffset.y,
@@ -139,6 +163,11 @@ struct Coordinate {
         return glm::ivec3{static_cast<int>(x), static_cast<int>(y), static_cast<int>(z)};
     }
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Coordinate &coordinate) {
+    os << "{x: " << coordinate.x << ", y: " << coordinate.y << ", z: " << coordinate.z << "}";
+    return os;
+}
 
 /**
  * unordered_map needs a way to hash the object used as a key, so we use this struct.
