@@ -12,17 +12,21 @@ class Crosshair {
 public:
     GLuint _vboId{};
     GLuint _vaoId{};
+    GLuint _eboId{};
 
-    static constexpr std::array<VertexData, 6> VERTICES = {
+    /**
+     * Counter-clockwise winding
+     */
+    static constexpr std::array<VertexData, 4> VERTICES = {
         {
             {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}, // bottom-left
             {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},  // bottom-right
             {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},   // top-right
-            {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},   // top-right
             {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},  // top-left
-            {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}  // bottom-left
         }
     };
+
+    static constexpr std::array<GLuint, 6> INDICES = {0, 1, 2, 2, 3, 0};
 
     Crosshair();
 

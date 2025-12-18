@@ -15,9 +15,11 @@ private:
 public:
     GLuint _vboId{};
     GLuint _vaoId{};
+    GLuint _eboId{};
 
     glm::ivec3 _highlightedBlockIndex{-1};
     std::vector<BlockData> _vertices;
+    std::vector<GLuint> _indices;
 
     explicit ChunkMesh(Chunk *chunk);
 

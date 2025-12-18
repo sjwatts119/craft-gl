@@ -3,6 +3,11 @@
 ChunkMesh::ChunkMesh(Chunk* chunk) : _chunk(chunk) {
     glGenVertexArrays(1, &_vaoId);
     glGenBuffers(1, &_vboId);
+    glGenBuffers(1, &_eboId);
+
+    // reserve for worst case scenario, might be worth being more conservative here later
+    _vertices.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 24);
+    _indices.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 36);
 }
 
 bool ChunkMesh::isDirty() const {
@@ -43,6 +48,7 @@ void ChunkMesh::markAsDirtyWithNeighbours() {
 
 void ChunkMesh::regenerateMesh() {
     _vertices.clear();
+    _indices.clear();
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -114,6 +120,12 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (shouldRenderLeftFace) {
+                    auto verticesCount = static_cast<GLuint>(_vertices.size());
+
+                    for (const auto index : Block::getLeftIndices()) {
+                        _indices.push_back(verticesCount + index);
+                    }
+
                     for (const auto&[position, normal, texCoords] : Block::getLeftVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
@@ -130,6 +142,11 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (shouldRenderRightFace) {
+                    auto verticesCount = static_cast<GLuint>(_vertices.size());
+                    for (const auto index : Block::getRightIndices()) {
+                        _indices.push_back(verticesCount + index);
+                    }
+
                     for (const auto&[position, normal, texCoords] : Block::getRightVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
@@ -146,6 +163,11 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (shouldRenderBottomFace) {
+                    auto verticesCount = static_cast<GLuint>(_vertices.size());
+                    for (const auto index : Block::getBottomIndices()) {
+                        _indices.push_back(verticesCount + index);
+                    }
+
                     for (const auto&[position, normal, texCoords] : Block::getBottomVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
@@ -162,6 +184,11 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (shouldRenderTopFace) {
+                    auto currentVertexCount = static_cast<GLuint>(_vertices.size());
+                    for (const auto index : Block::getTopIndices()) {
+                        _indices.push_back(currentVertexCount + index);
+                    }
+
                     for (const auto&[position, normal, texCoords] : Block::getTopVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
@@ -178,6 +205,11 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (shouldRenderBackFace) {
+                    auto currentVertexCount = static_cast<GLuint>(_vertices.size());
+                    for (const auto index : Block::getBackIndices()) {
+                        _indices.push_back(currentVertexCount + index);
+                    }
+
                     for (const auto&[position, normal, texCoords] : Block::getBackVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
@@ -194,6 +226,11 @@ void ChunkMesh::regenerateMesh() {
                 }
 
                 if (shouldRenderFrontFace) {
+                    auto currentVertexCount = static_cast<GLuint>(_vertices.size());
+                    for (const auto index : Block::getFrontIndices()) {
+                        _indices.push_back(currentVertexCount + index);
+                    }
+
                     for (const auto&[position, normal, texCoords] : Block::getFrontVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
@@ -229,8 +266,10 @@ void ChunkMesh::bind() const {
     glBindVertexArray(_chunk->_mesh->_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _chunk->_mesh->_vboId);
-
     glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _chunk->_mesh->_vertices.size()), _chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
+
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _chunk->_mesh->_eboId);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_chunk->_mesh->_indices.size() * sizeof(GLuint)), _chunk->_mesh->_indices.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), static_cast<void *>(nullptr));
     glEnableVertexAttribArray(0);
@@ -249,5 +288,5 @@ void ChunkMesh::bind() const {
 }
 
 void ChunkMesh::render() const {
-    glDrawArrays(GL_TRIANGLES, 0, static_cast<GLsizei>(_chunk->_mesh->_vertices.size()));
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
 }

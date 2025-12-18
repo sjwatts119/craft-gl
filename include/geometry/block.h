@@ -5,6 +5,7 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 
 #include "AABB.h"
 #include "core/coordinate.h"
@@ -32,86 +33,86 @@ private:
     /**
      * Counter-clockwise winding
      */
-    static constexpr std::array<VertexData, 6> TOP_VERTICES = {
+    static constexpr std::array<VertexData, 4> TOP_VERTICES = {
         {
             {{-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
             {{0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},   // bottom-right
             {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
-            {{0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
             {{-0.5f, 0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}, // top-left
-            {{-0.5f, 0.5f, 0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}}   // bottom-left
         }
     };
 
     /**
      * Counter-clockwise winding
      */
-    static constexpr std::array<VertexData, 6> BOTTOM_VERTICES = {
+    static constexpr std::array<VertexData, 4> BOTTOM_VERTICES = {
         {
             {{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}}, // bottom-left
             {{0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
             {{0.5f, -0.5f, 0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},   // top-right
-            {{0.5f, -0.5f, 0.5f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},   // top-right
             {{-0.5f, -0.5f, 0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
-            {{-0.5f, -0.5f, -0.5f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}}  // bottom-left
         }
     };
 
     /**
      * Counter-clockwise winding
      */
-    static constexpr std::array<VertexData, 6> BACK_VERTICES = {
+    static constexpr std::array<VertexData, 4> BACK_VERTICES = {
         {
             {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}},  // bottom-left
             {{-0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}}, // bottom-right
             {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},  // top-right
-            {{-0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},  // top-right
             {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},   // top-left
-            {{0.5f, -0.5f, -0.5f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}}   // bottom-left
         }
     };
 
     /**
      * Counter-clockwise winding
      */
-    static constexpr std::array<VertexData, 6> FRONT_VERTICES = {
+    static constexpr std::array<VertexData, 4> FRONT_VERTICES = {
         {
             {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}, // bottom-left
             {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},  // bottom-right
             {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},   // top-right
-            {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},   // top-right
             {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},  // top-left
-            {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}  // bottom-left
         }
     };
 
     /**
      * Counter-clockwise winding
      */
-    static constexpr std::array<VertexData, 6> LEFT_VERTICES = {
+    static constexpr std::array<VertexData, 4> LEFT_VERTICES = {
         {
             {{-0.5f, -0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}, // bottom-left
             {{-0.5f, -0.5f, 0.5f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
             {{-0.5f, 0.5f, 0.5f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},   // top-right
-            {{-0.5f, 0.5f, 0.5f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},   // top-right
             {{-0.5f, 0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
-            {{-0.5f, -0.5f, -0.5f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}  // bottom-left
         }
     };
 
     /**
      * Counter-clockwise winding
      */
-    static constexpr std::array<VertexData, 6> RIGHT_VERTICES = {
+    static constexpr std::array<VertexData, 4> RIGHT_VERTICES = {
         {
             {{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},   // bottom-left
             {{0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
             {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},   // top-right
-            {{0.5f, 0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},   // top-right
             {{0.5f, 0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},    // top-left
-            {{0.5f, -0.5f, 0.5f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}    // bottom-left
         }
     };
+
+    static constexpr std::array<GLuint, 6> TOP_INDICES = {0, 1, 2, 2, 3, 0};
+
+    static constexpr std::array<GLuint, 6> BOTTOM_INDICES = {0, 1, 2, 2, 3, 0};
+
+    static constexpr std::array<GLuint, 6> BACK_INDICES = {0, 1, 2, 2, 3, 0};
+
+    static constexpr std::array<GLuint, 6> FRONT_INDICES = {0, 1, 2, 2, 3, 0};
+
+    static constexpr std::array<GLuint, 6> LEFT_INDICES = {0, 1, 2, 2, 3, 0};
+
+    static constexpr std::array<GLuint, 6> RIGHT_INDICES = {0, 1, 2, 2, 3, 0};
 
 public:
     Block(const BlockType type = AIR) : _type(type), _highlighted(false) {
@@ -121,31 +122,55 @@ public:
 
     void setType(const BlockType &type);
 
-    static constexpr const std::array<VertexData, 6> &getTopVertices() {
+    static constexpr const std::array<VertexData, 4> &getTopVertices() {
         return TOP_VERTICES;
     }
 
-    static constexpr const std::array<VertexData, 6> &getBottomVertices() {
+    static constexpr const std::array<VertexData, 4> &getBottomVertices() {
         return BOTTOM_VERTICES;
     }
 
-    static constexpr const std::array<VertexData, 6> &getBackVertices() {
+    static constexpr const std::array<VertexData, 4> &getBackVertices() {
         return BACK_VERTICES;
     }
 
-    static constexpr const std::array<VertexData, 6> &getFrontVertices() {
+    static constexpr const std::array<VertexData, 4> &getFrontVertices() {
         return FRONT_VERTICES;
     }
 
-    static constexpr const std::array<VertexData, 6> &getLeftVertices() {
+    static constexpr const std::array<VertexData, 4> &getLeftVertices() {
         return LEFT_VERTICES;
     }
 
-    static constexpr const std::array<VertexData, 6> &getRightVertices() {
+    static constexpr const std::array<VertexData, 4> &getRightVertices() {
         return RIGHT_VERTICES;
     }
 
-    int getTextureId(const BlockFace face) const {
+    static constexpr const std::array<GLuint, 6> &getTopIndices() {
+        return TOP_INDICES;
+    }
+
+    static constexpr const std::array<GLuint, 6> &getBottomIndices() {
+        return BOTTOM_INDICES;
+    }
+
+    static constexpr const std::array<GLuint, 6> &getBackIndices() {
+        return BACK_INDICES;
+    }
+
+    static constexpr const std::array<GLuint, 6> &getFrontIndices() {
+        return FRONT_INDICES;
+    }
+
+    static constexpr const std::array<GLuint, 6> &getLeftIndices() {
+        return LEFT_INDICES;
+    }
+
+    static constexpr const std::array<GLuint, 6> &getRightIndices() {
+        return RIGHT_INDICES;
+    }
+
+    [[nodiscard]] int getTextureId(const BlockFace face) const {
         switch (_type) {
             case AIR:
                 return -1; // No texture
