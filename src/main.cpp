@@ -1,5 +1,6 @@
 #include <render/window.h>
 
+#include "core/debug.h"
 #include "core/interface.h"
 #include "core/player.h"
 #include "core/world.h"
@@ -13,6 +14,7 @@ int main() {
     World world;
     Player player{FPS, &world};
     const Interface interface;
+    Debug debug;
 
     while (window.open()) {
         window.update();
@@ -21,8 +23,9 @@ int main() {
 
         player.update(&window);
         world.update();
+        debug.update(&player, &world);
 
-        renderManager.render(&player, &window, &world, &interface);
+        renderManager.render(&player, &window, &world, &interface, &debug);
 
         Window::poll();
         window.swapBuffers();

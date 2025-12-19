@@ -48,7 +48,12 @@ class Player {
 
     float _reach = 10.0f;
 
+    float _height = 1.8f;
+    float _width = 0.6f;
+
+    // TODO: Detach camera position from player position, camera should be set from an offset on player position.
     glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 5.8f, 0.0f};
+    AABB _boundingBox;
 
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
 
@@ -76,8 +81,7 @@ class Player {
     void moveUp(float speed);
 
 public:
-    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world) {
-    }
+    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world) {}
 
     void update(const Window *window);
 
@@ -92,6 +96,8 @@ public:
     void aim(float yawOffset, float pitchOffset);
 
     void move(CameraDirection direction, float deltaTime);
+
+    void updateBoundingBox();
 
     void zoom(float offset);
 
@@ -112,4 +118,8 @@ public:
     [[nodiscard]] float getFov() const;
 
     [[nodiscard]] glm::vec3 getPosition() const;
+
+    [[nodiscard]] AABB getBoundingBox() const {
+        return _boundingBox;
+    }
 };

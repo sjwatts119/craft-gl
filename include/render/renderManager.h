@@ -12,6 +12,7 @@
 #include "geometry/block.h"
 #include "glm/vec3.hpp"
 #include "core/coordinate.h"
+#include "core/debug.h"
 #include "core/interface.h"
 #include "glad/glad.h"
 #include "render/shader/shader.h"
@@ -25,16 +26,16 @@ private:
     ShaderManager _shaderManager;
     TextureManager _textureManager;
 
-    std::pmr::unordered_map<Coordinate, Block, CoordinateHash> _blocks;
-
     void renderBlocks(const Player *player, const Window *window, const World *world) const;
 
     void renderInterface(const Window *window, const Interface *interface) const;
+
+    void renderDebug(const Player *player, const Window *window, const Debug *debug) const;
 
 public:
     explicit RenderManager(const Window *window);
 
     static void clear();
 
-    void render(const Player *player, const Window *window, const World *world, const Interface *interface) const;
+    void render(const Player *player, const Window *window, const World *world, const Interface *interface, const Debug *debug) const;
 };

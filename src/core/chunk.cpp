@@ -5,6 +5,7 @@
 
 Chunk::Chunk(const Coordinate coordinate)
   : _coordinate(coordinate),
+    _boundingBox(AABB::forChunk(coordinate)),
     _blocks{},
     _mesh{std::make_unique<ChunkMesh>(this)}
 {

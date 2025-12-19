@@ -1,5 +1,8 @@
 #include <render/renderManager.h>
 
+#include "core/debug.h"
+#include "render/buffer/aabbData.h"
+
 RenderManager::RenderManager(const Window* window) {
     // Viewport
     glViewport(0, 0, window->getWidth(), window->getHeight());
@@ -51,8 +54,23 @@ void RenderManager::renderInterface(const Window *window, const Interface *inter
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Player* player, const Window* window, const World* world, const Interface* interface) const {
+void RenderManager::renderDebug(const Player *player, const Window* window, const Debug *debug) const {
+    debug->bind();
+
+    _shaderManager._debugShader.use();
+
+    _shaderManager._debugShader.setMat4("uViewMatrix", player->getViewMatrix());
+    _shaderManager._debugShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
+
+    debug->render();
+
+    glBindVertexArray(0);
+}
+
+void RenderManager::render(const Player* player, const Window* window, const World* world, const Interface* interface, const Debug* debug) const {
     renderBlocks(player, window, world);
 
     renderInterface(window, interface);
+
+    renderDebug(player, window, debug);
 }

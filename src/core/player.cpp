@@ -5,6 +5,8 @@ void Player::update(const Window* window) {
     processMouse(window);
     processKeyboard(window);
 
+    updateBoundingBox();
+
     setAimingAtBlock();
 }
 
@@ -185,6 +187,20 @@ void Player::move(const CameraDirection direction, const float deltaTime)
 
     setBasisVectors();
 }
+
+void Player::updateBoundingBox() {
+    auto minX = _position.x - (_width / 2.0f);
+    auto maxX = _position.x + (_width / 2.0f);
+
+    auto minY = _position.y - _height;
+    auto maxY = _position.y;
+
+    auto minZ = _position.z - (_width / 2.0f);
+    auto maxZ = _position.z + (_width / 2.0f);
+
+    _boundingBox = {{minX, minY, minZ}, {maxX, maxY, maxZ}};
+}
+
 
 void Player::zoom(const float offset)
 {

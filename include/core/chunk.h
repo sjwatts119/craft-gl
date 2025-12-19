@@ -18,6 +18,7 @@ private:
 
 public:
     Coordinate _coordinate;
+    AABB _boundingBox{};
 
     glm::ivec3 _highlightedBlock{-1};
 
@@ -50,6 +51,4 @@ public:
     void destroyBlock(Coordinate localCoordinate);
 
     void placeBlock(Coordinate localCoordinate);
-
-    void bind();
 };
