@@ -32,8 +32,8 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
         chunk->_mesh->bind();
 
         _shaderManager._blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
-        _shaderManager._blockShader.setMat4("uViewMatrix", player->getViewMatrix());
-        _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
+        _shaderManager._blockShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
+        _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
 
         _shaderManager._blockShader.setLight("uSun" , world->getSun());
 
@@ -59,8 +59,8 @@ void RenderManager::renderDebug(const Player *player, const Window* window, cons
 
     _shaderManager._debugShader.use();
 
-    _shaderManager._debugShader.setMat4("uViewMatrix", player->getViewMatrix());
-    _shaderManager._debugShader.setMat4("uProjectionMatrix", player->getProjectionMatrix(window));
+    _shaderManager._debugShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
+    _shaderManager._debugShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
 
     debug->render();
 

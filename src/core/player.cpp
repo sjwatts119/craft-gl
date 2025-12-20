@@ -1,16 +1,21 @@
 #include <core/player.h>
 
+#include "core/direction.h"
+
 void Player::update(const Window* window) {
     processCursor(window);
     processMouse(window);
     processKeyboard(window);
 
-    setCameraPosition();
+    updateCameraPosition();
     updateBoundingBox();
 
     setAimingAtBlock();
 }
 
+/**
+ * INPUT HANDLING
+ */
 void Player::processCursor(const Window* window) {
     double xPosition, yPosition;
     glfwGetCursorPos(window->getWindow(), &xPosition, &yPosition);
@@ -62,163 +67,129 @@ void Player::processKeyboard(const Window* window) {
      */
     if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
     {
-        move(FORWARD, window->getDeltaTime());
+        move(Direction::FORWARD, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
     {
-        move(BACKWARD, window->getDeltaTime());
+        move(Direction::BACKWARD, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
     {
-        move(LEFT, window->getDeltaTime());
+        move(Direction::LEFT, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
     {
-        move(RIGHT, window->getDeltaTime());
+        move(Direction::RIGHT, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        move(UP, window->getDeltaTime());
+        move(Direction::UP, window->getDeltaTime());
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        move(DOWN, window->getDeltaTime());
+        move(Direction::DOWN, window->getDeltaTime());
     }
-}
-
-void Player::moveForward(const float speed) {
-    if (_mode == FREE) {
-        _playerPosition += speed * _forward;
-
-        return;
-    }
-
-    _playerPosition += glm::cross(_right, _worldUp) * speed;
-}
-
-void Player::moveBackward(const float speed) {
-    if (_mode == FREE) {
-        _playerPosition -= speed * _forward;
-
-        return;
-    }
-
-    _playerPosition -= glm::cross(_right, _worldUp) * speed;
-}
-
-void Player::moveLeft(const float speed) {
-    _playerPosition -= glm::cross(_forward, _up) * speed;
-}
-
-void Player::moveRight(const float speed) {
-    _playerPosition += glm::cross(_forward, _up) * speed;
-}
-
-void Player::moveUp(const float speed) {
-    _playerPosition += _worldUp * speed;
-}
-
-void Player::moveDown(const float speed) {
-    _playerPosition -= _worldUp * speed;
-}
-
-void Player::setBasisVectors()
-{
-    glm::vec3 newCameraDirection;
-
-    newCameraDirection.x = std::cos(glm::radians(_yaw)) * std::cos(glm::radians(_pitch));
-    newCameraDirection.y = std::sin(glm::radians(_pitch));
-    newCameraDirection.z = std::sin(glm::radians(_yaw)) * std::cos(glm::radians(_pitch));
-
-    _forward = newCameraDirection;
-    _right = glm::normalize(glm::cross(_worldUp, _forward));
-    _up = glm::cross(_forward, _right);
 }
 
 /**
- * Set the camera position based on the player position and height.
+ * MOVEMENT
  */
-void Player::setCameraPosition()
-{
-    _cameraPosition = _playerPosition + glm::vec3{0.0f, _eyeHeight, 0.0f};
+void Player::moveForward(const float speed) {
+    _position += glm::cross(_camera._right, _camera._worldUp) * speed;
 }
 
-void Player::aim(float yawOffset, float pitchOffset)
-{
-    // std::cout << "aimed with yawOffset: " << yawOffset << " and pitchOffset: " << pitchOffset << std::endl;
-
-    pitchOffset *= _aimSensitivity;
-    yawOffset *= _aimSensitivity;
-
-    // Constrain pitch to -89 -> 89
-    _pitch = std::clamp(_pitch + pitchOffset, -89.0f, 89.0f);
-    _yaw += yawOffset;
-
-    setBasisVectors(); // TODO maybe move to update after all input processed?
+void Player::moveBackward(const float speed) {
+    _position -= glm::cross(_camera._right, _camera._worldUp) * speed;
 }
 
-void Player::move(const CameraDirection direction, const float deltaTime)
+void Player::moveLeft(const float speed) {
+    _position -= glm::cross(_camera._forward, _camera._up) * speed;
+}
+
+void Player::moveRight(const float speed) {
+    _position += glm::cross(_camera._forward, _camera._up) * speed;
+}
+
+void Player::moveUp(const float speed) {
+    _position += _camera._worldUp * speed;
+}
+
+void Player::moveDown(const float speed) {
+    _position -= _camera._worldUp * speed;
+}
+
+void Player::move(const Direction direction, const float deltaTime)
 {
     // std::cout << "moved " << direction << std::endl;
     const float speed = _movementSensitivity * deltaTime;
 
     switch (direction)
     {
-        case FORWARD:
+        case Direction::FORWARD:
             moveForward(speed);
             break;
 
-        case BACKWARD:
+        case Direction::BACKWARD:
             moveBackward(speed);
             break;
 
-        case LEFT:
+        case Direction::LEFT:
             moveLeft(speed);
             break;
 
-        case RIGHT:
+        case Direction::RIGHT:
             moveRight(speed);
             break;
 
-        case UP:
+        case Direction::UP:
             moveUp(speed);
             break;
 
-        case DOWN:
+        case Direction::DOWN:
             moveDown(speed);
             break;
     }
-
-    setBasisVectors();
 }
 
 void Player::updateBoundingBox() {
-    auto minX = _playerPosition.x - (_playerWidth / 2.0f);
-    auto maxX = _playerPosition.x + (_playerWidth / 2.0f);
+    auto minX = _position.x - (_playerWidth / 2.0f);
+    auto maxX = _position.x + (_playerWidth / 2.0f);
 
-    auto minY = _playerPosition.y;
-    auto maxY = _playerPosition.y + _playerHeight;
+    auto minY = _position.y;
+    auto maxY = _position.y + _playerHeight;
 
-    auto minZ = _playerPosition.z - (_playerWidth / 2.0f);
-    auto maxZ = _playerPosition.z + (_playerWidth / 2.0f);
+    auto minZ = _position.z - (_playerWidth / 2.0f);
+    auto maxZ = _position.z + (_playerWidth / 2.0f);
 
     _boundingBox = {{minX, minY, minZ}, {maxX, maxY, maxZ}};
 }
 
-void Player::zoom(const float offset)
+/**
+ * AIMING & CAMERA
+ */
+void Player::updateCameraPosition()
 {
-    auto newFov = _fov - (offset * _zoomSensitivity);
-
-    newFov = std::clamp(newFov, 1.0f, 90.0f);
-
-    _fov = newFov;
+    _camera._position = _position + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 
+void Player::aim(float yawOffset, float pitchOffset)
+{
+    _camera.aim(yawOffset * _aimSensitivity, pitchOffset * _aimSensitivity);
+}
+
+void Player::zoom(const float offset)
+{
+    _camera.zoom(offset * _zoomSensitivity);
+}
+
+/**
+ * BLOCK INTERACTION
+ */
 void Player::destroyHighlightedBlock() const {
     if (_highlightedBlockWorldCoordinate == std::nullopt) {
         return;
@@ -261,7 +232,7 @@ void Player::clearAimingAtBlock() {
 }
 
 void Player::setAimingAtBlock() {
-    const auto playerChunkCoordinate = Coordinate{_playerPosition}.toChunkFromWorld();
+    const auto playerChunkCoordinate = Coordinate{_position}.toChunkFromWorld();
     const auto currentChunkAttempt = _world->_chunks.find(playerChunkCoordinate);
 
     if (currentChunkAttempt == _world->_chunks.end()) {
@@ -282,7 +253,7 @@ void Player::setAimingAtBlock() {
         }
     }
 
-    const Ray ray {_cameraPosition, _forward};
+    const Ray ray {_camera._position, _camera._forward};
     Block* closestBlock = nullptr;
     std::optional<BlockFace> hitFace;
     float closestDistance = std::numeric_limits<float>::max();
@@ -323,7 +294,7 @@ void Player::setAimingAtBlock() {
 
                     // block is at least a block away from player reach so early out
                     // we do more precise distance checks after ray-AABB intersection test
-                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _playerPosition) > _reach + 1) {
+                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _position) > _reach + 1) {
                         continue;
                     }
 
@@ -379,27 +350,10 @@ void Player::setAimingAtBlock() {
     aimedAtChunk->_mesh->markAsDirty();
 }
 
-glm::mat4 Player::getViewMatrix() const
-{
-    return glm::lookAt(_cameraPosition, _cameraPosition + _forward, _up);
-}
-
-glm::mat4 Player::getProjectionMatrix(const int& width, const int& height) const
-{
-    return glm::mat4(glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), 0.1f, 500.0f));
-}
-
-glm::mat4 Player::getProjectionMatrix(const Window* window) const
-{
-    return getProjectionMatrix(window->getWidth(), window->getHeight());
-}
-
-float Player::getFov() const
-{
-    return _fov;
-}
-
+/**
+ * GETTERS
+ */
 glm::vec3 Player::getPosition() const
 {
-    return _playerPosition;
+    return _position;
 }

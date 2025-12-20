@@ -3,6 +3,7 @@
 #include <iostream>
 #include <optional>
 
+#include "camera.h"
 #include "glm/fwd.hpp"
 #include "glm/vec3.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -14,29 +15,17 @@
 #include "geometry/ray.h"
 #include "render/window.h"
 
-enum CameraMode {
-    FREE,
-    FPS,
-};
-
-enum CameraDirection {
-    FORWARD,
-    RIGHT,
-    LEFT,
-    BACKWARD,
-    UP,
-    DOWN,
+enum class MovementMode {
+    FLYING,
+    WALKING,
 };
 
 class Player {
     /** Sensitivities and configurables **/
-    CameraMode _mode;
+    MovementMode _mode = MovementMode::FLYING;
     float _zoomSensitivity = 2.0f;
     float _aimSensitivity = 0.1f;
     float _movementSensitivity = 25.0f;
-    float _pitch = 0.0f;
-    float _yaw = 0.0f;
-    float _fov = 75.0f;
     float _reach = 10.0f;
 
     /** Dimensions **/
@@ -56,14 +45,9 @@ class Player {
     AABB _boundingBox;
 
     /** Position **/
-    glm::vec3 _playerPosition{0.0f, CHUNK_SIZE * 4 + 4.0f, 0.0f};
-    glm::vec3 _cameraPosition = _playerPosition + glm::vec3{0.0f, _eyeHeight, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 4.0f, 0.0f};
 
-    /** Basis vectors **/
-    glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
-    glm::vec3 _forward{0.0f, 0.0f, -1.0f};
-    glm::vec3 _up = _worldUp;
-    glm::vec3 _right{1.0f, 0.0f, 0.0f};
+    Camera _camera{_position + glm::vec3{0.0f, _eyeHeight, 0.0f}};
 
     World *_world;
 
@@ -79,8 +63,14 @@ class Player {
 
     void moveUp(float speed);
 
+    void updateCameraPosition();
+
+    void aim(float yawOffset, float pitchOffset);
+
+    void move(Direction direction, float deltaTime);
+
 public:
-    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world), _aimingAt(nullptr) {
+    explicit Player(World *world): _aimingAt(nullptr), _world(world) {
     }
 
     void update(const Window *window);
@@ -90,14 +80,6 @@ public:
     void processMouse(const Window *window);
 
     void processKeyboard(const Window *window);
-
-    void setBasisVectors();
-
-    void setCameraPosition();
-
-    void aim(float yawOffset, float pitchOffset);
-
-    void move(CameraDirection direction, float deltaTime);
 
     void updateBoundingBox();
 
@@ -111,17 +93,13 @@ public:
 
     void setAimingAtBlock();
 
-    [[nodiscard]] glm::mat4 getViewMatrix() const;
-
-    [[nodiscard]] glm::mat4 getProjectionMatrix(const int &width, const int &height) const;
-
-    [[nodiscard]] glm::mat4 getProjectionMatrix(const Window *window) const;
-
-    [[nodiscard]] float getFov() const;
-
     [[nodiscard]] glm::vec3 getPosition() const;
 
     [[nodiscard]] AABB getBoundingBox() const {
         return _boundingBox;
+    }
+
+    [[nodiscard]] const Camera *getCamera() const {
+        return &_camera;
     }
 };

@@ -12,7 +12,7 @@ int main() {
 
     const RenderManager renderManager{&window};
     World world;
-    Player player{FPS, &world};
+    Player player{&world};
     const Interface interface;
     Debug debug;
 
