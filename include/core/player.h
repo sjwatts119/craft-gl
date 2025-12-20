@@ -29,44 +29,43 @@ enum CameraDirection {
 };
 
 class Player {
+    /** Sensitivities and configurables **/
     CameraMode _mode;
-
     float _zoomSensitivity = 2.0f;
     float _aimSensitivity = 0.1f;
     float _movementSensitivity = 25.0f;
-
     float _pitch = 0.0f;
     float _yaw = 0.0f;
     float _fov = 75.0f;
+    float _reach = 10.0f;
 
+    /** Dimensions **/
+    float _playerHeight = 1.8f;
+    float _playerWidth = 0.6f;
+    float _eyeHeight = _playerHeight - 0.2f;
+
+    /** State **/
     bool _firstMouseInput = true;
     float _mouseLastXPosition = SCREEN_WIDTH / 2.0f;
     float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
-
     bool _mouse1WasPressed = false;
     bool _mouse2WasPressed = false;
-
-    float _reach = 10.0f;
-
-    float _height = 1.8f;
-    float _width = 0.6f;
-
-    // TODO: Detach camera position from player position, camera should be set from an offset on player position.
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 5.8f, 0.0f};
+    Block *_aimingAt;
+    std::optional<Coordinate> _highlightedBlockWorldCoordinate;
+    std::optional<BlockFace> _highlightedBlockFace;
     AABB _boundingBox;
 
-    glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
+    /** Position **/
+    glm::vec3 _playerPosition{0.0f, CHUNK_SIZE * 4 + 4.0f, 0.0f};
+    glm::vec3 _cameraPosition = _playerPosition + glm::vec3{0.0f, _eyeHeight, 0.0f};
 
+    /** Basis vectors **/
+    glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
     glm::vec3 _forward{0.0f, 0.0f, -1.0f};
     glm::vec3 _up = _worldUp;
     glm::vec3 _right{1.0f, 0.0f, 0.0f};
 
     World *_world;
-
-    Block *_aimingAt;
-
-    std::optional<Coordinate> _highlightedBlockWorldCoordinate;
-    std::optional<BlockFace> _highlightedBlockFace;
 
     void moveForward(float speed);
 
@@ -81,7 +80,8 @@ class Player {
     void moveUp(float speed);
 
 public:
-    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world) {}
+    explicit Player(const CameraMode mode, World *world) : _mode(mode), _world(world), _aimingAt(nullptr) {
+    }
 
     void update(const Window *window);
 
@@ -92,6 +92,8 @@ public:
     void processKeyboard(const Window *window);
 
     void setBasisVectors();
+
+    void setCameraPosition();
 
     void aim(float yawOffset, float pitchOffset);
 

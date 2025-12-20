@@ -28,7 +28,7 @@ class Block {
 private:
     BlockType _type;
     bool _highlighted;
-    bool _destructible; // TODO : implement indestructible blocks
+    bool _destructible = true; // TODO : implement indestructible blocks
 
     /**
      * Counter-clockwise winding
@@ -115,7 +115,7 @@ private:
     static constexpr std::array<GLuint, 6> RIGHT_INDICES = {0, 1, 2, 2, 3, 0};
 
 public:
-    Block(const BlockType type = AIR) : _type(type), _highlighted(false) {
+    explicit Block(const BlockType type = AIR) : _type(type), _highlighted(false) {
     };
 
     [[nodiscard]] BlockType getType() const;

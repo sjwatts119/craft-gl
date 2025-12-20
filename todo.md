@@ -1,3 +1,4 @@
-## Texture Array for Block Textures
-Instead of binding a single texture to a slot for the block shader, stack them into an array and, in the fragment shader, select the appropriate texture based on the block type.
-This is viable because all of our textures are 16x16 pixels, so they can be combined into a single texture array without wasting space.
+## Detach camera vs player positions.
+Player position is the bottom-most position of the player's hitbox.
+
+Camera position is updated based on the player position, offset up by player height

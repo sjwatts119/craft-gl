@@ -5,6 +5,7 @@ void Player::update(const Window* window) {
     processMouse(window);
     processKeyboard(window);
 
+    setCameraPosition();
     updateBoundingBox();
 
     setAimingAtBlock();
@@ -92,38 +93,38 @@ void Player::processKeyboard(const Window* window) {
 
 void Player::moveForward(const float speed) {
     if (_mode == FREE) {
-        _position += speed * _forward;
+        _playerPosition += speed * _forward;
 
         return;
     }
 
-    _position += glm::cross(_right, _worldUp) * speed;
+    _playerPosition += glm::cross(_right, _worldUp) * speed;
 }
 
 void Player::moveBackward(const float speed) {
     if (_mode == FREE) {
-        _position -= speed * _forward;
+        _playerPosition -= speed * _forward;
 
         return;
     }
 
-    _position -= glm::cross(_right, _worldUp) * speed;
+    _playerPosition -= glm::cross(_right, _worldUp) * speed;
 }
 
 void Player::moveLeft(const float speed) {
-    _position -= glm::cross(_forward, _up) * speed;
+    _playerPosition -= glm::cross(_forward, _up) * speed;
 }
 
 void Player::moveRight(const float speed) {
-    _position += glm::cross(_forward, _up) * speed;
+    _playerPosition += glm::cross(_forward, _up) * speed;
 }
 
 void Player::moveUp(const float speed) {
-    _position += _worldUp * speed;
+    _playerPosition += _worldUp * speed;
 }
 
 void Player::moveDown(const float speed) {
-    _position -= _worldUp * speed;
+    _playerPosition -= _worldUp * speed;
 }
 
 void Player::setBasisVectors()
@@ -139,6 +140,14 @@ void Player::setBasisVectors()
     _up = glm::cross(_forward, _right);
 }
 
+/**
+ * Set the camera position based on the player position and height.
+ */
+void Player::setCameraPosition()
+{
+    _cameraPosition = _playerPosition + glm::vec3{0.0f, _eyeHeight, 0.0f};
+}
+
 void Player::aim(float yawOffset, float pitchOffset)
 {
     // std::cout << "aimed with yawOffset: " << yawOffset << " and pitchOffset: " << pitchOffset << std::endl;
@@ -150,7 +159,7 @@ void Player::aim(float yawOffset, float pitchOffset)
     _pitch = std::clamp(_pitch + pitchOffset, -89.0f, 89.0f);
     _yaw += yawOffset;
 
-    setBasisVectors();
+    setBasisVectors(); // TODO maybe move to update after all input processed?
 }
 
 void Player::move(const CameraDirection direction, const float deltaTime)
@@ -189,18 +198,17 @@ void Player::move(const CameraDirection direction, const float deltaTime)
 }
 
 void Player::updateBoundingBox() {
-    auto minX = _position.x - (_width / 2.0f);
-    auto maxX = _position.x + (_width / 2.0f);
+    auto minX = _playerPosition.x - (_playerWidth / 2.0f);
+    auto maxX = _playerPosition.x + (_playerWidth / 2.0f);
 
-    auto minY = _position.y - _height;
-    auto maxY = _position.y;
+    auto minY = _playerPosition.y;
+    auto maxY = _playerPosition.y + _playerHeight;
 
-    auto minZ = _position.z - (_width / 2.0f);
-    auto maxZ = _position.z + (_width / 2.0f);
+    auto minZ = _playerPosition.z - (_playerWidth / 2.0f);
+    auto maxZ = _playerPosition.z + (_playerWidth / 2.0f);
 
     _boundingBox = {{minX, minY, minZ}, {maxX, maxY, maxZ}};
 }
-
 
 void Player::zoom(const float offset)
 {
@@ -253,7 +261,7 @@ void Player::clearAimingAtBlock() {
 }
 
 void Player::setAimingAtBlock() {
-    const auto playerChunkCoordinate = Coordinate{_position}.toChunkFromWorld();
+    const auto playerChunkCoordinate = Coordinate{_playerPosition}.toChunkFromWorld();
     const auto currentChunkAttempt = _world->_chunks.find(playerChunkCoordinate);
 
     if (currentChunkAttempt == _world->_chunks.end()) {
@@ -274,7 +282,7 @@ void Player::setAimingAtBlock() {
         }
     }
 
-    const Ray ray {_position, _forward};
+    const Ray ray {_cameraPosition, _forward};
     Block* closestBlock = nullptr;
     std::optional<BlockFace> hitFace;
     float closestDistance = std::numeric_limits<float>::max();
@@ -315,7 +323,7 @@ void Player::setAimingAtBlock() {
 
                     // block is at least a block away from player reach so early out
                     // we do more precise distance checks after ray-AABB intersection test
-                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _position) > _reach + 1) {
+                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _playerPosition) > _reach + 1) {
                         continue;
                     }
 
@@ -373,7 +381,7 @@ void Player::setAimingAtBlock() {
 
 glm::mat4 Player::getViewMatrix() const
 {
-    return glm::lookAt(_position, _position + _forward, _up);
+    return glm::lookAt(_cameraPosition, _cameraPosition + _forward, _up);
 }
 
 glm::mat4 Player::getProjectionMatrix(const int& width, const int& height) const
@@ -393,5 +401,5 @@ float Player::getFov() const
 
 glm::vec3 Player::getPosition() const
 {
-    return _position;
+    return _playerPosition;
 }
