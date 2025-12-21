@@ -93,8 +93,6 @@ public:
 
     void processKeyboard(const Window *window);
 
-    void applyZAcceleration(float deltaTime);
-
     void updateBoundingBox();
 
     void zoom(float offset);

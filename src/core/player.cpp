@@ -11,7 +11,6 @@ void Player::update(const Window* window) {
     applyGravity(window->getDeltaTime());
 
     applyAcceleration(window->getDeltaTime());
-    updateBoundingBox();
 
     updateCameraPosition();
     setAimingAtBlock();
@@ -206,7 +205,7 @@ void Player::updateCameraPosition()
     _camera._position = _position + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 
-void Player::aim(float yawOffset, float pitchOffset)
+void Player::aim(const float yawOffset, const float pitchOffset)
 {
     _camera.aim(yawOffset * _aimSensitivity, pitchOffset * _aimSensitivity);
 }
