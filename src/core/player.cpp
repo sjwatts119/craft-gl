@@ -10,17 +10,8 @@ void Player::update(const Window* window) {
     applyResistance(window->getDeltaTime());
     applyGravity(window->getDeltaTime());
 
-    applyYAcceleration(window->getDeltaTime());
+    applyAcceleration(window->getDeltaTime());
     updateBoundingBox();
-    applyYCollisions();
-
-    applyXAcceleration(window->getDeltaTime());
-    updateBoundingBox();
-    // applyXCollisions();
-
-    applyZAcceleration(window->getDeltaTime());
-    updateBoundingBox();
-    // applyZCollisions();
 
     updateCameraPosition();
     setAimingAtBlock();
@@ -144,96 +135,63 @@ void Player::applyGravity(const float deltaTime) {
     _momentum.y -= 0.5f;
 }
 
-void Player::applyYCollisions() {
-    // Distance to push out testable coordinate based on width.
+void Player::applyAcceleration(const float deltaTime) {
+    const auto oldPosition = _position;
+    const auto newPosition = _position + _momentum * deltaTime;
+
+    auto movementAABB = _boundingBox;
+    movementAABB.expandTo(newPosition);
+
+    // Distance to push out testable coordinates based on width/height of player
     const glm::vec3 push {_playerWidth / 2, _playerHeight / 2, _playerWidth / 2};
 
-    const auto from = Coordinate{glm::floor(_position - push)};
-    const auto to = Coordinate{glm::ceil(_position + push)};
+    const int minX = static_cast<int>(std::floor(movementAABB.minX - push.x));
+    const int maxX = static_cast<int>(std::floor(movementAABB.maxX + push.x));
+    const int minY = static_cast<int>(std::floor(movementAABB.minY - push.y));
+    const int maxY = static_cast<int>(std::floor(movementAABB.maxY + push.y));
+    const int minZ = static_cast<int>(std::floor(movementAABB.minZ - push.z));
+    const int maxZ = static_cast<int>(std::floor(movementAABB.maxZ + push.z));
 
-    std::vector<Coordinate>testableCoordinates;
+    // Get all blocks that could collide with the player during movement.
+    std::vector<AABB> testableBlocks;
+    for (int x = minX; x <= maxX; x++) {
+        for (int y = minY; y <= maxY; y++) {
+            for (int z = minZ; z <= maxZ; z++) {
+                auto block = _world->blockAt(Coordinate{x, y, z});
 
-    for (auto x = from.x; x <= to.x; x++) {
-        for (auto y = from.y; y <= to.y; y++) {
-            for (auto z = from.z; z <= to.z; z++) {
-                testableCoordinates.emplace_back(x, y, z);
+                if (block == nullptr || block->getType() == AIR) {
+                    continue;
+                }
+
+                testableBlocks.push_back(AABB::forBlock(Coordinate{x, y, z}));
             }
         }
     }
 
-    std::optional<AABB> closestTopCollision;
-    std::optional<AABB> closestBottomCollision;
+    float deltaX = newPosition.x - oldPosition.x;
+    float deltaY = newPosition.y - oldPosition.y;
+    float deltaZ = newPosition.z - oldPosition.z;
 
-    for (const auto& testableCoordinate : testableCoordinates) {
-        const Block* block = _world->blockAt(testableCoordinate);
-
-        // If block doesn't exist, or is air, skip
-        if (block == nullptr || block->getType() == AIR) {
-            continue;
-        }
-
-        auto blockAABB = AABB::forBlock(testableCoordinate);
-
-        // std::cout << "Testing player AABB: " << _boundingBox << " against block AABB: " << blockAABB << std::endl;
-
-        // If the player's bounding box doesn't intersect the block, skip
-        if (!blockAABB.intersects(_boundingBox)) {
-            continue;
-        }
-
-        // No collision found on y-axis.
-        if (blockAABB.minY > _boundingBox.maxY) {
-            continue;
-        }
-
-        const auto topOffset = blockAABB.maxY - _boundingBox.minY;
-        const auto bottomOffset = _boundingBox.maxY - blockAABB.minY;
-
-        auto isTopOfBlockCollision = topOffset < bottomOffset;
-
-        if (isTopOfBlockCollision) {
-            if (closestTopCollision == std::nullopt || blockAABB.maxY > closestTopCollision->maxY) {
-                closestTopCollision = blockAABB;
-            }
-        } else {
-            if (closestBottomCollision == std::nullopt || blockAABB.minY < closestBottomCollision->minY) {
-                closestBottomCollision = blockAABB;
-            }
-        }
+    // clip movement on X
+    for (const auto& testableBlock : testableBlocks) {
+        deltaX = _boundingBox.clipX(testableBlock, deltaX);
     }
+    _position.x += deltaX;
+    updateBoundingBox();
 
-    // Player has glitched into the terrain more than we know what do with lol
-    if (closestTopCollision.has_value() && closestBottomCollision.has_value()) {
-        std::cout << "Player stuck in terrain!" << std::endl;
-        return;
+    // clip movement on Y
+    for (const auto& testableBlock : testableBlocks) {
+        deltaY = _boundingBox.clipY(testableBlock, deltaY);
     }
+    _position.y += deltaY;
+    updateBoundingBox();
 
-    // Bottom of player colliding with top of block
-    if (closestTopCollision != std::nullopt) {
-        _position.y = closestTopCollision->maxY;
-        _momentum.y = std::max(0.0f, _momentum.y);
-
-        // TODO store grounded state
+    // clip movement on Z
+    for (const auto& testableBlock : testableBlocks) {
+        deltaZ = _boundingBox.clipZ(testableBlock, deltaZ);
     }
-
-    // Top of player colliding with bottom of block
-    if (closestBottomCollision != std::nullopt) {
-        _position.y = closestBottomCollision->minY - _playerHeight;
-        _momentum.y = std::min(0.0f, _momentum.y);
-    }
-
-}
-
-void Player::applyYAcceleration(const float deltaTime) {
-    _position.y += _momentum.y * deltaTime;
-}
-
-void Player::applyXAcceleration(const float deltaTime) {
-    _position.x += _momentum.x * deltaTime;
-}
-
-void Player::applyZAcceleration(const float deltaTime) {
-    _position.z += _momentum.z * deltaTime;
+    _position.z += deltaZ;
+    updateBoundingBox();
 }
 
 void Player::updateBoundingBox() {

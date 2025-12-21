@@ -67,17 +67,11 @@ class Player {
 
     void moveDown();
 
-    void applyCollisions();
-
     void applyAcceleration(float deltaTime);
 
     void applyResistance(float deltaTime);
 
     void applyGravity(float deltaTime);
-
-    void applyYCollisions();
-
-    void applyYAcceleration(float deltaTime);
 
     void applyXAcceleration(float deltaTime);
 

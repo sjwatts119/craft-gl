@@ -35,7 +35,23 @@ struct AABB {
 
     static AABB forPlayer(const glm::vec3 &position, float playerWidth, float playerHeight);
 
+    void expandTo(const glm::vec3 &point);
+
+    void include(AABB &other);
+
     [[nodiscard]] bool intersects(const AABB &aabb) const;
+
+    [[nodiscard]] bool intersectsX(const AABB &aabb) const;
+
+    [[nodiscard]] bool intersectsY(const AABB &aabb) const;
+
+    [[nodiscard]] bool intersectsZ(const AABB &aabb) const;
+
+    [[nodiscard]] float clipX(const AABB &against, float deltaX) const;
+
+    [[nodiscard]] float clipY(const AABB &against, float deltaY) const;
+
+    [[nodiscard]] float clipZ(const AABB &against, float deltaZ) const;
 };
 
 inline std::ostream &operator<<(std::ostream &os, const AABB &aabb) {
