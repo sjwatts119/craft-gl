@@ -58,7 +58,7 @@ void Debug::bind() const {
 }
 
 void Debug::render() const {
-    glDrawElements(GL_LINES, _indices.size(), GL_UNSIGNED_INT, nullptr);
+    glDrawElements(GL_LINES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
 }
 
 

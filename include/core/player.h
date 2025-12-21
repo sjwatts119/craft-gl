@@ -47,27 +47,45 @@ class Player {
     /** Position **/
     glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 4.0f, 0.0f};
 
+    glm::vec3 _momentum{0.0f};
+
+    const glm::vec3 _acceleration{2.0f, 2.0f, 2.0f};
+
+    float _groundResistance = 0.9f;
+
     Camera _camera{_position + glm::vec3{0.0f, _eyeHeight, 0.0f}};
 
     World *_world;
 
-    void moveForward(float speed);
+    void moveForward();
 
-    void moveBackward(float speed);
+    void moveBackward();
 
-    void moveLeft(float speed);
+    void moveLeft();
 
-    void moveRight(float speed);
+    void moveRight();
 
-    void moveDown(float speed);
+    void moveDown();
 
-    void moveUp(float speed);
+    void applyCollisions();
+
+    void applyAcceleration(float deltaTime);
+
+    void applyResistance(float deltaTime);
+
+    void applyGravity(float deltaTime);
+
+    void applyYCollisions();
+
+    void applyYAcceleration(float deltaTime);
+
+    void applyXAcceleration(float deltaTime);
+
+    void moveUp();
 
     void updateCameraPosition();
 
     void aim(float yawOffset, float pitchOffset);
-
-    void move(Direction direction, float deltaTime);
 
 public:
     explicit Player(World *world): _aimingAt(nullptr), _world(world) {
@@ -80,6 +98,8 @@ public:
     void processMouse(const Window *window);
 
     void processKeyboard(const Window *window);
+
+    void applyZAcceleration(float deltaTime);
 
     void updateBoundingBox();
 

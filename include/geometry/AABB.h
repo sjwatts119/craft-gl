@@ -3,6 +3,8 @@
 #include <glm/vec3.hpp>
 #include <ostream>
 
+#include "core/coordinate.h"
+
 struct Coordinate;
 
 struct AABB {
@@ -30,6 +32,10 @@ struct AABB {
     static AABB forBlock(const Coordinate &coord);
 
     static AABB forChunk(const Coordinate &chunkCoord);
+
+    static AABB forPlayer(const glm::vec3 &position, float playerWidth, float playerHeight);
+
+    [[nodiscard]] bool intersects(const AABB &aabb) const;
 };
 
 inline std::ostream &operator<<(std::ostream &os, const AABB &aabb) {

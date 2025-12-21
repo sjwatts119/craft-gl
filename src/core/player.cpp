@@ -7,9 +7,22 @@ void Player::update(const Window* window) {
     processMouse(window);
     processKeyboard(window);
 
-    updateCameraPosition();
-    updateBoundingBox();
+    applyResistance(window->getDeltaTime());
+    applyGravity(window->getDeltaTime());
 
+    applyYAcceleration(window->getDeltaTime());
+    updateBoundingBox();
+    applyYCollisions();
+
+    applyXAcceleration(window->getDeltaTime());
+    updateBoundingBox();
+    // applyXCollisions();
+
+    applyZAcceleration(window->getDeltaTime());
+    updateBoundingBox();
+    // applyZCollisions();
+
+    updateCameraPosition();
     setAimingAtBlock();
 }
 
@@ -67,106 +80,164 @@ void Player::processKeyboard(const Window* window) {
      */
     if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
     {
-        move(Direction::FORWARD, window->getDeltaTime());
+        moveForward();
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
     {
-        move(Direction::BACKWARD, window->getDeltaTime());
+        moveBackward();
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
     {
-        move(Direction::LEFT, window->getDeltaTime());
+        moveLeft();
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
     {
-        move(Direction::RIGHT, window->getDeltaTime());
+        moveRight();
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        move(Direction::UP, window->getDeltaTime());
+        moveUp();
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        move(Direction::DOWN, window->getDeltaTime());
+        moveDown();
     }
 }
 
 /**
  * MOVEMENT
  */
-void Player::moveForward(const float speed) {
-    _position += glm::cross(_camera._right, _camera._worldUp) * speed;
+void Player::moveForward() {
+    _momentum += glm::cross(_camera._right, _camera._worldUp) * _acceleration;
 }
 
-void Player::moveBackward(const float speed) {
-    _position -= glm::cross(_camera._right, _camera._worldUp) * speed;
+void Player::moveBackward() {
+    _momentum -= glm::cross(_camera._right, _camera._worldUp) * _acceleration;
 }
 
-void Player::moveLeft(const float speed) {
-    _position -= glm::cross(_camera._forward, _camera._up) * speed;
+void Player::moveLeft() {
+    _momentum -= glm::cross(_camera._forward, _camera._up) * _acceleration;
 }
 
-void Player::moveRight(const float speed) {
-    _position += glm::cross(_camera._forward, _camera._up) * speed;
+void Player::moveRight() {
+    _momentum += glm::cross(_camera._forward, _camera._up) * _acceleration;
 }
 
-void Player::moveUp(const float speed) {
-    _position += _camera._worldUp * speed;
+void Player::moveUp() {
+    _momentum += _camera._worldUp  * _acceleration;
 }
 
-void Player::moveDown(const float speed) {
-    _position -= _camera._worldUp * speed;
+void Player::moveDown() {
+    _momentum -= _camera._worldUp  * _acceleration;
 }
 
-void Player::move(const Direction direction, const float deltaTime)
-{
-    // std::cout << "moved " << direction << std::endl;
-    const float speed = _movementSensitivity * deltaTime;
+void Player::applyResistance(const float deltaTime) {
+    _momentum *= _groundResistance;
+}
 
-    switch (direction)
-    {
-        case Direction::FORWARD:
-            moveForward(speed);
-            break;
+void Player::applyGravity(const float deltaTime) {
+    _momentum.y -= 0.5f;
+}
 
-        case Direction::BACKWARD:
-            moveBackward(speed);
-            break;
+void Player::applyYCollisions() {
+    // Distance to push out testable coordinate based on width.
+    const glm::vec3 push {_playerWidth / 2, _playerHeight / 2, _playerWidth / 2};
 
-        case Direction::LEFT:
-            moveLeft(speed);
-            break;
+    const auto from = Coordinate{glm::floor(_position - push)};
+    const auto to = Coordinate{glm::ceil(_position + push)};
 
-        case Direction::RIGHT:
-            moveRight(speed);
-            break;
+    std::vector<Coordinate>testableCoordinates;
 
-        case Direction::UP:
-            moveUp(speed);
-            break;
-
-        case Direction::DOWN:
-            moveDown(speed);
-            break;
+    for (auto x = from.x; x <= to.x; x++) {
+        for (auto y = from.y; y <= to.y; y++) {
+            for (auto z = from.z; z <= to.z; z++) {
+                testableCoordinates.emplace_back(x, y, z);
+            }
+        }
     }
+
+    std::optional<AABB> closestTopCollision;
+    std::optional<AABB> closestBottomCollision;
+
+    for (const auto& testableCoordinate : testableCoordinates) {
+        const Block* block = _world->blockAt(testableCoordinate);
+
+        // If block doesn't exist, or is air, skip
+        if (block == nullptr || block->getType() == AIR) {
+            continue;
+        }
+
+        auto blockAABB = AABB::forBlock(testableCoordinate);
+
+        // std::cout << "Testing player AABB: " << _boundingBox << " against block AABB: " << blockAABB << std::endl;
+
+        // If the player's bounding box doesn't intersect the block, skip
+        if (!blockAABB.intersects(_boundingBox)) {
+            continue;
+        }
+
+        // No collision found on y-axis.
+        if (blockAABB.minY > _boundingBox.maxY) {
+            continue;
+        }
+
+        const auto topOffset = blockAABB.maxY - _boundingBox.minY;
+        const auto bottomOffset = _boundingBox.maxY - blockAABB.minY;
+
+        auto isTopOfBlockCollision = topOffset < bottomOffset;
+
+        if (isTopOfBlockCollision) {
+            if (closestTopCollision == std::nullopt || blockAABB.maxY > closestTopCollision->maxY) {
+                closestTopCollision = blockAABB;
+            }
+        } else {
+            if (closestBottomCollision == std::nullopt || blockAABB.minY < closestBottomCollision->minY) {
+                closestBottomCollision = blockAABB;
+            }
+        }
+    }
+
+    // Player has glitched into the terrain more than we know what do with lol
+    if (closestTopCollision.has_value() && closestBottomCollision.has_value()) {
+        std::cout << "Player stuck in terrain!" << std::endl;
+        return;
+    }
+
+    // Bottom of player colliding with top of block
+    if (closestTopCollision != std::nullopt) {
+        _position.y = closestTopCollision->maxY;
+        _momentum.y = std::max(0.0f, _momentum.y);
+
+        // TODO store grounded state
+    }
+
+    // Top of player colliding with bottom of block
+    if (closestBottomCollision != std::nullopt) {
+        _position.y = closestBottomCollision->minY - _playerHeight;
+        _momentum.y = std::min(0.0f, _momentum.y);
+    }
+
+}
+
+void Player::applyYAcceleration(const float deltaTime) {
+    _position.y += _momentum.y * deltaTime;
+}
+
+void Player::applyXAcceleration(const float deltaTime) {
+    _position.x += _momentum.x * deltaTime;
+}
+
+void Player::applyZAcceleration(const float deltaTime) {
+    _position.z += _momentum.z * deltaTime;
 }
 
 void Player::updateBoundingBox() {
-    auto minX = _position.x - (_playerWidth / 2.0f);
-    auto maxX = _position.x + (_playerWidth / 2.0f);
-
-    auto minY = _position.y;
-    auto maxY = _position.y + _playerHeight;
-
-    auto minZ = _position.z - (_playerWidth / 2.0f);
-    auto maxZ = _position.z + (_playerWidth / 2.0f);
-
-    _boundingBox = {{minX, minY, minZ}, {maxX, maxY, maxZ}};
+    _boundingBox = AABB::forPlayer(_position, _playerWidth, _playerHeight);
 }
 
 /**
@@ -294,7 +365,8 @@ void Player::setAimingAtBlock() {
 
                     // block is at least a block away from player reach so early out
                     // we do more precise distance checks after ray-AABB intersection test
-                    if (glm::distance(static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)), _position) > _reach + 1) {
+                    auto blockCenter = static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)) + glm::vec3(0.5f);
+                    if (glm::distance(blockCenter, _position) > _reach + 1) {
                         continue;
                     }
 
