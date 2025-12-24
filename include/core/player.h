@@ -14,6 +14,7 @@
 #include "geometry/chunkMesh.h"
 #include "geometry/ray.h"
 #include "render/window.h"
+#include "core/direction.h"
 
 enum class MovementMode {
     FLYING,
@@ -43,15 +44,12 @@ class Player {
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
     std::optional<BlockFace> _highlightedBlockFace;
     AABB _boundingBox;
+    bool _grounded = false;
 
     /** Position **/
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 4.0f, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 4.0f + EPSILON, 0.0f};
 
     glm::vec3 _momentum{0.0f};
-
-    const glm::vec3 _acceleration{2.0f, 2.0f, 2.0f};
-
-    float _groundResistance = 0.9f;
 
     Camera _camera{_position + glm::vec3{0.0f, _eyeHeight, 0.0f}};
 
@@ -67,15 +65,19 @@ class Player {
 
     void moveDown();
 
-    void applyAcceleration(float deltaTime);
-
-    void applyResistance(float deltaTime);
-
-    void applyGravity(float deltaTime);
-
-    void applyXAcceleration(float deltaTime);
-
     void moveUp();
+
+    void jump();
+
+    void flyUp();
+
+    void applyResistance();
+
+    void applyGravity();
+
+    void capMomentum();
+
+    void applyMomentum(float deltaTime);
 
     void updateCameraPosition();
 

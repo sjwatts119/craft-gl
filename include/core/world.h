@@ -24,13 +24,13 @@ public:
 
     void referenceNeighbours();
 
-    const Block *blockAt(Coordinate worldCoordinate) const;
+    [[nodiscard]] const Block *blockAt(Coordinate worldCoordinate) const;
 
     void destroyBlock(Coordinate worldCoordinate);
 
-    void placeBlock(Coordinate worldCoordinate, BlockFace face);
+    void placeBlock(Coordinate worldCoordinate);
 
     void update();
 
-    const Light &getSun() const;
+    [[nodiscard]] const Light &getSun() const;
 };

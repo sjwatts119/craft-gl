@@ -120,21 +120,17 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
     chunk.destroyBlock(localCoordinate);
 }
 
-void World::placeBlock(const Coordinate worldCoordinate, const BlockFace face) {
-    // push the coordinate to the position of the new block
-    const auto newWorldCoordinate = worldCoordinate.moveTowards(face);
-
-    // get that chunk, it might not be in the same chunk as the block we are placing against
-    const auto chunkResult = _chunks.find(newWorldCoordinate.toChunkFromWorld());
+void World::placeBlock(const Coordinate worldCoordinate) {
+    const auto chunkResult = _chunks.find(worldCoordinate.toChunkFromWorld());
 
     if (chunkResult == _chunks.end()) {
         return;
     }
 
     Chunk& chunk = *chunkResult->second;
-    const auto localCoordinate = newWorldCoordinate.toLocalFromWorld();
+    const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
-    std::cout << "placed x: " << newWorldCoordinate.x << " y: " << newWorldCoordinate.y << " z: " << newWorldCoordinate.z << std::endl;
+    std::cout << "placed x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << std::endl;
 
     chunk.placeBlock(localCoordinate);
 }

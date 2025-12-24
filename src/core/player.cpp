@@ -1,19 +1,21 @@
 #include <core/player.h>
 
-#include "core/direction.h"
 
 void Player::update(const Window* window) {
     processCursor(window);
     processMouse(window);
     processKeyboard(window);
 
-    applyResistance(window->getDeltaTime());
-    applyGravity(window->getDeltaTime());
+    applyResistance();
+    applyGravity();
+    capMomentum();
 
-    applyAcceleration(window->getDeltaTime());
+    applyMomentum(window->getDeltaTime());
 
     updateCameraPosition();
     setAimingAtBlock();
+
+    std::cout << "Grounded: " << (_grounded ? "true" : "false") << std::endl;
 }
 
 /**
@@ -97,44 +99,77 @@ void Player::processKeyboard(const Window* window) {
     {
         moveDown();
     }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS) {
+        _mode = _mode == MovementMode::WALKING ? MovementMode::FLYING : MovementMode::WALKING;
+    }
 }
 
 /**
  * MOVEMENT
  */
 void Player::moveForward() {
-    _momentum += glm::cross(_camera._right, _camera._worldUp) * _acceleration;
+    _momentum += glm::cross(_camera._right, _camera._worldUp);
 }
 
 void Player::moveBackward() {
-    _momentum -= glm::cross(_camera._right, _camera._worldUp) * _acceleration;
+    _momentum -= glm::cross(_camera._right, _camera._worldUp);
 }
 
 void Player::moveLeft() {
-    _momentum -= glm::cross(_camera._forward, _camera._up) * _acceleration;
+    _momentum -= glm::cross(_camera._forward, _camera._up);
 }
 
 void Player::moveRight() {
-    _momentum += glm::cross(_camera._forward, _camera._up) * _acceleration;
+    _momentum += glm::cross(_camera._forward, _camera._up);
 }
 
 void Player::moveUp() {
-    _momentum += _camera._worldUp  * _acceleration;
+    _mode == MovementMode::FLYING ? flyUp() : jump();
+}
+
+void Player::jump() {
+    if (!_grounded) {
+        return;
+    }
+
+    _momentum.y = JUMP_VELOCITY;
+}
+
+void Player::flyUp() {
+    _momentum += _camera._worldUp;
 }
 
 void Player::moveDown() {
-    _momentum -= _camera._worldUp  * _acceleration;
+    _momentum -= _camera._worldUp;
 }
 
-void Player::applyResistance(const float deltaTime) {
-    _momentum *= _groundResistance;
+void Player::applyResistance() {
+    if (_mode == MovementMode::FLYING) {
+        _momentum *= AIR_FRICTION;
+
+        return;
+    }
+
+    _momentum.x *= GROUND_FRICTION;
+    _momentum.z *= GROUND_FRICTION;
 }
 
-void Player::applyGravity(const float deltaTime) {
-    _momentum.y -= 0.5f;
+void Player::applyGravity() {
+    if (_mode == MovementMode::FLYING) {
+        return;
+    }
+
+    _momentum.y -= GRAVITY;
 }
 
-void Player::applyAcceleration(const float deltaTime) {
+void Player::capMomentum() {
+    _momentum.x = std::clamp(_momentum.x, -MAX_HORIZONTAL_MOMENTUM, MAX_HORIZONTAL_MOMENTUM);
+    _momentum.y = std::clamp(_momentum.y, -MAX_VERTICAL_MOMENTUM, MAX_VERTICAL_MOMENTUM);
+    _momentum.z = std::clamp(_momentum.z, -MAX_HORIZONTAL_MOMENTUM, MAX_HORIZONTAL_MOMENTUM);
+}
+
+void Player::applyMomentum(const float deltaTime) {
     const auto oldPosition = _position;
     const auto newPosition = _position + _momentum * deltaTime;
 
@@ -170,6 +205,7 @@ void Player::applyAcceleration(const float deltaTime) {
     float deltaX = newPosition.x - oldPosition.x;
     float deltaY = newPosition.y - oldPosition.y;
     float deltaZ = newPosition.z - oldPosition.z;
+    float originalDeltaY = deltaY;
 
     // clip movement on X
     for (const auto& testableBlock : testableBlocks) {
@@ -183,6 +219,11 @@ void Player::applyAcceleration(const float deltaTime) {
         deltaY = _boundingBox.clipY(testableBlock, deltaY);
     }
     _position.y += deltaY;
+
+    _grounded = (originalDeltaY != deltaY && originalDeltaY < 0.0f);
+    if (_grounded) {
+        _momentum.y = 0.0f;
+    }
     updateBoundingBox();
 
     // clip movement on Z
@@ -231,7 +272,16 @@ void Player::placeBlock() const {
         return;
     }
 
-    _world->placeBlock(_highlightedBlockWorldCoordinate.value(), _highlightedBlockFace.value());
+    // push the coordinate to the position of the new block based on highlighted face
+    const auto newWorldCoordinate = _highlightedBlockWorldCoordinate.value().moveTowards(_highlightedBlockFace.value());
+
+    if (AABB::forBlock(newWorldCoordinate).intersects(_boundingBox)) {
+        std::cout << "Cannot place block inside player bounding box" << std::endl;
+
+        return;
+    }
+
+    _world->placeBlock(newWorldCoordinate);
 }
 
 

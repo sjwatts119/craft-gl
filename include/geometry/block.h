@@ -115,7 +115,7 @@ private:
     static constexpr std::array<GLuint, 6> RIGHT_INDICES = {0, 1, 2, 2, 3, 0};
 
 public:
-    explicit Block(const BlockType type = AIR) : _type(type), _highlighted(false) {
+    Block(const BlockType type = AIR) : _type(type), _highlighted(false) {
     };
 
     [[nodiscard]] BlockType getType() const;
