@@ -54,9 +54,8 @@ void ChunkMesh::regenerateMesh() {
         for (int y = 0; y < CHUNK_SIZE; y++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 auto block = _chunk->_blocks[x][y][z];
-                const auto type = block.getType();
 
-                if (type == AIR) {
+                if (block.getType() == AIR) {
                     continue;
                 }
 
@@ -263,13 +262,13 @@ void ChunkMesh::unsetHighlightedBlock() {
 }
 
 void ChunkMesh::bind() const {
-    glBindVertexArray(_chunk->_mesh->_vaoId);
+    glBindVertexArray(_vaoId);
 
-    glBindBuffer(GL_ARRAY_BUFFER, _chunk->_mesh->_vboId);
-    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _chunk->_mesh->_vertices.size()), _chunk->_mesh->_vertices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ARRAY_BUFFER, _vboId);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _vertices.size()), _vertices.data(), GL_STATIC_DRAW);
 
-    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _chunk->_mesh->_eboId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_chunk->_mesh->_indices.size() * sizeof(GLuint)), _chunk->_mesh->_indices.data(), GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _eboId);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_indices.size() * sizeof(GLuint)), _indices.data(), GL_STATIC_DRAW);
 
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), static_cast<void *>(nullptr));
     glEnableVertexAttribArray(0);

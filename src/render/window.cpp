@@ -2,6 +2,8 @@
 
 #include <utility>
 
+#include "core/staticData.h"
+
 Window::Window(
     const int width,
     const int height,
@@ -34,9 +36,13 @@ void Window::initWindow() {
 }
 
 void Window::updateDeltaTime() {
-    const auto currentFrame = static_cast<float>(glfwGetTime());
-    _deltaTime = currentFrame - _lastFrame;
-    _lastFrame = currentFrame;
+    const auto currentFrameElapsed = static_cast<float>(glfwGetTime());
+    _deltaTime = currentFrameElapsed - _sinceLastFrame;
+    _sinceLastFrame = currentFrameElapsed;
+}
+
+void Window::updateTickTime() {
+    _sinceLastTick += _deltaTime;
 }
 
 void Window::makeCurrent() const {
@@ -51,6 +57,13 @@ void Window::makeCurrent() const {
 
 void Window::update() {
     updateDeltaTime();
+    updateTickTime();
+
+    if (shouldTick()) {
+        tick();
+    } else {
+        _ticked = false;
+    }
 }
 
 void Window::poll() {
@@ -69,6 +82,19 @@ bool Window::open() const {
     return !glfwWindowShouldClose(_window);
 }
 
+void Window::tick() {
+    _sinceLastTick = 0.0f;
+    _ticked = true;
+}
+
+bool Window::shouldTick() const {
+    return _sinceLastTick >= TIME_PER_TICK;
+}
+
+bool Window::ticked() const {
+    return _ticked;
+}
+
 int Window::getWidth() const {
     return _width;
 }
@@ -83,6 +109,10 @@ float Window::getAspectRatio() const {
 
 float Window::getDeltaTime() const {
     return _deltaTime;
+}
+
+float Window::getTimeSinceLastTick() const {
+    return _sinceLastTick;
 }
 
 GLFWwindow* Window::getWindow() const {

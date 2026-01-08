@@ -13,7 +13,11 @@ private:
     std::string _title;
 
     float _deltaTime = 0.0f;
-    float _lastFrame = 0.0f;
+    float _sinceLastFrame = 0.0f;
+
+    int _tick = 0;
+    float _sinceLastTick = 0.0f;
+    bool _ticked = false;
 
     GLFWwindow *_window;
 
@@ -21,12 +25,20 @@ private:
 
     void updateDeltaTime();
 
+    void updateTickTime();
+
 public:
     Window(int width, int height, std::string title);
 
     void makeCurrent() const;
 
     void update();
+
+    void tick();
+
+    bool shouldTick() const;
+
+    bool ticked() const;
 
     static void poll();
 
@@ -43,6 +55,8 @@ public:
     [[nodiscard]] float getAspectRatio() const;
 
     [[nodiscard]] float getDeltaTime() const;
+
+    [[nodiscard]] float getTimeSinceLastTick() const;
 
     [[nodiscard]] GLFWwindow *getWindow() const;
 };

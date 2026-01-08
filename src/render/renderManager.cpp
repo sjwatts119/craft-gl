@@ -72,5 +72,5 @@ void RenderManager::render(const Player* player, const Window* window, const Wor
 
     renderInterface(window, interface);
 
-    renderDebug(player, window, debug);
+    // renderDebug(player, window, debug);
 }
