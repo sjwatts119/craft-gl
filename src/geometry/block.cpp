@@ -7,3 +7,11 @@ BlockType Block::getType() const {
 void Block::setType(const BlockType& type) {
     _type = type;
 }
+
+float Block::getSlipperinessFactor() const {
+    return _slipperiness;
+}
+
+void Block::setSlipperinessFactor(const float slipperiness) {
+    _slipperiness = slipperiness;
+}

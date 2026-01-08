@@ -48,6 +48,7 @@ class Player {
 
     /** Position **/
     glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 4.0f + EPSILON, 0.0f};
+    glm::vec3 _lastPosition = _position;
 
     glm::vec3 _momentum{0.0f};
 
@@ -55,21 +56,21 @@ class Player {
 
     World *_world;
 
-    void moveForward();
+    void moveForward(float accelerationMultiplier);
 
-    void moveBackward();
+    void moveBackward(float accelerationMultiplier);
 
-    void moveLeft();
+    void moveLeft(float accelerationMultiplier);
 
-    void moveRight();
+    void moveRight(float accelerationMultiplier);
 
-    void moveDown();
+    void moveDown(float accelerationMultiplier);
 
-    void moveUp();
+    void moveUp(float accelerationMultiplier);
 
     void jump();
 
-    void flyUp();
+    void flyUp(float accelerationMultiplier);
 
     void applyResistance();
 
@@ -77,9 +78,11 @@ class Player {
 
     void capMomentum();
 
-    void applyMomentum(float deltaTime);
+    void updateLastPosition();
 
-    void updateCameraPosition();
+    void updatePosition();
+
+    void updateCameraPosition(const Window* window);
 
     void aim(float yawOffset, float pitchOffset);
 
@@ -89,9 +92,13 @@ public:
 
     void update(const Window *window);
 
+    void tick(const Window *window);
+
     void processCursor(const Window *window);
 
     void processMouse(const Window *window);
+
+    [[nodiscard]] float slipperinessAccelerationMultiplier() const;
 
     void processKeyboard(const Window *window);
 

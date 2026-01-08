@@ -29,6 +29,7 @@ private:
     BlockType _type;
     bool _highlighted;
     bool _destructible = true; // TODO : implement indestructible blocks
+    float _slipperiness = 0.6f;
 
     /**
      * Counter-clockwise winding
@@ -121,6 +122,10 @@ public:
     [[nodiscard]] BlockType getType() const;
 
     void setType(const BlockType &type);
+
+    [[nodiscard]] float getSlipperinessFactor() const;
+
+    void setSlipperinessFactor(float slipperiness);
 
     static constexpr const std::array<VertexData, 4> &getTopVertices() {
         return TOP_VERTICES;

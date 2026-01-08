@@ -1,21 +1,23 @@
 #include <core/player.h>
 
-
 void Player::update(const Window* window) {
     processCursor(window);
+
+    updateCameraPosition(window);
+    setAimingAtBlock();
+}
+
+void Player::tick(const Window* window) {
+    updateLastPosition();
+
     processMouse(window);
     processKeyboard(window);
 
-    applyResistance();
+    updatePosition();
+
     applyGravity();
+    applyResistance();
     capMomentum();
-
-    applyMomentum(window->getDeltaTime());
-
-    updateCameraPosition();
-    setAimingAtBlock();
-
-    std::cout << "Grounded: " << (_grounded ? "true" : "false") << std::endl;
 }
 
 /**
@@ -66,38 +68,58 @@ void Player::processMouse(const Window* window) {
     _mouse2WasPressed = mouse2IsPressed;
 }
 
+float Player::slipperinessAccelerationMultiplier() const {
+    if (_mode == MovementMode::FLYING) {
+        return WALKING_ACCELERATION;
+    }
+
+    if (!_grounded) {
+        return NO_SLIPPERINESS;
+    }
+
+    constexpr auto baseSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
+    constexpr auto currentSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
+
+    constexpr auto accelerationRatio = (baseSlip / currentSlip);
+    constexpr auto accelerationMultiplier = accelerationRatio * accelerationRatio * accelerationRatio;
+
+    return WALKING_ACCELERATION * accelerationMultiplier;
+}
+
 void Player::processKeyboard(const Window* window) {
+    const auto accelerationMultiplier = slipperinessAccelerationMultiplier();
+
     /**
      * Movement
      */
     if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
     {
-        moveForward();
+        moveForward(accelerationMultiplier);
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
     {
-        moveBackward();
+        moveBackward(accelerationMultiplier);
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
     {
-        moveLeft();
+        moveLeft(accelerationMultiplier);
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
     {
-        moveRight();
+        moveRight(accelerationMultiplier);
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
     {
-        moveUp();
+        moveUp(accelerationMultiplier);
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
-        moveDown();
+        moveDown(accelerationMultiplier);
     }
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS) {
@@ -108,24 +130,24 @@ void Player::processKeyboard(const Window* window) {
 /**
  * MOVEMENT
  */
-void Player::moveForward() {
-    _momentum += glm::cross(_camera._right, _camera._worldUp);
+void Player::moveForward(const float accelerationMultiplier) {
+    _momentum += glm::cross(_camera._right, _camera._worldUp) * accelerationMultiplier;
 }
 
-void Player::moveBackward() {
-    _momentum -= glm::cross(_camera._right, _camera._worldUp);
+void Player::moveBackward(const float accelerationMultiplier) {
+    _momentum -= glm::cross(_camera._right, _camera._worldUp) * accelerationMultiplier;
 }
 
-void Player::moveLeft() {
-    _momentum -= glm::cross(_camera._forward, _camera._up);
+void Player::moveLeft(const float accelerationMultiplier) {
+    _momentum -= glm::cross(_camera._forward, _camera._up) * accelerationMultiplier;
 }
 
-void Player::moveRight() {
-    _momentum += glm::cross(_camera._forward, _camera._up);
+void Player::moveRight(const float accelerationMultiplier) {
+    _momentum += glm::cross(_camera._forward, _camera._up) * accelerationMultiplier;
 }
 
-void Player::moveUp() {
-    _mode == MovementMode::FLYING ? flyUp() : jump();
+void Player::moveUp(const float accelerationMultiplier) {
+    _mode == MovementMode::FLYING ? flyUp(accelerationMultiplier) : jump();
 }
 
 void Player::jump() {
@@ -136,23 +158,16 @@ void Player::jump() {
     _momentum.y = JUMP_VELOCITY;
 }
 
-void Player::flyUp() {
-    _momentum += _camera._worldUp;
+void Player::flyUp(const float accelerationMultiplier) {
+    _momentum += _camera._worldUp * accelerationMultiplier;
 }
 
-void Player::moveDown() {
-    _momentum -= _camera._worldUp;
-}
-
-void Player::applyResistance() {
-    if (_mode == MovementMode::FLYING) {
-        _momentum *= AIR_FRICTION;
-
+void Player::moveDown(const float accelerationMultiplier) {
+    if (_mode != MovementMode::FLYING) {
         return;
     }
 
-    _momentum.x *= GROUND_FRICTION;
-    _momentum.z *= GROUND_FRICTION;
+    _momentum -= _camera._worldUp * accelerationMultiplier;
 }
 
 void Player::applyGravity() {
@@ -160,18 +175,52 @@ void Player::applyGravity() {
         return;
     }
 
-    _momentum.y -= GRAVITY;
+    _momentum.y -= GRAVITY_ACCELERATION;
+}
+
+void Player::applyResistance() {
+    if (_mode == MovementMode::FLYING) {
+        _momentum *= FLYING_RESISTANCE_FACTOR;
+
+        return;
+    }
+
+    const auto horizontalResistanceFactor = _grounded
+        ? BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR
+        : HORIZONTAL_RESISTANCE_FACTOR;
+
+    _momentum.x *= horizontalResistanceFactor;
+    _momentum.y *= VERTICAL_RESISTANCE_FACTOR;
+    _momentum.z *= horizontalResistanceFactor;
 }
 
 void Player::capMomentum() {
-    _momentum.x = std::clamp(_momentum.x, -MAX_HORIZONTAL_MOMENTUM, MAX_HORIZONTAL_MOMENTUM);
-    _momentum.y = std::clamp(_momentum.y, -MAX_VERTICAL_MOMENTUM, MAX_VERTICAL_MOMENTUM);
-    _momentum.z = std::clamp(_momentum.z, -MAX_HORIZONTAL_MOMENTUM, MAX_HORIZONTAL_MOMENTUM);
+    _momentum = glm::clamp(
+        _momentum,
+        -glm::vec3{TERMINAL_VELOCITY},
+        glm::vec3{TERMINAL_VELOCITY}
+    );
+
+    if (std::abs(_momentum.x) < EPSILON) {
+        _momentum.x = 0.0f;
+    }
+
+    if (std::abs(_momentum.y) < EPSILON) {
+        _momentum.y = 0.0f;
+    }
+
+    if (std::abs(_momentum.z) < EPSILON) {
+        _momentum.z = 0.0f;
+    }
 }
 
-void Player::applyMomentum(const float deltaTime) {
+void Player::updateLastPosition() {
+    _lastPosition = _position;
+}
+
+void Player::updatePosition() {
     const auto oldPosition = _position;
-    const auto newPosition = _position + _momentum * deltaTime;
+    const auto newPosition = _position + _momentum;
 
     auto movementAABB = _boundingBox;
     movementAABB.expandTo(newPosition);
@@ -241,9 +290,10 @@ void Player::updateBoundingBox() {
 /**
  * AIMING & CAMERA
  */
-void Player::updateCameraPosition()
+void Player::updateCameraPosition(const Window* window)
 {
-    _camera._position = _position + glm::vec3{0.0f, _eyeHeight, 0.0f};
+    auto interpolationFactor = static_cast<float>(window->getTimeSinceLastTick()) / TIME_PER_TICK;
+    _camera._position = glm::mix(_lastPosition, _position, interpolationFactor) + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 
 void Player::aim(const float yawOffset, const float pitchOffset)

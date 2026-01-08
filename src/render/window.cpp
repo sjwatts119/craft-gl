@@ -83,7 +83,7 @@ bool Window::open() const {
 }
 
 void Window::tick() {
-    _sinceLastTick = 0.0f;
+    _sinceLastTick -= TIME_PER_TICK;
     _ticked = true;
 }
 

@@ -21,6 +21,10 @@ int main() {
 
         RenderManager::clear();
 
+        if (window.ticked()) {
+            player.tick(&window);
+        }
+
         player.update(&window);
         world.update();
         debug.update(&player, &world);

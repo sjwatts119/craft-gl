@@ -16,7 +16,7 @@ public:
     /** Euler Angles **/
     float _pitch = 0.0f;
     float _yaw = 0.0f;
-    float _fov = 75.0f;
+    float _fov = 110.0f;
 
     /** Basis Vectors **/
     glm::vec3 _worldUp{0.0f, 1.0f, 0.0f};
