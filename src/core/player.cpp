@@ -123,13 +123,17 @@ void Player::processKeyboard(const Window* window) {
         moveDown(accelerationMultiplier);
     }
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS) {
+    const auto mIsPressed = glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS;
+    if (mIsPressed && !_mWasPressed) {
         _mode = _mode == MovementMode::WALKING ? MovementMode::FLYING : MovementMode::WALKING;
     }
+    _mWasPressed = mIsPressed;
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_TAB) == GLFW_PRESS) {
+    const auto tabIsPressed = glfwGetKey(window->getWindow(), GLFW_KEY_TAB) == GLFW_PRESS;
+    if (tabIsPressed && !_tabWasPressed) {
         _debug = !_debug;
     }
+    _tabWasPressed = tabIsPressed;
 }
 
 /**
@@ -256,16 +260,19 @@ void Player::updatePosition() {
         }
     }
 
-    float deltaX = newPosition.x - oldPosition.x;
-    float deltaY = newPosition.y - oldPosition.y;
-    float deltaZ = newPosition.z - oldPosition.z;
-    float originalDeltaY = deltaY;
+    auto deltaX = newPosition.x - oldPosition.x;
+    auto deltaY = newPosition.y - oldPosition.y;
+    auto deltaZ = newPosition.z - oldPosition.z;
+    const auto originalDeltaX = deltaX;
+    const auto originalDeltaY = deltaY;
+    const auto originalDeltaZ = deltaZ;
 
     // clip movement on X
     for (const auto& testableBlock : testableBlocks) {
         deltaX = _boundingBox.clipX(testableBlock, deltaX);
     }
     _position.x += deltaX;
+    _momentum.x = (originalDeltaX != deltaX) ? 0.0f : _momentum.x;
     updateBoundingBox();
 
     // clip movement on Y
@@ -273,11 +280,8 @@ void Player::updatePosition() {
         deltaY = _boundingBox.clipY(testableBlock, deltaY);
     }
     _position.y += deltaY;
-
     _grounded = (originalDeltaY != deltaY && originalDeltaY < 0.0f);
-    if (_grounded) {
-        _momentum.y = 0.0f;
-    }
+    _momentum.y = (originalDeltaY != deltaY) ? 0.0f : _momentum.y;
     updateBoundingBox();
 
     // clip movement on Z
@@ -285,6 +289,7 @@ void Player::updatePosition() {
         deltaZ = _boundingBox.clipZ(testableBlock, deltaZ);
     }
     _position.z += deltaZ;
+    _momentum.z = (originalDeltaZ != deltaZ) ? 0.0f : _momentum.z;
     updateBoundingBox();
 }
 

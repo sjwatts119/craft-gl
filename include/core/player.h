@@ -38,8 +38,6 @@ class Player {
     bool _firstMouseInput = true;
     float _mouseLastXPosition = SCREEN_WIDTH / 2.0f;
     float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
-    bool _mouse1WasPressed = false;
-    bool _mouse2WasPressed = false;
     bool _debug = false;
 
     Block *_aimingAt;
@@ -47,6 +45,12 @@ class Player {
     std::optional<BlockFace> _highlightedBlockFace;
     AABB _boundingBox;
     bool _grounded = false;
+
+    /** Debounce States **/
+    bool _mouse1WasPressed = false;
+    bool _mouse2WasPressed = false;
+    bool _tabWasPressed = false;
+    bool _mWasPressed = false;
 
     /** Position **/
     glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 8.0f + EPSILON, 0.0f};
