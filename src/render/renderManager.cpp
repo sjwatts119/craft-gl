@@ -15,6 +15,8 @@ RenderManager::RenderManager(const Window* window) {
     // Back-face culling
     glCullFace(GL_BACK);
     glEnable(GL_CULL_FACE);
+
+    glLineWidth(3.0f);
 };
 
 void RenderManager::clear() {
@@ -71,5 +73,7 @@ void RenderManager::render(const Player* player, const Window* window, World* wo
 
     renderInterface(window, interface);
 
-    // renderDebug(player, window, debug);
+    if (player->getDebug()) {
+        renderDebug(player, window, debug);
+    }
 }

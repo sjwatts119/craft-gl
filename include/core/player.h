@@ -40,6 +40,8 @@ class Player {
     float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
     bool _mouse1WasPressed = false;
     bool _mouse2WasPressed = false;
+    bool _debug = false;
+
     Block *_aimingAt;
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
     std::optional<BlockFace> _highlightedBlockFace;
@@ -116,11 +118,9 @@ public:
 
     [[nodiscard]] glm::vec3 getPosition() const;
 
-    [[nodiscard]] AABB getBoundingBox() const {
-        return _boundingBox;
-    }
+    [[nodiscard]] AABB getBoundingBox() const;
 
-    [[nodiscard]] const Camera *getCamera() const {
-        return &_camera;
-    }
+    [[nodiscard]] const Camera *getCamera() const;
+
+    [[nodiscard]] bool getDebug() const;
 };

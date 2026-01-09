@@ -78,6 +78,7 @@ float Player::slipperinessAccelerationMultiplier() const {
     }
 
     constexpr auto baseSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
+    // TODO: get actual block slipperiness
     constexpr auto currentSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
 
     constexpr auto accelerationRatio = (baseSlip / currentSlip);
@@ -124,6 +125,10 @@ void Player::processKeyboard(const Window* window) {
 
     if (glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS) {
         _mode = _mode == MovementMode::WALKING ? MovementMode::FLYING : MovementMode::WALKING;
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_TAB) == GLFW_PRESS) {
+        _debug = !_debug;
     }
 }
 
@@ -485,4 +490,16 @@ void Player::setAimingAtBlock() {
 glm::vec3 Player::getPosition() const
 {
     return _position;
+}
+
+AABB Player::getBoundingBox() const {
+    return _boundingBox;
+}
+
+const Camera *Player::getCamera() const {
+    return &_camera;
+}
+
+bool Player::getDebug() const {
+    return _debug;
 }
