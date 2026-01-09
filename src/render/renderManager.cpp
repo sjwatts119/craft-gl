@@ -1,6 +1,6 @@
 #include <render/renderManager.h>
 
-#include "renderable/debug.h"
+#include "render/renderable/debug.h"
 
 RenderManager::RenderManager(const Window* window) {
     // Viewport

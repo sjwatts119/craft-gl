@@ -1,6 +1,6 @@
 #include <render/window.h>
 
-#include "renderable/debug.h"
+#include "render/renderable/debug.h"
 #include "core/interface.h"
 #include "core/player.h"
 #include "core/world.h"

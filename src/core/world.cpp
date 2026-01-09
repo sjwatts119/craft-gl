@@ -1,6 +1,6 @@
 #include "core/world.h"
 
-#include "renderable/chunkMesh.h"
+#include "render/renderable/chunkMesh.h"
 
 World::World() {
     addTestChunks();

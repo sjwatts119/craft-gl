@@ -3,7 +3,7 @@
 #include <glm/vec3.hpp>
 
 #include "AABB.h"
-#include "blockFace.h"
+#include "utility/blockFace.h"
 
 class Ray {
 private:

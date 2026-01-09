@@ -9,7 +9,7 @@
 #include "utility/coordinate.h"
 #include "utility/constant.h"
 #include "block.h"
-#include "geometry/blockFace.h"
+#include "utility/blockFace.h"
 
 class ChunkMesh;
 

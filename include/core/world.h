@@ -3,7 +3,7 @@
 
 #include "chunk.h"
 #include "utility/coordinate.h"
-#include "geometry/blockFace.h"
+#include "utility/blockFace.h"
 #include "material/light.h"
 
 class World {

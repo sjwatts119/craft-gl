@@ -1,7 +1,7 @@
 #include "core/chunk.h"
 
-#include "geometry/blockFace.h"
-#include "renderable/chunkMesh.h"
+#include "utility/blockFace.h"
+#include "render/renderable/chunkMesh.h"
 
 Chunk::Chunk(const Coordinate coordinate)
   : _coordinate(coordinate),

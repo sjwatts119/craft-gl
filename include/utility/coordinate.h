@@ -6,7 +6,7 @@
 
 #include "utility/constant.h"
 #include "core/block.h"
-#include "geometry/blockFace.h"
+#include "utility/blockFace.h"
 
 struct Coordinate {
 private:

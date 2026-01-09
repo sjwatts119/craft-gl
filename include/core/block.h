@@ -11,7 +11,7 @@
 #include "utility/coordinate.h"
 #include "material/blockTextureList.h"
 #include "render/buffer/vertexData.h"
-#include "geometry/blockFace.h"
+#include "utility/blockFace.h"
 
 enum BlockType: int {
     ERROR = -2,

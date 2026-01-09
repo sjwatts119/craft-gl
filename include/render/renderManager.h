@@ -12,14 +12,14 @@
 #include "core/block.h"
 #include "glm/vec3.hpp"
 #include "utility/coordinate.h"
-#include "renderable/debug.h"
+#include "render/renderable/debug.h"
 #include "core/interface.h"
 #include "glad/glad.h"
 #include "render/shader/shader.h"
 #include "render/buffer/crosshairData.h"
 #include "core/world.h"
 #include "core/interface.h"
-#include "renderable/chunkMesh.h"
+#include "render/renderable/chunkMesh.h"
 
 class RenderManager {
 private:

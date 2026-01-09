@@ -1,4 +1,4 @@
-#include "renderable/debug.h"
+#include "render/renderable/debug.h"
 
 Debug::Debug() {
     glGenVertexArrays(1, &_vaoId);

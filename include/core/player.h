@@ -11,7 +11,7 @@
 
 #include "core/world.h"
 #include "render/window.h"
-#include "renderable/chunkMesh.h"
+#include "render/renderable/chunkMesh.h"
 #include "geometry/ray.h"
 #include "render/window.h"
 #include "utility/direction.h"
