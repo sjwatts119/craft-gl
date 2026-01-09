@@ -1,6 +1,6 @@
 #include <render/window.h>
 
-#include "core/debug.h"
+#include "renderable/debug.h"
 #include "core/interface.h"
 #include "core/player.h"
 #include "core/world.h"
@@ -10,10 +10,10 @@ int main() {
     Window window{SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_TITLE};
     window.makeCurrent();
 
-    const RenderManager renderManager{&window};
+    RenderManager renderManager{&window};
     World world;
     Player player{&world};
-    const Interface interface;
+    Interface interface;
     Debug debug;
 
     while (window.open()) {

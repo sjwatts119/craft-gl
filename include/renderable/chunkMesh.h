@@ -2,12 +2,13 @@
 
 #include <glad/glad.h>
 
+#include "renderable.h"
 #include "core/chunk.h"
-#include "geometry/block.h"
-#include "core/coordinate.h"
+#include "core/block.h"
+#include "utility/coordinate.h"
 #include "render/buffer/blockData.h"
 
-class ChunkMesh {
+class ChunkMesh final : public Renderable {
 private:
     Chunk *_chunk;
     bool _dirty = true;
@@ -35,7 +36,7 @@ public:
 
     void unsetHighlightedBlock();
 
-    void bind() const;
+    void bind() override;
 
-    void render() const;
+    void render() override;
 };

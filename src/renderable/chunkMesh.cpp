@@ -1,4 +1,4 @@
-#include "geometry/chunkMesh.h"
+#include "renderable/chunkMesh.h"
 
 ChunkMesh::ChunkMesh(Chunk* chunk) : _chunk(chunk) {
     glGenVertexArrays(1, &_vaoId);
@@ -47,6 +47,8 @@ void ChunkMesh::markAsDirtyWithNeighbours() {
 }
 
 void ChunkMesh::regenerateMesh() {
+    std::cout << "Regenerating mesh for chunk at coordinate {x: " << _chunk->_coordinate.x << " y: " << _chunk->_coordinate.y << " z: " << _chunk->_coordinate.z << "}" << std::endl;
+
     _vertices.clear();
     _indices.clear();
 
@@ -261,7 +263,7 @@ void ChunkMesh::unsetHighlightedBlock() {
     _highlightedBlockIndex = glm::ivec3{-1};
 }
 
-void ChunkMesh::bind() const {
+void ChunkMesh::bind() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);
@@ -286,6 +288,6 @@ void ChunkMesh::bind() const {
     glEnableVertexAttribArray(4);
 }
 
-void ChunkMesh::render() const {
+void ChunkMesh::render() {
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
 }

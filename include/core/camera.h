@@ -1,6 +1,6 @@
 #pragma once
 
-#include "direction.h"
+#include "utility/direction.h"
 #include "glm/fwd.hpp"
 #include "render/window.h"
 #include <glm/geometric.hpp>

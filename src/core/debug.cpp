@@ -1,4 +1,4 @@
-#include "core/debug.h"
+#include "renderable/debug.h"
 
 Debug::Debug() {
     glGenVertexArrays(1, &_vaoId);
@@ -44,7 +44,7 @@ void Debug::addAABB(const AABB& aabb) {
     }
 }
 
-void Debug::bind() const {
+void Debug::bind() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);
@@ -57,7 +57,7 @@ void Debug::bind() const {
     glEnableVertexAttribArray(0);
 }
 
-void Debug::render() const {
+void Debug::render() {
     glDrawElements(GL_LINES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, nullptr);
 }
 

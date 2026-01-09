@@ -11,10 +11,10 @@
 
 #include "core/world.h"
 #include "render/window.h"
-#include "geometry/chunkMesh.h"
+#include "renderable/chunkMesh.h"
 #include "geometry/ray.h"
 #include "render/window.h"
-#include "core/direction.h"
+#include "utility/direction.h"
 
 enum class MovementMode {
     FLYING,
@@ -23,7 +23,7 @@ enum class MovementMode {
 
 class Player {
     /** Sensitivities and configurables **/
-    MovementMode _mode = MovementMode::FLYING;
+    MovementMode _mode = MovementMode::WALKING;
     float _zoomSensitivity = 2.0f;
     float _aimSensitivity = 0.1f;
     float _movementSensitivity = 25.0f;
@@ -47,7 +47,7 @@ class Player {
     bool _grounded = false;
 
     /** Position **/
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 4.0f + EPSILON, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 8.0f + EPSILON, 0.0f};
     glm::vec3 _lastPosition = _position;
 
     glm::vec3 _momentum{0.0f};

@@ -5,9 +5,10 @@
 #include <iostream>
 #include <memory>
 
-#include "coordinate.h"
-#include "staticData.h"
-#include "geometry/block.h"
+#include "geometry/AABB.h"
+#include "utility/coordinate.h"
+#include "utility/constant.h"
+#include "block.h"
 #include "geometry/blockFace.h"
 
 class ChunkMesh;

@@ -1,4 +1,4 @@
-#include "geometry/crosshair.h"
+#include "renderable/crosshair.h"
 
 #include "render/buffer/crosshairData.h"
 
@@ -8,7 +8,7 @@ Crosshair::Crosshair() {
     glGenBuffers(1, &_eboId);
 }
 
-void Crosshair::bind() const {
+void Crosshair::bind() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);

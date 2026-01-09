@@ -8,34 +8,34 @@
 #include "shader/shaderManager.h"
 #include "texture/textureManager.h"
 #include "core/player.h"
-#include "core/coordinate.h"
-#include "geometry/block.h"
+#include "utility/coordinate.h"
+#include "core/block.h"
 #include "glm/vec3.hpp"
-#include "core/coordinate.h"
-#include "core/debug.h"
+#include "utility/coordinate.h"
+#include "renderable/debug.h"
 #include "core/interface.h"
 #include "glad/glad.h"
 #include "render/shader/shader.h"
 #include "render/buffer/crosshairData.h"
 #include "core/world.h"
 #include "core/interface.h"
-#include "geometry/chunkMesh.h"
+#include "renderable/chunkMesh.h"
 
 class RenderManager {
 private:
     ShaderManager _shaderManager;
     TextureManager _textureManager;
 
-    void renderBlocks(const Player *player, const Window *window, const World *world) const;
+    void renderBlocks(const Player *player, const Window *window, World *world) const;
 
-    void renderInterface(const Window *window, const Interface *interface) const;
+    void renderInterface(const Window *window, Interface *interface) const;
 
-    void renderDebug(const Player *player, const Window *window, const Debug *debug) const;
+    void renderDebug(const Player *player, const Window *window, Debug *debug) const;
 
 public:
     explicit RenderManager(const Window *window);
 
     static void clear();
 
-    void render(const Player *player, const Window *window, const World *world, const Interface *interface, const Debug *debug) const;
+    void render(const Player *player, const Window *window, World *world, Interface *interface, Debug *debug) const;
 };

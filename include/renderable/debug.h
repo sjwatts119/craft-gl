@@ -5,7 +5,7 @@
 #include "core/world.h"
 #include "render/buffer/aabbData.h"
 
-class Debug {
+class Debug final : public Renderable {
 private:
     GLuint _vboId;
     GLuint _vaoId;
@@ -21,7 +21,7 @@ public:
 
     void update(const Player* player, const World* world);
 
-    void bind() const;
+    void bind() override;
 
-    void render() const;
+    void render() override;
 };

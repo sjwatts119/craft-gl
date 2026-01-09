@@ -7,8 +7,8 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
-#include "AABB.h"
-#include "core/coordinate.h"
+#include "geometry/AABB.h"
+#include "utility/coordinate.h"
 #include "material/blockTextureList.h"
 #include "render/buffer/vertexData.h"
 #include "geometry/blockFace.h"

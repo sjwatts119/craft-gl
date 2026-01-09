@@ -2,7 +2,7 @@
 #include <unordered_map>
 
 #include "chunk.h"
-#include "coordinate.h"
+#include "utility/coordinate.h"
 #include "geometry/blockFace.h"
 #include "material/light.h"
 

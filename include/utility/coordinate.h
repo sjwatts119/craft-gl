@@ -4,8 +4,8 @@
 #include <glm/glm.hpp>
 #include <ostream>
 
-#include "staticData.h"
-#include "geometry/block.h"
+#include "utility/constant.h"
+#include "core/block.h"
 #include "geometry/blockFace.h"
 
 struct Coordinate {

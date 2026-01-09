@@ -1,6 +1,6 @@
 #pragma once
 
-#include "geometry/crosshair.h"
+#include "renderable/crosshair.h"
 
 class Interface {
 public:

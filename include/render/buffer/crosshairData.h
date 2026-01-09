@@ -1,6 +1,6 @@
 #pragma once
 
-#include "geometry/block.h"
+#include "core/block.h"
 
 struct CrosshairData {
     float x, y, z;

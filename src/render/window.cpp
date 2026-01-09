@@ -2,7 +2,7 @@
 
 #include <utility>
 
-#include "core/staticData.h"
+#include "utility/constant.h"
 
 Window::Window(
     const int width,

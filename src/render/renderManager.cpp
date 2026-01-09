@@ -1,7 +1,6 @@
 #include <render/renderManager.h>
 
-#include "core/debug.h"
-#include "render/buffer/aabbData.h"
+#include "renderable/debug.h"
 
 RenderManager::RenderManager(const Window* window) {
     // Viewport
@@ -22,7 +21,7 @@ void RenderManager::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderManager::renderBlocks(const Player* player, const Window* window, const World* world) const {
+void RenderManager::renderBlocks(const Player* player, const Window* window, World* world) const {
     _shaderManager._blockShader.use();
 
     _textureManager._blockTextures.use(0);
@@ -43,18 +42,18 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, con
     glBindVertexArray(0);
 }
 
-void RenderManager::renderInterface(const Window *window, const Interface *interface) const {
+void RenderManager::renderInterface(const Window *window, Interface *interface) const {
     interface->_crosshair.bind();
 
     _shaderManager._crosshairShader.use();
     _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
 
-    Crosshair::render();
+    interface->_crosshair.render();
 
     glBindVertexArray(0);
 }
 
-void RenderManager::renderDebug(const Player *player, const Window* window, const Debug *debug) const {
+void RenderManager::renderDebug(const Player *player, const Window* window, Debug *debug) const {
     debug->bind();
 
     _shaderManager._debugShader.use();
@@ -67,7 +66,7 @@ void RenderManager::renderDebug(const Player *player, const Window* window, cons
     glBindVertexArray(0);
 }
 
-void RenderManager::render(const Player* player, const Window* window, const World* world, const Interface* interface, const Debug* debug) const {
+void RenderManager::render(const Player* player, const Window* window, World* world, Interface* interface, Debug* debug) const {
     renderBlocks(player, window, world);
 
     renderInterface(window, interface);
