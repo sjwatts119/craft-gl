@@ -36,9 +36,9 @@ public:
 
     void tick();
 
-    bool shouldTick() const;
+    [[nodiscard]] bool shouldTick() const;
 
-    bool ticked() const;
+    [[nodiscard]] bool ticked() const;
 
     static void poll();
 

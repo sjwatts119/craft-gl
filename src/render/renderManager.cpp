@@ -29,13 +29,13 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, Wor
     _textureManager._blockTextures.use(0);
     _shaderManager._blockShader.setInt("uBlockTextures", 0);
 
+    _shaderManager._blockShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
+    _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
+
     for (auto& [chunkCoordinate, chunk]: world->_chunks) {
         chunk->_mesh->bind();
 
         _shaderManager._blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
-        _shaderManager._blockShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
-        _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
-
         _shaderManager._blockShader.setLight("uSun" , world->getSun());
 
         chunk->_mesh->render();

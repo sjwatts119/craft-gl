@@ -123,6 +123,9 @@ void Player::processKeyboard(const Window* window) {
         moveDown(accelerationMultiplier);
     }
 
+    /**
+     * Mode toggles
+     */
     const auto mIsPressed = glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS;
     if (mIsPressed && !_mWasPressed) {
         _mode = _mode == MovementMode::WALKING ? MovementMode::FLYING : MovementMode::WALKING;
