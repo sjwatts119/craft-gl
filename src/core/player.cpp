@@ -373,123 +373,44 @@ void Player::clearAimingAtBlock() {
 }
 
 void Player::setAimingAtBlock() {
-    const auto playerChunkCoordinate = Coordinate{_position}.toChunkFromWorld();
-    const auto currentChunkAttempt = _world->_chunks.find(playerChunkCoordinate);
+    Ray ray {_camera._position, _camera._forward};
+    const auto traversed = ray.traversedCoordinates(10.0f);
 
-    if (currentChunkAttempt == _world->_chunks.end()) {
-        std::cerr << "Player not in a chunk or chunk with current coordinate not found" << std::endl;
+    std::optional<Coordinate> aimedAtCoordinate;
 
+    for (const auto& coord : traversed) {
+        if (const auto block = _world->blockAt(coord); block == nullptr || block->getType() == AIR) {
+            continue;
+        }
+
+        aimedAtCoordinate = coord;
+        break;
+    }
+
+    if (aimedAtCoordinate == std::nullopt) {
         clearAimingAtBlock();
         return;
     }
 
-    std::vector<Coordinate> testableChunkCoordinates;
-
-    // Get current chunk and also surrounding chunks in 3 x 3 x 3 area
-    for (int x = -1; x <= 1; x++) {
-        for (int y = -1; y <= 1; y++) {
-            for (int z = -1; z <= 1; z++) {
-                testableChunkCoordinates.emplace_back(playerChunkCoordinate.x + x, playerChunkCoordinate.y + y, playerChunkCoordinate.z + z);
-            }
-        }
-    }
-
-    const Ray ray {_camera._position, _camera._forward};
-    Block* closestBlock = nullptr;
-    std::optional<BlockFace> hitFace;
-    float closestDistance = std::numeric_limits<float>::max();
-    glm::ivec3 highlightedBlockIndex{-1};
-
-    std::optional<Coordinate> aimedAtChunkCoordinate;
-    const Chunk* aimedAtChunk = nullptr;
-
-    // Test current and surrounding chunks
-    for (auto& testableChunkCoordinate : testableChunkCoordinates) {
-        const auto testableChunkAttempt = _world->_chunks.find(testableChunkCoordinate);
-
-        // chunk is out of bounds or not found
-        if (testableChunkAttempt == _world->_chunks.end()) {
-            continue;
-        }
-
-        Chunk* testableChunk = testableChunkAttempt->second.get();
-
-        // intersection test the ray with a bounding box on the entire chunk, if no collision, avoid testing any blocks.
-        const auto chunkAABB = AABB::forChunk({Coordinate{testableChunkCoordinate.x, testableChunkCoordinate.y, testableChunkCoordinate.z}});
-
-        if (Ray::distanceToAABB(chunkAABB, ray) == -1.0f) {
-            continue;
-        }
-
-        const auto chunkWorldPosition = testableChunkCoordinate.toWorldFromChunk().toIVec3();
-
-        for (int x = 0; x < CHUNK_SIZE; x++) {
-            for (int y = 0; y < CHUNK_SIZE; y++) {
-                for (int z = 0; z < CHUNK_SIZE; z++) {
-                    Block& block = testableChunk->_blocks[x][y][z];
-
-                    // air doesn't count as being aimed at.
-                    if (block.getType() == AIR) {
-                        continue;
-                    }
-
-                    // block is at least a block away from player reach so early out
-                    // we do more precise distance checks after ray-AABB intersection test
-                    auto blockCenter = static_cast<glm::vec3>(chunkWorldPosition + glm::ivec3(x, y, z)) + glm::vec3(0.5f);
-                    if (glm::distance(blockCenter, _position) > _reach + 1) {
-                        continue;
-                    }
-
-                    const auto intersectionDistance = Ray::distanceToAABB(AABB::forBlock({Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}), ray);
-
-                    // closer intersection already found
-                    if (intersectionDistance >= closestDistance) {
-                        continue;
-                    }
-
-                    // no intersection
-                    if (intersectionDistance == -1.0f) {
-                        continue;
-                    }
-
-                    // intersection is out of player reach
-                    if (intersectionDistance > _reach) {
-                        continue;
-                    }
-
-                    // store block we are aiming it
-                    closestBlock = &block;
-                    closestDistance = intersectionDistance;
-                    highlightedBlockIndex = {x, y, z};
-                    aimedAtChunk = testableChunk;
-                    aimedAtChunkCoordinate = testableChunkCoordinate;
-                    hitFace = Ray::getHitFace(AABB::forBlock({Coordinate{chunkWorldPosition.x + x, chunkWorldPosition.y + y, chunkWorldPosition.z + z}}), ray, intersectionDistance);
-                }
-            }
-        }
-    }
-
-    // no intersection found, return nullptr
-    if (closestBlock == nullptr || aimedAtChunk == nullptr) {
+    const auto containingChunk = _world->_chunks.find(aimedAtCoordinate.value().toChunkFromWorld());
+    if (containingChunk == _world->_chunks.end()) {
         clearAimingAtBlock();
-
         return;
     }
 
-    auto worldCoordinate = aimedAtChunkCoordinate.value().toWorldFromChunk(Coordinate{highlightedBlockIndex});
+    auto blockAABB = AABB::forBlock(aimedAtCoordinate.value());
+    auto hitFace = Ray::getHitFace(blockAABB, ray, Ray::distanceToAABB(blockAABB, ray));
 
     // don't regenerate the mesh if the highlighted block hasn't changed
-    if (_highlightedBlockWorldCoordinate == worldCoordinate && _highlightedBlockFace == hitFace) {
+    if (_highlightedBlockWorldCoordinate == aimedAtCoordinate.value() && _highlightedBlockFace == hitFace) {
         return;
     }
 
     clearAimingAtBlock();
 
-    _highlightedBlockWorldCoordinate = worldCoordinate;
+    _highlightedBlockWorldCoordinate = aimedAtCoordinate;
     _highlightedBlockFace = hitFace;
-
-    aimedAtChunk->_mesh->setHighlightedBlock(highlightedBlockIndex);
-    aimedAtChunk->_mesh->markAsDirty();
+    containingChunk->second->_mesh->setHighlightedBlock(aimedAtCoordinate.value().toLocalFromWorld().toIVec3());
 }
 
 /**

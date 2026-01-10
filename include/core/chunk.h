@@ -49,6 +49,8 @@ public:
 
     void addTestBlocksAir();
 
+    void addTestBlocksPerlin(const siv::PerlinNoise* perlin);
+
     void destroyBlock(Coordinate localCoordinate);
 
     void placeBlock(Coordinate localCoordinate);

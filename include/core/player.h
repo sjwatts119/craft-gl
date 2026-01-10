@@ -40,7 +40,6 @@ class Player {
     float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
     bool _debug = false;
 
-    Block *_aimingAt;
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
     std::optional<BlockFace> _highlightedBlockFace;
     AABB _boundingBox;
@@ -53,7 +52,7 @@ class Player {
     bool _mWasPressed = false;
 
     /** Position **/
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 4 + 8.0f + EPSILON, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 5 + EPSILON, 0.0f};
     glm::vec3 _lastPosition = _position;
 
     glm::vec3 _momentum{0.0f};
@@ -93,7 +92,7 @@ class Player {
     void aim(float yawOffset, float pitchOffset);
 
 public:
-    explicit Player(World *world): _aimingAt(nullptr), _world(world) {
+    explicit Player(World *world): _world(world) {
     }
 
     void update(const Window *window);

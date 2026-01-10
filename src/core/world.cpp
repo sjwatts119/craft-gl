@@ -1,9 +1,8 @@
 #include "core/world.h"
 
-#include "render/renderable/chunkMesh.h"
 
 World::World() {
-    addTestChunks();
+    addPerlinChunks();
     referenceNeighbours();
 }
 
@@ -32,6 +31,24 @@ void World::addTestChunks() {
                 _chunks.emplace(coordinate, std::move(chunk));
 
                 // std::cout << "added test chunk to world at localised position {x: " << x << " y: " << y << " z: " << z << "}" << std::endl;
+            }
+        }
+    }
+}
+
+void World::addPerlinChunks() {
+    for (int x = (CHUNK_COUNT_X / -2); x < (CHUNK_COUNT_X / 2); x++) {
+        for (int z = CHUNK_COUNT_Z / -2; z < CHUNK_COUNT_Z / 2; z++) {
+            for (int y = 0; y < CHUNK_COUNT_Y; y++) {
+                const Coordinate coordinate {x, y, z};
+
+                auto chunk = std::make_unique<Chunk>(coordinate);
+
+                chunk->addTestBlocksPerlin(&_perlin);
+
+                chunk->_mesh->markAsDirty();
+
+                _chunks.emplace(coordinate, std::move(chunk));
             }
         }
     }

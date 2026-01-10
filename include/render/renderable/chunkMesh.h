@@ -7,12 +7,14 @@
 #include "core/block.h"
 #include "utility/coordinate.h"
 #include "render/buffer/blockData.h"
+#include "utility/direction.h"
 
 class ChunkMesh final : public Renderable {
 private:
     Chunk *_chunk;
     bool _dirty = true;
 
+    std::vector<Chunk*> getAffectedNeighbours(Coordinate coordinate);
 public:
     GLuint _vboId{};
     GLuint _vaoId{};
@@ -29,6 +31,8 @@ public:
     void markAsDirty();
 
     void markAsDirtyWithNeighbours();
+
+    void markAsDirtyWithAffectedNeighbours(const Coordinate coordinate);
 
     void regenerateMesh();
 

@@ -5,6 +5,9 @@
 #include "utility/coordinate.h"
 #include "utility/blockFace.h"
 #include "material/light.h"
+#include "render/renderable/chunkMesh.h"
+#include <siv/perlin.h>
+
 
 class World {
 private:
@@ -15,12 +18,15 @@ private:
         glm::vec3(0.6f, 0.6f, 0.6f)
     };
 
+    siv::PerlinNoise _perlin{WORLD_SEED};
 public:
     std::pmr::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks;
 
     World();
 
     void addTestChunks();
+
+    void addPerlinChunks();
 
     void referenceNeighbours();
 

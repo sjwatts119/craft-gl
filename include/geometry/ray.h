@@ -18,6 +18,53 @@ public:
                                                             _inverseDirection(1.0f / direction) {
     }
 
+    std::vector<Coordinate> traversedCoordinates(const float t) {
+        std::vector<Coordinate> traversed;
+        traversed.emplace_back(glm::floor(_start));
+
+        const glm::vec3 step{
+            _direction.x > 0 ? 1.0f : -1.0f,
+            _direction.y > 0 ? 1.0f : -1.0f,
+            _direction.z > 0 ? 1.0f : -1.0f
+        };
+        const glm::vec3 delta{
+            std::abs(_inverseDirection.x),
+            std::abs(_inverseDirection.y),
+            std::abs(_inverseDirection.z)
+        };
+        const auto entryPosition = glm::floor(_start + RAY_EPSILON);
+
+        auto pos = entryPosition;
+        auto tMax = (pos - _start + glm::max(step, 0.0f)) / _direction;
+        auto traversedDistance = 0.0f;
+
+        while (traversedDistance <= t && traversed.size() < 100) {
+            if (tMax.x < tMax.y) {
+                if (tMax.x < tMax.z) {
+                    traversedDistance = tMax.x;
+                    pos.x += step.x;
+                    tMax.x += delta.x;
+                } else {
+                    traversedDistance = tMax.z;
+                    pos.z += step.z;
+                    tMax.z += delta.z;
+                }
+            } else {
+                if (tMax.y < tMax.z) {
+                    traversedDistance = tMax.y;
+                    pos.y += step.y;
+                    tMax.y += delta.y;
+                } else {
+                    pos.z += step.z;
+                    tMax.z += delta.z;
+                }
+            }
+            traversed.emplace_back(static_cast<int>(pos.x), static_cast<int>(pos.y), static_cast<int>(pos.z));
+        }
+
+        return traversed;
+    }
+
     // -1.0f for no intersection
     static float distanceToAABB(const AABB &aabb, const Ray &ray) {
         const double tx1 = (aabb.minX - ray._start.x) * ray._inverseDirection.x;
