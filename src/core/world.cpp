@@ -1,42 +1,24 @@
 #include "core/world.h"
 
 #include <ranges>
+#include <unordered_set>
+#include <iostream>
 
 #include "core/chunk.h"
 #include "render/renderable/chunkMesh.h"
 
 World::World() {
-    addPerlinChunks();
+    addInitialChunks();
 }
 
 World::~World() = default;
 
-void World::loadChunkColumn(const Coordinate chunkCoordinate) {
+void World::addInitialChunks() {
     std::vector<Coordinate> coordinates;
 
-    for (int y = 0; y < CHUNK_COUNT_Y; y++) {
-        const Coordinate coordinate {chunkCoordinate.x, y, chunkCoordinate.z};
-        auto chunk = std::make_unique<Chunk>(this, coordinate);
-        _chunks.emplace(coordinate, std::move(chunk));
-        coordinates.push_back(coordinate);
-    }
-
-    std::vector<std::jthread> threads;
-
-    for (const auto &coordinate : coordinates) {
-        threads.emplace_back([this, coordinate] {
-            _chunks[coordinate]->addTestBlocksPerlin(&_perlin);
-            _chunks[coordinate]->_mesh->markAsDirtyWithNeighbours();
-        });
-    };
-}
-
-void World::addPerlinChunks() {
-    std::vector<Coordinate> coordinates;
-
-    for (int x = (CHUNK_COUNT_X / -2); x < (CHUNK_COUNT_X / 2); x++) {
-        for (int z = CHUNK_COUNT_Z / -2; z < CHUNK_COUNT_Z / 2; z++) {
-            for (int y = 0; y < CHUNK_COUNT_Y; y++) {
+    for (int x = (RENDER_DISTANCE / -2); x < (RENDER_DISTANCE / 2); x++) {
+        for (int z = RENDER_DISTANCE / -2; z < RENDER_DISTANCE / 2; z++) {
+            for (int y = 0; y < WORLD_HEIGHT; y++) {
                 const Coordinate coordinate {x, y, z};
                 auto chunk = std::make_unique<Chunk>(this, coordinate);
                 _chunks.emplace(coordinate, std::move(chunk));
@@ -52,6 +34,34 @@ void World::addPerlinChunks() {
             _chunks[coordinate]->addTestBlocksPerlin(&_perlin);
             _chunks[coordinate]->_mesh->markAsDirty();
         });
+    }
+}
+
+void World::loadChunks(const std::vector<Coordinate>& chunkCoordinates) {
+    std::vector<Coordinate> coordinates;
+
+    for (const auto &chunkCoordinate : chunkCoordinates) {
+        auto chunk = std::make_unique<Chunk>(this, chunkCoordinate);
+        _chunks.emplace(chunkCoordinate, std::move(chunk));
+        coordinates.push_back(chunkCoordinate);
+    }
+
+    std::vector<std::jthread> threads;
+
+    for (const auto &coordinate : coordinates) {
+        threads.emplace_back([this, coordinate] {
+            _chunks[coordinate]->addTestBlocksPerlin(&_perlin);
+            _chunks[coordinate]->_mesh->markAsDirtyWithNeighbours();
+        });
+    };
+}
+
+void World::unloadChunks(const std::vector<Coordinate>& chunkCoordinates) {
+    for (const auto &chunkCoordinate : chunkCoordinates) {
+        if (auto chunk = _chunks.find(chunkCoordinate); chunk != _chunks.end()) {
+            _oldChunks.push_back(std::move(chunk->second));
+            _chunks.erase(chunk);
+        }
     }
 }
 
@@ -107,27 +117,95 @@ void World::placeBlock(const Coordinate worldCoordinate) const {
     chunk->placeBlock(localCoordinate);
 }
 
-void World::update(const Window *window, const Player *player) {
-    // if the player is in a chunk that is not loaded, load the chunk column
-    if (const auto playerChunk = player->getChunkCoordinate(); !_chunks.contains(playerChunk)) {
-        loadChunkColumn(Coordinate{playerChunk.x, 0, playerChunk.z});
+void World::changeChunks(const Player* player) {
+    const auto threads = std::thread::hardware_concurrency();
+
+    const auto nearbyCoordinates = player->getSurroundingChunkCoordinates();
+
+    const std::unordered_set<Coordinate, CoordinateHash> nearbySet(
+        nearbyCoordinates.begin(),
+        nearbyCoordinates.end()
+    );
+
+    std::vector<Coordinate> chunksToLoad;
+    std::vector<Coordinate> chunksToUnload;
+
+    for (const auto &coordinate : nearbyCoordinates) {
+        if (!_chunks.contains(coordinate)) {
+            chunksToLoad.push_back(coordinate);
+        }
+
+        if (chunksToLoad.size() >= threads) {
+            break;
+        }
     }
 
+    for (const auto &coordinate : _chunks | std::views::keys) {
+        if (!nearbySet.contains(coordinate)) {
+            chunksToUnload.push_back(coordinate);
+        }
+
+        if (chunksToUnload.size() >= threads) {
+            break;
+        }
+    }
+
+    if (!chunksToUnload.empty()) {
+        std::cout << "Unloading " << chunksToUnload.size() << " chunks." <<  std::endl;
+        unloadChunks(chunksToUnload);
+    }
+
+    if (!chunksToLoad.empty()) {
+        std::cout << "Loading " << chunksToLoad.size() << " chunks." << std::endl;
+        loadChunks(chunksToLoad);
+    }
+}
+
+/**
+ * Delete some old chunks that have been unloaded.
+ */
+void World::deleteOldChunks() {
+    if (_oldChunks.empty()) {
+        return;
+    }
+
+    const auto deletionsThisFrame = std::min(CHUNK_DELETIONS_PER_FRAME, static_cast<int>(_oldChunks.size()));
+
+    for (int i = 0; i < deletionsThisFrame; i++) {
+        _oldChunks.back()->_mesh->cleanup();
+        _oldChunks.pop_back();
+    }
+}
+
+/**
+ * Regenerate some dirty chunk meshes.
+ */
+void World::regenerateDirtyMeshes() {
+    const auto threadCount = std::thread::hardware_concurrency();
     std::vector<std::jthread> threads;
 
     // Regenerate chunk meshes for dirty chunks
-    for (auto &chunk: _chunks | std::views::values) {
+    for (auto &[coordinate, chunk]: _chunks) {
         if (!chunk->_mesh->isDirty()) {
             continue;
         }
 
-        threads.emplace_back([&chunk] {
-            chunk->_mesh->regenerateMesh();
+        if (threads.size() >= threadCount) {
+            continue;
+        }
+
+        threads.emplace_back([this, coordinate] {
+            _chunks[coordinate]->_mesh->regenerateMesh();
         });
     }
+}
+
+void World::update(const Player* player) {
+    changeChunks(player);
+    deleteOldChunks();
+    regenerateDirtyMeshes();
 }
 
 const Light& World::getSun() const {
     return _sun;
 }
-

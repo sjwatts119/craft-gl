@@ -341,3 +341,9 @@ void ChunkMesh::bind() {
 void ChunkMesh::render() {
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
 }
+
+void ChunkMesh::cleanup() const {
+    glDeleteVertexArrays(1, &_vaoId);
+    glDeleteBuffers(1, &_vboId);
+    glDeleteBuffers(1, &_eboId);
+}

@@ -108,6 +108,8 @@ public:
         return coordinate.x == x && coordinate.y == y && coordinate.z == z;
     }
 
+    auto operator<=>(const Coordinate &) const = default;
+
     [[nodiscard]] Coordinate leftNeighbour() const {
         return Coordinate{x - 1, y, z};
     }

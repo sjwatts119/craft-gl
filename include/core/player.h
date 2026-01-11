@@ -125,9 +125,11 @@ public:
 
     [[nodiscard]] glm::vec3 getPosition() const;
 
-    Coordinate getBlockCoordinate() const;
+    [[nodiscard]] Coordinate getBlockCoordinate() const;
 
-    Coordinate getChunkCoordinate() const;
+    [[nodiscard]] Coordinate getChunkCoordinate() const;
+
+    [[nodiscard]] std::vector<Coordinate> getSurroundingChunkCoordinates() const ;
 
     [[nodiscard]] AABB getBoundingBox() const;
 

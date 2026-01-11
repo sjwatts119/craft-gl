@@ -15,6 +15,7 @@
 class Chunk;
 class Block;
 class Player;
+class ChunkMesh;
 
 class World {
 private:
@@ -27,15 +28,18 @@ private:
 
     siv::PerlinNoise _perlin{WORLD_SEED};
 public:
-    std::pmr::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks;
+    std::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks; // Active chunks
+    std::vector<std::unique_ptr<Chunk>> _oldChunks; // Unloaded chunks waiting to be deleted
 
     World();
 
     ~World();
 
-    void loadChunkColumn(Coordinate chunkCoordinate);
+    void addInitialChunks();
 
-    void addPerlinChunks();
+    void loadChunks(const std::vector<Coordinate> &chunkCoordinates);
+
+    void unloadChunks(const std::vector<Coordinate> &chunkCoordinates);
 
     [[nodiscard]] Block *blockAt(Coordinate worldCoordinate) const;
 
@@ -45,7 +49,13 @@ public:
 
     void placeBlock(Coordinate worldCoordinate) const;
 
-    void update(const Window *window, const Player *player);
+    void changeChunks(const Player *player);
+
+    void deleteOldChunks();
+
+    void regenerateDirtyMeshes();
+
+    void update(const Player *player);
 
     [[nodiscard]] const Light &getSun() const;
 };

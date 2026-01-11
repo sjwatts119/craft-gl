@@ -466,6 +466,28 @@ Coordinate Player::getChunkCoordinate() const {
     return getBlockCoordinate().toChunkFromWorld();
 }
 
+std::vector<Coordinate> Player::getSurroundingChunkCoordinates() const {
+    std::vector<Coordinate> visibleChunks;
+
+    const auto playerChunkCoordinate = getChunkCoordinate();
+
+    // TODO this should not be a cube, but a sphere
+    for (int x = -RENDER_DISTANCE; x <= RENDER_DISTANCE; x++) {
+        for (int z = -RENDER_DISTANCE; z <= RENDER_DISTANCE; z++) {
+            for (int y = 0; y < WORLD_HEIGHT; y++) {
+                visibleChunks.emplace_back(
+                    playerChunkCoordinate.x + x,
+                    y,
+                    playerChunkCoordinate.z + z
+                );
+            }
+        }
+    }
+
+
+    return visibleChunks;
+}
+
 AABB Player::getBoundingBox() const {
     return _boundingBox;
 }

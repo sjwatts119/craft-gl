@@ -47,4 +47,6 @@ public:
     void bind() override;
 
     void render() override;
+
+    void cleanup() const;
 };
