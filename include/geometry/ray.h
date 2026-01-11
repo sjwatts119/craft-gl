@@ -6,7 +6,6 @@
 #include "utility/blockFace.h"
 
 class Ray {
-private:
     glm::vec3 _start;
     glm::vec3 _direction;
     glm::vec3 _inverseDirection;
@@ -18,7 +17,7 @@ public:
                                                             _inverseDirection(1.0f / direction) {
     }
 
-    std::vector<Coordinate> traversedCoordinates(const float t) {
+    [[nodiscard]] std::vector<Coordinate> traversedCoordinates(const float t) const {
         std::vector<Coordinate> traversed;
         traversed.emplace_back(glm::floor(_start));
 
@@ -86,7 +85,7 @@ public:
         tMax = std::min(tMax, std::max(tz1, tz2));
 
         if (tMax >= tMin && tMax >= 0) {
-            return tMin >= 0 ? tMin : tMax;
+            return static_cast<float>(tMin >= 0 ? tMin : tMax);
         }
 
         return -1.0f;

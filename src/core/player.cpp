@@ -429,7 +429,7 @@ void Player::setAimingAtBlock() {
         return;
     }
 
-    auto blockAABB = AABB::forBlock(aimedAtCoordinate.value());
+    const auto blockAABB = AABB::forBlock(aimedAtCoordinate.value());
     auto hitFace = Ray::getHitFace(blockAABB, ray, Ray::distanceToAABB(blockAABB, ray));
 
     // don't regenerate the mesh if the highlighted block hasn't changed

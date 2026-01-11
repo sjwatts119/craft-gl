@@ -27,6 +27,10 @@ public:
     /** Position **/
     glm::vec3 _position;
 
+    /** Clip Planes **/
+    float _nearClip = 0.1f;
+    float _farClip = 500.0f;
+
     Camera(const glm::vec3 &position): _position(position) {
         updateBasisVectors();
     }

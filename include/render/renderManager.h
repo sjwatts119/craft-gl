@@ -31,7 +31,6 @@ private:
     void renderInterface(const Window *window, Interface *interface) const;
 
     void renderDebug(const Player *player, const Window *window, Debug *debug) const;
-
 public:
     explicit RenderManager(const Window *window);
 

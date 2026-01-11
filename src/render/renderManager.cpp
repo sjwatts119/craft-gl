@@ -1,5 +1,7 @@
+#include <ranges>
 #include <render/renderManager.h>
 
+#include "geometry/frustum.h"
 #include "render/renderable/debug.h"
 
 RenderManager::RenderManager(const Window* window) {
@@ -32,7 +34,12 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, Wor
     _shaderManager._blockShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
     _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
 
-    for (auto& [chunkCoordinate, chunk]: world->_chunks) {
+    Frustum viewFrustum{*player->getCamera(), window->getWidth(), window->getHeight()};
+    for (const auto &chunk: world->_chunks | std::views::values) {
+        if (!viewFrustum.fastIntersects(AABB::forChunk(chunk->_coordinate))) {
+            continue;
+        }
+
         chunk->_mesh->bind();
 
         _shaderManager._blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
