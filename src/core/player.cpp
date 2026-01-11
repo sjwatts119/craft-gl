@@ -305,7 +305,7 @@ void Player::updateBoundingBox() {
  */
 void Player::updateCameraPosition(const Window* window)
 {
-    auto interpolationFactor = static_cast<float>(window->getTimeSinceLastTick()) / TIME_PER_TICK;
+    auto interpolationFactor = std::clamp(window->getTimeSinceLastTick() / TIME_PER_TICK, 0.0f, 1.0f);
     _camera._position = glm::mix(_lastPosition, _position, interpolationFactor) + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 

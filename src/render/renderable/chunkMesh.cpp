@@ -6,10 +6,6 @@ ChunkMesh::ChunkMesh(Chunk* chunk) : _chunk(chunk) {
     glGenVertexArrays(1, &_vaoId);
     glGenBuffers(1, &_vboId);
     glGenBuffers(1, &_eboId);
-
-    // reserve for worst case scenario, might be worth being more conservative here later
-    _vertices.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 24);
-    _indices.reserve(CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE * 36);
 }
 
 bool ChunkMesh::isDirty() const {
@@ -45,6 +41,34 @@ void ChunkMesh::markAsDirtyWithNeighbours() {
 
     if (_chunk->_backNeighbour != nullptr) {
         _chunk->_backNeighbour->_mesh->markAsDirty();
+    }
+}
+
+void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate localCoordinate) {
+    markAsDirty();
+
+    if (localCoordinate.x == 0 && _chunk->_leftNeighbour != nullptr) {
+        _chunk->_leftNeighbour->_mesh->markAsDirty();
+    }
+
+    if (localCoordinate.x == CHUNK_SIZE - 1 && _chunk->_rightNeighbour != nullptr) {
+        _chunk->_rightNeighbour->_mesh->markAsDirty();
+    }
+
+    if (localCoordinate.y == 0 && _chunk->_downNeighbour != nullptr) {
+        _chunk->_downNeighbour->_mesh->markAsDirty();
+    }
+
+    if (localCoordinate.y == CHUNK_SIZE - 1 && _chunk->_upNeighbour != nullptr) {
+        _chunk->_upNeighbour->_mesh->markAsDirty();
+    }
+
+    if (localCoordinate.z == 0 && _chunk->_backNeighbour != nullptr) {
+        _chunk->_backNeighbour->_mesh->markAsDirty();
+    }
+
+    if (localCoordinate.z == CHUNK_SIZE - 1 && _chunk->_frontNeighbour != nullptr) {
+        _chunk->_frontNeighbour->_mesh->markAsDirty();
     }
 }
 
@@ -255,34 +279,6 @@ void ChunkMesh::regenerateMesh() {
     _dirty = false;
 
     // std::cout << "Generated mesh with vertex count: " << _vertices.size() << std::endl;
-}
-
-void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate coordinate) {
-    markAsDirty();
-
-    if (coordinate.x == 0 && _chunk->_leftNeighbour != nullptr) {
-        _chunk->_leftNeighbour->_mesh->markAsDirty();
-    }
-
-    if (coordinate.x == CHUNK_SIZE - 1 && _chunk->_rightNeighbour != nullptr) {
-        _chunk->_rightNeighbour->_mesh->markAsDirty();
-    }
-
-    if (coordinate.y == 0 && _chunk->_downNeighbour != nullptr) {
-        _chunk->_downNeighbour->_mesh->markAsDirty();
-    }
-
-    if (coordinate.y == CHUNK_SIZE - 1 && _chunk->_upNeighbour != nullptr) {
-        _chunk->_upNeighbour->_mesh->markAsDirty();
-    }
-
-    if (coordinate.z == 0 && _chunk->_backNeighbour != nullptr) {
-        _chunk->_backNeighbour->_mesh->markAsDirty();
-    }
-
-    if (coordinate.z == CHUNK_SIZE - 1 && _chunk->_frontNeighbour != nullptr) {
-        _chunk->_frontNeighbour->_mesh->markAsDirty();
-    }
 }
 
 void ChunkMesh::setHighlightedBlock(const glm::ivec3 index) {

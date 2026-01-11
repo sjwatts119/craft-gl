@@ -1,6 +1,5 @@
 #include "core/world.h"
 
-
 World::World() {
     addPerlinChunks();
     referenceNeighbours();
@@ -37,20 +36,26 @@ void World::addTestChunks() {
 }
 
 void World::addPerlinChunks() {
+    std::vector<Coordinate> coordinates;
+
     for (int x = (CHUNK_COUNT_X / -2); x < (CHUNK_COUNT_X / 2); x++) {
         for (int z = CHUNK_COUNT_Z / -2; z < CHUNK_COUNT_Z / 2; z++) {
             for (int y = 0; y < CHUNK_COUNT_Y; y++) {
                 const Coordinate coordinate {x, y, z};
-
                 auto chunk = std::make_unique<Chunk>(coordinate);
-
-                chunk->addTestBlocksPerlin(&_perlin);
-
-                chunk->_mesh->markAsDirty();
-
                 _chunks.emplace(coordinate, std::move(chunk));
+                coordinates.push_back(coordinate);
             }
         }
+    }
+
+    std::vector<std::jthread> threads;
+
+    for (const auto &coordinate : coordinates) {
+        threads.emplace_back([this, coordinate] {
+            _chunks[coordinate]->addTestBlocksPerlin(&_perlin);
+            _chunks[coordinate]->_mesh->markAsDirty();
+        });
     }
 }
 
@@ -153,13 +158,17 @@ void World::placeBlock(const Coordinate worldCoordinate) {
 }
 
 void World::update() {
+    std::vector<std::jthread> threads;
+
     // Regenerate chunk meshes for dirty chunks
     for (auto& [chunkCoordinate, chunk] : _chunks) {
         if (!chunk->_mesh->isDirty()) {
             continue;
         }
 
-        chunk->_mesh->regenerateMesh();
+        threads.emplace_back([&chunk] {
+            chunk->_mesh->regenerateMesh();
+        });
     }
 }
 

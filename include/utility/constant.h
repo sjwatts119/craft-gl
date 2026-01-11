@@ -7,6 +7,7 @@ static constexpr float EPSILON = 0.0001f; // AABB intersection epsilon
 
 static constexpr int TICK_RATE = 20;
 static constexpr float TIME_PER_TICK = 1.0f / static_cast<float>(TICK_RATE);
+static constexpr int MAX_TICKS_PER_FRAME = 5;
 
 static constexpr int CHUNK_SIZE = 32;
 static constexpr int BLOCK_COUNT = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;

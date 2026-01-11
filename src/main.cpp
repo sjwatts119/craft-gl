@@ -21,7 +21,7 @@ int main() {
 
         RenderManager::clear();
 
-        if (window.ticked()) {
+        for (int i = 0; i < window.getTicksElapsed(); i++) {
             player.tick(&window);
         }
 

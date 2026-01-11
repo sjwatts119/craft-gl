@@ -14,7 +14,6 @@ private:
     Chunk *_chunk;
     bool _dirty = true;
 
-    std::vector<Chunk*> getAffectedNeighbours(Coordinate coordinate);
 public:
     GLuint _vboId{};
     GLuint _vaoId{};
@@ -32,7 +31,7 @@ public:
 
     void markAsDirtyWithNeighbours();
 
-    void markAsDirtyWithAffectedNeighbours(const Coordinate coordinate);
+    void markAsDirtyWithAffectedNeighbours(Coordinate localCoordinate);
 
     void regenerateMesh();
 

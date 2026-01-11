@@ -62,7 +62,7 @@ void Window::update() {
     if (shouldTick()) {
         tick();
     } else {
-        _ticked = false;
+        _ticksElapsed = 0;
     }
 }
 
@@ -83,8 +83,10 @@ bool Window::open() const {
 }
 
 void Window::tick() {
-    _sinceLastTick -= TIME_PER_TICK;
-    _ticked = true;
+    const auto ticks = static_cast<int>(std::floor(_sinceLastTick / TIME_PER_TICK));
+
+    _ticksElapsed = std::min(ticks, MAX_TICKS_PER_FRAME);
+    _sinceLastTick = _sinceLastTick - (_ticksElapsed * TIME_PER_TICK);
 }
 
 bool Window::shouldTick() const {
@@ -92,7 +94,7 @@ bool Window::shouldTick() const {
 }
 
 bool Window::ticked() const {
-    return _ticked;
+    return _ticksElapsed > 0;
 }
 
 int Window::getWidth() const {
@@ -114,6 +116,11 @@ float Window::getDeltaTime() const {
 float Window::getTimeSinceLastTick() const {
     return _sinceLastTick;
 }
+
+int Window::getTicksElapsed() const {
+    return _ticksElapsed;
+}
+
 
 GLFWwindow* Window::getWindow() const {
     return _window;

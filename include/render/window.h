@@ -17,7 +17,7 @@ private:
 
     int _tick = 0;
     float _sinceLastTick = 0.0f;
-    bool _ticked = false;
+    int _ticksElapsed = 0;
 
     GLFWwindow *_window;
 
@@ -38,7 +38,8 @@ public:
 
     [[nodiscard]] bool shouldTick() const;
 
-    [[nodiscard]] bool ticked() const;
+    bool ticked() const;
+
 
     static void poll();
 
@@ -57,6 +58,8 @@ public:
     [[nodiscard]] float getDeltaTime() const;
 
     [[nodiscard]] float getTimeSinceLastTick() const;
+
+    [[nodiscard]] int getTicksElapsed() const;
 
     [[nodiscard]] GLFWwindow *getWindow() const;
 };
