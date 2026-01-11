@@ -133,7 +133,7 @@ void Chunk::destroyBlock(const Coordinate localCoordinate) {
 }
 
 void Chunk::placeBlock(const Coordinate localCoordinate) {
-    const Block newBlock{DIAMOND_BLOCK};
+    const Block newBlock{PACKED_ICE};
 
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(newBlock);
 

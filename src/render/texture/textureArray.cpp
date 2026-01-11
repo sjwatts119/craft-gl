@@ -30,7 +30,7 @@ void TextureArray::setup() {
     stbi_set_flip_vertically_on_load(_flip);
 
     // Load the first texture from the file path to get the image dimensions
-    unsigned char *firstImageData = stbi_load(_paths[0].c_str(), &_width, &_height, &_channels, 0);
+    unsigned char *firstImageData = stbi_load(_paths[0].c_str(), &_width, &_height, &_channels, 4);
 
     std::cout << "Loaded texture array layer " << 0 << " from path: " << _paths[0] << std::endl;
 
@@ -53,7 +53,7 @@ void TextureArray::setup() {
 
     // iterate over the rest of the paths, read them in and upload them (starting from layer 1)
     for (size_t i = 1; i < _paths.size(); i++) {
-        unsigned char *imageData = stbi_load(_paths[i].c_str(), &_width, &_height, &_channels, 0);
+        unsigned char *imageData = stbi_load(_paths[i].c_str(), &_width, &_height, &_channels, 4);
 
         std::cout << "Loaded texture array layer " << i << " from path: " << _paths[i] << std::endl;
 

@@ -21,7 +21,8 @@ enum BlockType: int {
     DIRT = 1,
     STONE = 2,
     BEDROCK = 3,
-    DIAMOND_BLOCK = 4
+    DIAMOND_BLOCK = 4,
+    PACKED_ICE = 5,
 };
 
 class Block {
@@ -196,6 +197,8 @@ public:
                 return static_cast<int>(BlockTextureId::BEDROCK);
             case DIAMOND_BLOCK:
                 return static_cast<int>(BlockTextureId::DIAMOND_BLOCK);
+            case PACKED_ICE:
+                return static_cast<int>(BlockTextureId::PACKED_ICE);
             default:
                 return -2; // ERROR
         }
