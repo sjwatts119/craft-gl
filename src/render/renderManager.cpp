@@ -35,7 +35,9 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, Wor
     _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
 
     Frustum viewFrustum{*player->getCamera(), window->getWidth(), window->getHeight()};
+
     for (const auto &chunk: world->_chunks | std::views::values) {
+        // average cost of testing 8x8x8 world is roughly 60us per frame
         if (!viewFrustum.fastIntersects(AABB::forChunk(chunk->_coordinate))) {
             continue;
         }

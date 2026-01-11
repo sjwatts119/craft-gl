@@ -49,9 +49,11 @@ public:
 
     /**
      * Does the frustum intersect with the given AABB?
+     *
+     * Ignores far/near planes and is not 100% accurate
      */
     bool fastIntersects(const AABB &aabb) const {
-        const glm::vec4* planes[] = {&left, &right, &bottom, &top, &near, &far};
+        const glm::vec4* planes[] = {&left, &right, &bottom, &top};
 
         // for each plane, find the positive vertex and check if it's inside
         // this is a bit inaccurate, it might not cull some AABBs but oh well it's fast
