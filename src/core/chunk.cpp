@@ -5,13 +5,9 @@
 Chunk::Chunk(const Coordinate coordinate)
   : _coordinate(coordinate),
     _boundingBox(AABB::forChunk(coordinate)),
-    _blocks{},
     _mesh{std::make_unique<ChunkMesh>(this)}
 {
     _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toWorldFromChunk().toVec3());
-
-    // addTestBlocks();
-    generateMesh();
 }
 
 Chunk::~Chunk() = default;
@@ -36,7 +32,7 @@ void Chunk::addTestBlocksBottom() {
                     type = STONE;
                 }
 
-                _blocks[x][y][z] = Block{type};
+                _blocks[x][y][z] = std::make_unique<Block>(type);
             }
         }
     }
@@ -50,7 +46,7 @@ void Chunk::addTestBlocksMiddle() {
             for (int z = 0; z < CHUNK_SIZE; z++) {
                 BlockType type = STONE;
 
-                _blocks[x][y][z] = Block{type};
+                _blocks[x][y][z] = std::make_unique<Block>(type);
             }
         }
     }
@@ -72,7 +68,7 @@ void Chunk::addTestBlocksTop() {
                     type = AIR;
                 }
 
-                _blocks[x][y][z] = Block{type};
+                _blocks[x][y][z] = std::make_unique<Block>(type);
             }
         }
     }
@@ -84,7 +80,7 @@ void Chunk::addTestBlocksAir() {
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
-                _blocks[x][y][z] = Block{AIR};
+                _blocks[x][y][z] = std::make_unique<Block>(AIR);
             }
         }
     }
@@ -114,15 +110,15 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
                 };
 
                 if (blockWorldCoordinate.y > targetHeight) {
-                    _blocks[x][y][z] = Block{AIR};
+                    _blocks[x][y][z] = std::make_unique<Block>(AIR);
                 } else if (blockWorldCoordinate.y == targetHeight) {
-                    _blocks[x][y][z] = Block{GRASS};
+                    _blocks[x][y][z] = std::make_unique<Block>(GRASS);
                 } else if (blockWorldCoordinate.y > targetHeight - 5) {
-                    _blocks[x][y][z] = Block{DIRT};
+                    _blocks[x][y][z] = std::make_unique<Block>(DIRT);
                 } else if (blockWorldCoordinate.y == 0) {
-                    _blocks[x][y][z] = Block{BEDROCK};
+                    _blocks[x][y][z] = std::make_unique<Block>(BEDROCK);
                 } else {
-                    _blocks[x][y][z] = Block{STONE};
+                    _blocks[x][y][z] = std::make_unique<Block>(STONE);
                 }
             }
         }
@@ -131,7 +127,7 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
 
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = Block{AIR};
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(AIR);
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }
@@ -139,7 +135,7 @@ void Chunk::destroyBlock(const Coordinate localCoordinate) {
 void Chunk::placeBlock(const Coordinate localCoordinate) {
     const Block newBlock{DIAMOND_BLOCK};
 
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = newBlock;
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(newBlock);
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }

@@ -122,7 +122,7 @@ const Block *World::blockAt(const Coordinate worldCoordinate) const {
     // std::cout << "Chunk coordinate: {x: " << chunkCoordinate.x << " y: " << chunkCoordinate.y << " z: " << chunkCoordinate.z << "}" << std::endl;
     // std::cout << "Local coordinate: {x: " << localCoordinate.x << " y: " << localCoordinate.y << " z: " << localCoordinate.z << "}" << std::endl;
 
-    return &chunk._blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z];
+    return chunk._blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z].get();
 }
 
 void World::destroyBlock(const Coordinate worldCoordinate) {
