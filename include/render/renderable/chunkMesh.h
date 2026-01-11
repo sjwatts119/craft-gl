@@ -4,7 +4,7 @@
 
 #include "renderable.h"
 #include "core/chunk.h"
-#include "core/block.h"
+#include "core/block/block.h"
 #include "utility/coordinate.h"
 #include "render/buffer/blockData.h"
 #include "utility/direction.h"

@@ -8,7 +8,7 @@
 #include "geometry/AABB.h"
 #include "utility/coordinate.h"
 #include "utility/constant.h"
-#include "block.h"
+#include "block/block.h"
 #include "utility/blockFace.h"
 
 class ChunkMesh;
@@ -40,14 +40,6 @@ public:
     void generateMesh() const;
 
     [[nodiscard]] glm::mat4 localToWorldMatrix() const;
-
-    void addTestBlocksBottom();
-
-    void addTestBlocksMiddle();
-
-    void addTestBlocksTop();
-
-    void addTestBlocksAir();
 
     void addTestBlocksPerlin(const siv::PerlinNoise* perlin);
 

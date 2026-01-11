@@ -61,6 +61,15 @@ void AABB::include(AABB &other) {
     expandTo({other.maxX, other.maxY, other.maxZ});
 }
 
+void AABB::push(const glm::vec3 &push) {
+    minX += push.x;
+    minY += push.y;
+    minZ += push.z;
+    maxX += push.x;
+    maxY += push.y;
+    maxZ += push.z;
+}
+
 bool AABB::intersectsX(const AABB &aabb) const {
     return (minX <= aabb.maxX && maxX >= aabb.minX);
 }

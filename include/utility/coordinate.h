@@ -5,7 +5,7 @@
 #include <ostream>
 
 #include "utility/constant.h"
-#include "core/block.h"
+#include "core/block/block.h"
 #include "utility/blockFace.h"
 
 struct Coordinate {
@@ -24,25 +24,21 @@ public:
     int y;
     int z;
 
-    explicit Coordinate(const int _x, const int _y, const int _z) {
-        x = _x;
-        y = _y;
-        z = _z;
-    }
+    Coordinate(const int _x, const int _y, const int _z) : x(_x), y(_y), z(_z) {}
 
-    explicit Coordinate(const float _x, const float _y, const float _z) {
+    Coordinate(const float _x, const float _y, const float _z) {
         x = static_cast<int>(_x);
         y = static_cast<int>(_y);
         z = static_cast<int>(_z);
     }
 
-    explicit Coordinate(const glm::vec3 vec3) {
+    Coordinate(const glm::vec3 vec3) {
         x = static_cast<int>(vec3.x);
         y = static_cast<int>(vec3.y);
         z = static_cast<int>(vec3.z);
     }
 
-    explicit Coordinate(const glm::ivec3 iVec3) {
+    Coordinate(const glm::ivec3 iVec3) {
         x = iVec3.x;
         y = iVec3.y;
         z = iVec3.z;

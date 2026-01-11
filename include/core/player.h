@@ -43,7 +43,9 @@ class Player {
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
     std::optional<BlockFace> _highlightedBlockFace;
     AABB _boundingBox;
+
     bool _grounded = false;
+    float _slip = BLOCK_SLIPPERINESS_FACTOR;
 
     /** Debounce States **/
     bool _mouse1WasPressed = false;
@@ -52,7 +54,7 @@ class Player {
     bool _mWasPressed = false;
 
     /** Position **/
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 5 + EPSILON, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 2 + 8, 0.0f};
     glm::vec3 _lastPosition = _position;
 
     glm::vec3 _momentum{0.0f};
@@ -86,6 +88,8 @@ class Player {
     void updateLastPosition();
 
     void updatePosition();
+
+    void updateSlip();
 
     void updateCameraPosition(const Window* window);
 

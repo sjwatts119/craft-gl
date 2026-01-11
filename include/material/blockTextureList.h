@@ -5,6 +5,7 @@
 #include <vector>
 
 enum class BlockTextureId : int {
+    NONE = -1,
     GRASS_BLOCK_TOP = 0,
     GRASS_BLOCK_SIDE = 1,
     DIRT = 2,
@@ -26,7 +27,11 @@ namespace BlockTextureList {
         "../asset/texture/block/goodVibes/packed_ice.png",
     };
 
-    inline std::string get(BlockTextureId id) {
+    inline std::optional<std::string> get(BlockTextureId id) {
+        if (id == BlockTextureId::NONE || id == BlockTextureId::COUNT) {
+            return std::nullopt;
+        }
+
         return TEXTURES[static_cast<int>(id)];
     }
 

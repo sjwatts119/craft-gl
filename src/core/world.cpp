@@ -5,36 +5,6 @@ World::World() {
     referenceNeighbours();
 }
 
-void World::addTestChunks() {
-    for (int x = (CHUNK_COUNT_X / -2); x < (CHUNK_COUNT_X / 2); x++) {
-        for (int y = 0; y < CHUNK_COUNT_Y; y++) {
-            for (int z = CHUNK_COUNT_Z / -2; z < CHUNK_COUNT_Z / 2; z++) {
-                const Coordinate coordinate {x, y, z};
-
-                auto chunk = std::make_unique<Chunk>(coordinate);
-
-                auto globalY = y * CHUNK_SIZE;
-
-                if (globalY == 0) {
-                    chunk->addTestBlocksBottom();
-                } else if (globalY < CHUNK_SIZE * 4) {
-                    chunk->addTestBlocksMiddle();
-                } else if (globalY < CHUNK_SIZE * 5) {
-                    chunk->addTestBlocksTop();
-                } else {
-                    chunk->addTestBlocksAir();
-                }
-
-                chunk->_mesh->markAsDirty();
-
-                _chunks.emplace(coordinate, std::move(chunk));
-
-                // std::cout << "added test chunk to world at localised position {x: " << x << " y: " << y << " z: " << z << "}" << std::endl;
-            }
-        }
-    }
-}
-
 void World::addPerlinChunks() {
     std::vector<Coordinate> coordinates;
 

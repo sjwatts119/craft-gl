@@ -7,30 +7,22 @@
 #include <glm/glm.hpp>
 #include <glad/glad.h>
 
+#include "core/blockType.h"
 #include "geometry/AABB.h"
 #include "utility/coordinate.h"
 #include "material/blockTextureList.h"
 #include "render/buffer/vertexData.h"
 #include "utility/blockFace.h"
 
-enum BlockType: int {
-    ERROR = -2,
-    AIR = -1,
-
-    GRASS = 0,
-    DIRT = 1,
-    STONE = 2,
-    BEDROCK = 3,
-    DIAMOND_BLOCK = 4,
-    PACKED_ICE = 5,
-};
-
 class Block {
-private:
+protected:
     BlockType _type;
     bool _highlighted;
-    bool _destructible = true; // TODO : implement indestructible blocks
-    float _slipperiness = 0.6f;
+    bool _destructible;
+    float _slipperiness;
+
+    Block(const BlockType type, const bool destructible, const float slipperiness)
+        : _type(type), _highlighted(false), _destructible(destructible), _slipperiness(slipperiness) {}
 
     /**
      * Counter-clockwise winding
@@ -117,16 +109,7 @@ private:
     static constexpr std::array<GLuint, 6> RIGHT_INDICES = {0, 1, 2, 2, 3, 0};
 
 public:
-    Block(const BlockType type = AIR) : _type(type), _highlighted(false) {
-    };
-
-    [[nodiscard]] BlockType getType() const;
-
-    void setType(const BlockType &type);
-
-    [[nodiscard]] float getSlipperinessFactor() const;
-
-    void setSlipperinessFactor(float slipperiness);
+    virtual ~Block() = default;
 
     static constexpr const std::array<VertexData, 4> &getTopVertices() {
         return TOP_VERTICES;
@@ -176,31 +159,13 @@ public:
         return RIGHT_INDICES;
     }
 
-    [[nodiscard]] int getTextureId(const BlockFace face) const {
-        switch (_type) {
-            case AIR:
-                return -1; // No texture
-            case GRASS:
-                switch (face) {
-                    case FACE_TOP:
-                        return static_cast<int>(BlockTextureId::GRASS_BLOCK_TOP);
-                    case FACE_BOTTOM:
-                        return static_cast<int>(BlockTextureId::DIRT);
-                    default:
-                        return static_cast<int>(BlockTextureId::GRASS_BLOCK_SIDE);
-                }
-            case DIRT:
-                return static_cast<int>(BlockTextureId::DIRT);
-            case STONE:
-                return static_cast<int>(BlockTextureId::STONE);
-            case BEDROCK:
-                return static_cast<int>(BlockTextureId::BEDROCK);
-            case DIAMOND_BLOCK:
-                return static_cast<int>(BlockTextureId::DIAMOND_BLOCK);
-            case PACKED_ICE:
-                return static_cast<int>(BlockTextureId::PACKED_ICE);
-            default:
-                return -2; // ERROR
-        }
-    }
+    [[nodiscard]] BlockType getType() const;
+
+    void setType(const BlockType &type);
+
+    [[nodiscard]] float getSlipperinessFactor() const;
+
+    void setSlipperinessFactor(float slipperiness);
+
+    virtual BlockTextureId getTextureId(BlockFace face) = 0;
 };

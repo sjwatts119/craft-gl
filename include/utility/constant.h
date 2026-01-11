@@ -12,14 +12,16 @@ static constexpr int MAX_TICKS_PER_FRAME = 5;
 static constexpr int CHUNK_SIZE = 32;
 static constexpr int BLOCK_COUNT = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 
-static constexpr int SCREEN_WIDTH = 2560;
-static constexpr int SCREEN_HEIGHT = 1440;
+static constexpr int SCREEN_WIDTH = 1920;
+static constexpr int SCREEN_HEIGHT = 1080;
 
 static constexpr auto SCREEN_TITLE = "craft-gl";
 
 static constexpr int CHUNK_COUNT_X = 8;
 static constexpr int CHUNK_COUNT_Y = 8;
 static constexpr int CHUNK_COUNT_Z = 8;
+
+static constexpr float STANDING_ON_NEGATIVE_Y_OFFSET = -0.5f; // amount to push down detection point when checking for stood on block
 
 static constexpr float JUMP_VELOCITY = 0.45f; // instant upward velocity when jumping
 

@@ -39,6 +39,8 @@ struct AABB {
 
     void include(AABB &other);
 
+    void push(const glm::vec3 &push);
+
     [[nodiscard]] bool intersects(const AABB &aabb) const;
 
     [[nodiscard]] bool intersectsX(const AABB &aabb) const;

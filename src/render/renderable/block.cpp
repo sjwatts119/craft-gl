@@ -1,4 +1,4 @@
-#include "core/block.h"
+#include "core/block/block.h"
 
 BlockType Block::getType() const {
     return _type;

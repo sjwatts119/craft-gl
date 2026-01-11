@@ -13,6 +13,7 @@ void Player::tick(const Window* window) {
     processMouse(window);
     processKeyboard(window);
 
+    updateSlip();
     updatePosition();
 
     applyGravity();
@@ -78,11 +79,10 @@ float Player::slipperinessAccelerationMultiplier() const {
     }
 
     constexpr auto baseSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
-    // TODO: get actual block slipperiness
-    constexpr auto currentSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
+    const auto currentSlip = _slip * HORIZONTAL_RESISTANCE_FACTOR;
 
-    constexpr auto accelerationRatio = (baseSlip / currentSlip);
-    constexpr auto accelerationMultiplier = accelerationRatio * accelerationRatio * accelerationRatio;
+    const auto accelerationRatio = (baseSlip / currentSlip);
+    const auto accelerationMultiplier = accelerationRatio * accelerationRatio * accelerationRatio;
 
     return WALKING_ACCELERATION * accelerationMultiplier;
 }
@@ -198,7 +198,7 @@ void Player::applyResistance() {
     }
 
     const auto horizontalResistanceFactor = _grounded
-        ? BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR
+        ? _slip * HORIZONTAL_RESISTANCE_FACTOR
         : HORIZONTAL_RESISTANCE_FACTOR;
 
     _momentum.x *= horizontalResistanceFactor;
@@ -254,7 +254,7 @@ void Player::updatePosition() {
             for (int z = minZ; z <= maxZ; z++) {
                 auto block = _world->blockAt(Coordinate{x, y, z});
 
-                if (block == nullptr || block->getType() == AIR) {
+                if (block == nullptr || block->getType() == BlockType::AIR) {
                     continue;
                 }
 
@@ -294,6 +294,37 @@ void Player::updatePosition() {
     _position.z += deltaZ;
     _momentum.z = (originalDeltaZ != deltaZ) ? 0.0f : _momentum.z;
     updateBoundingBox();
+}
+
+void Player::updateSlip() {
+    if (!_grounded) {
+        _slip = BLOCK_SLIPPERINESS_FACTOR;
+        return;
+    }
+
+    constexpr auto verticalPush = glm::vec3{0.0f, STANDING_ON_NEGATIVE_Y_OFFSET, 0.0f};
+    auto pushedAABB = _boundingBox;
+    pushedAABB.push(verticalPush);
+
+    const int minX = static_cast<int>(std::floor(pushedAABB.minX));
+    const int maxX = static_cast<int>(std::floor(pushedAABB.maxX));
+    const int minZ = static_cast<int>(std::floor(pushedAABB.minZ));
+    const int maxZ = static_cast<int>(std::floor(pushedAABB.maxZ));
+    const int checkY = static_cast<int>(std::floor(_position.y + STANDING_ON_NEGATIVE_Y_OFFSET));
+
+    // spin around the bottom of the player bounding box to find the block they are standing on
+    for (int x = minX; x <= maxX; ++x) {
+        for (int z = minZ; z <= maxZ; ++z) {
+            if (Coordinate coord{x, checkY, z}; pushedAABB.intersects(AABB::forBlock(coord))) {
+                if (const auto block = _world->blockAt(coord); block != nullptr && block->getType() != BlockType::AIR) {
+                    _slip = block->getSlipperinessFactor();
+                    return;
+                }
+            }
+        }
+    }
+
+    _slip = BLOCK_SLIPPERINESS_FACTOR;
 }
 
 void Player::updateBoundingBox() {
@@ -379,7 +410,7 @@ void Player::setAimingAtBlock() {
     std::optional<Coordinate> aimedAtCoordinate;
 
     for (const auto& coord : traversed) {
-        if (const auto block = _world->blockAt(coord); block == nullptr || block->getType() == AIR) {
+        if (const auto block = _world->blockAt(coord); block == nullptr || block->getType() == BlockType::AIR) {
             continue;
         }
 

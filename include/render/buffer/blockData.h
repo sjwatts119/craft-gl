@@ -6,7 +6,7 @@ struct BlockData {
     float x, y, z;
     float normalX, normalY, normalZ;
     float texU, texV;
-    int texId;
+    BlockTextureId texId;
     int highlighted = 0;
 
     static size_t size() {

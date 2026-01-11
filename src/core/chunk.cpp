@@ -1,5 +1,11 @@
 #include "core/chunk.h"
 
+#include "core/block/air.h"
+#include "core/block/bedrock.h"
+#include "core/block/dirt.h"
+#include "core/block/grass.h"
+#include "core/block/packedIce.h"
+#include "core/block/stone.h"
 #include "render/renderable/chunkMesh.h"
 
 Chunk::Chunk(const Coordinate coordinate)
@@ -18,74 +24,6 @@ void Chunk::generateMesh() const {
 
 glm::mat4 Chunk::localToWorldMatrix() const {
     return _localToWorldMatrix;
-}
-
-void Chunk::addTestBlocksBottom() {
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                BlockType type;
-
-                if (y == 0) {
-                    type = BEDROCK;
-                } else {
-                    type = STONE;
-                }
-
-                _blocks[x][y][z] = std::make_unique<Block>(type);
-            }
-        }
-    }
-
-    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
-}
-
-void Chunk::addTestBlocksMiddle() {
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                BlockType type = STONE;
-
-                _blocks[x][y][z] = std::make_unique<Block>(type);
-            }
-        }
-    }
-
-    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
-}
-
-void Chunk::addTestBlocksTop() {
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                BlockType type;
-
-                if (y < 3) {
-                    type = DIRT;
-                } else if (y == 3) {
-                    type = GRASS;
-                } else {
-                    type = AIR;
-                }
-
-                _blocks[x][y][z] = std::make_unique<Block>(type);
-            }
-        }
-    }
-
-    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
-}
-
-void Chunk::addTestBlocksAir() {
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
-                _blocks[x][y][z] = std::make_unique<Block>(AIR);
-            }
-        }
-    }
-
-    // std::cout << "Added test blocks to chunk at localised position {x: " << _coordinate.x << " z: " << _coordinate.z << "}" << std::endl;
 }
 
 void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
@@ -110,15 +48,15 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
                 };
 
                 if (blockWorldCoordinate.y > targetHeight) {
-                    _blocks[x][y][z] = std::make_unique<Block>(AIR);
+                    _blocks[x][y][z] = std::make_unique<Air>();
                 } else if (blockWorldCoordinate.y == targetHeight) {
-                    _blocks[x][y][z] = std::make_unique<Block>(GRASS);
+                    _blocks[x][y][z] = std::make_unique<Grass>();
                 } else if (blockWorldCoordinate.y > targetHeight - 5) {
-                    _blocks[x][y][z] = std::make_unique<Block>(DIRT);
+                    _blocks[x][y][z] = std::make_unique<Dirt>();
                 } else if (blockWorldCoordinate.y == 0) {
-                    _blocks[x][y][z] = std::make_unique<Block>(BEDROCK);
+                    _blocks[x][y][z] = std::make_unique<Bedrock>();
                 } else {
-                    _blocks[x][y][z] = std::make_unique<Block>(STONE);
+                    _blocks[x][y][z] = std::make_unique<Stone>();
                 }
             }
         }
@@ -127,15 +65,13 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
 
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(AIR);
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Air>();
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }
 
 void Chunk::placeBlock(const Coordinate localCoordinate) {
-    const Block newBlock{PACKED_ICE};
-
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(newBlock);
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<PackedIce>();
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }
