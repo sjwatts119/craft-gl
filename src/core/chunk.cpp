@@ -65,6 +65,11 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
 
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
+    if (!_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z]->getDestructible()) {
+        std::cout << "block at " << localCoordinate << " is indestructible." << std::endl;
+        return;
+    }
+
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Air>();
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);

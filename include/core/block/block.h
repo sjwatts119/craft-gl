@@ -167,5 +167,11 @@ public:
 
     void setSlipperinessFactor(float slipperiness);
 
+    [[nodiscard]] bool getDestructible() const;
+
+    void setDestructible(bool destructible);
+
+    [[nodiscard]]
+
     virtual BlockTextureId getTextureId(BlockFace face) = 0;
 };

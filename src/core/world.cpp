@@ -107,7 +107,7 @@ void World::destroyBlock(const Coordinate worldCoordinate) {
     Chunk& chunk = *chunkResult->second;
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
-    std::cout << "destroyed x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << std::endl;
+    std::cout << "destroyed " << worldCoordinate << std::endl;
 
     chunk.destroyBlock(localCoordinate);
 }
@@ -122,7 +122,7 @@ void World::placeBlock(const Coordinate worldCoordinate) {
     Chunk& chunk = *chunkResult->second;
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
-    std::cout << "placed x: " << worldCoordinate.x << " y: " << worldCoordinate.y << " z: " << worldCoordinate.z << std::endl;
+    std::cout << "placed " << worldCoordinate << std::endl;
 
     chunk.placeBlock(localCoordinate);
 }

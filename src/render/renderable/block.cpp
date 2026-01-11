@@ -15,3 +15,11 @@ float Block::getSlipperinessFactor() const {
 void Block::setSlipperinessFactor(const float slipperiness) {
     _slipperiness = slipperiness;
 }
+
+bool Block::getDestructible() const {
+    return _destructible;
+}
+
+void Block::setDestructible(const bool destructible) {
+    _destructible = destructible;
+}
