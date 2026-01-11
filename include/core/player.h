@@ -125,6 +125,10 @@ public:
 
     [[nodiscard]] glm::vec3 getPosition() const;
 
+    Coordinate getBlockCoordinate() const;
+
+    Coordinate getChunkCoordinate() const;
+
     [[nodiscard]] AABB getBoundingBox() const;
 
     [[nodiscard]] const Camera *getCamera() const;

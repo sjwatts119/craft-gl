@@ -8,10 +8,11 @@
 #include "core/block/stone.h"
 #include "render/renderable/chunkMesh.h"
 
-Chunk::Chunk(const Coordinate coordinate)
-  : _coordinate(coordinate),
+Chunk::Chunk(World* world, const Coordinate coordinate) :
+    _world(world),
+    _coordinate(coordinate),
     _boundingBox(AABB::forChunk(coordinate)),
-    _mesh{std::make_unique<ChunkMesh>(this)}
+    _mesh{std::make_unique<ChunkMesh>(_world, this)}
 {
     _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toWorldFromChunk().toVec3());
 }

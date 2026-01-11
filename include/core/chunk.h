@@ -11,11 +11,13 @@
 #include "block/block.h"
 #include "utility/blockFace.h"
 
+class World;
 class ChunkMesh;
 
 class Chunk {
 private:
     glm::mat4 _localToWorldMatrix{};
+    World* _world;
 
 public:
     Coordinate _coordinate;
@@ -26,14 +28,7 @@ public:
     std::unique_ptr<Block> _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 
-    Chunk *_leftNeighbour{nullptr};
-    Chunk *_rightNeighbour{nullptr};
-    Chunk *_downNeighbour{nullptr};
-    Chunk *_upNeighbour{nullptr};
-    Chunk *_backNeighbour{nullptr};
-    Chunk *_frontNeighbour{nullptr};
-
-    explicit Chunk(Coordinate coordinate);
+    explicit Chunk(World* world, const Coordinate coordinate);
 
     ~Chunk();
 

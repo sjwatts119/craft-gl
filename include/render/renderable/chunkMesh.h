@@ -1,17 +1,22 @@
 #pragma once
 
 #include <glad/glad.h>
+#include <vector>
+#include <glm/glm.hpp>
 
 #include "renderable.h"
-#include "core/chunk.h"
 #include "core/block/block.h"
 #include "utility/coordinate.h"
 #include "render/buffer/blockData.h"
 #include "utility/direction.h"
 
+class Chunk;
+class World;
+
 class ChunkMesh final : public Renderable {
 private:
     Chunk *_chunk;
+    World *_world;
     bool _dirty = true;
 
 public:
@@ -23,7 +28,7 @@ public:
     std::vector<BlockData> _vertices;
     std::vector<GLuint> _indices;
 
-    explicit ChunkMesh(Chunk *chunk);
+    explicit ChunkMesh(World* world, Chunk* chunk);
 
     [[nodiscard]] bool isDirty() const;
 

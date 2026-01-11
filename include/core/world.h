@@ -1,14 +1,20 @@
 #pragma once
+
 #include <unordered_map>
 #include <thread>
+#include <memory>
 
-#include "chunk.h"
 #include "utility/coordinate.h"
 #include "utility/blockFace.h"
 #include "material/light.h"
-#include "render/renderable/chunkMesh.h"
 #include <siv/perlin.h>
 
+#include "player.h"
+#include "render/window.h"
+
+class Chunk;
+class Block;
+class Player;
 
 class World {
 private:
@@ -25,19 +31,21 @@ public:
 
     World();
 
-    void addTestChunks();
+    ~World();
+
+    void loadChunkColumn(Coordinate chunkCoordinate);
 
     void addPerlinChunks();
 
-    void referenceNeighbours();
+    [[nodiscard]] Block *blockAt(Coordinate worldCoordinate) const;
 
-    [[nodiscard]] const Block *blockAt(Coordinate worldCoordinate) const;
+    [[nodiscard]] Chunk *chunkAt(Coordinate chunkCoordinate) const;
 
-    void destroyBlock(Coordinate worldCoordinate);
+    void destroyBlock(Coordinate worldCoordinate) const;
 
-    void placeBlock(Coordinate worldCoordinate);
+    void placeBlock(Coordinate worldCoordinate) const;
 
-    void update();
+    void update(const Window *window, const Player *player);
 
     [[nodiscard]] const Light &getSun() const;
 };

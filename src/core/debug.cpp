@@ -1,5 +1,7 @@
 #include "render/renderable/debug.h"
 
+#include "core/chunk.h"
+
 Debug::Debug() {
     glGenVertexArrays(1, &_vaoId);
     glGenBuffers(1, &_vboId);

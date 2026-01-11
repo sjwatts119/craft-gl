@@ -1,8 +1,13 @@
 #include "render/renderable/chunkMesh.h"
 
+#include "core/chunk.h"
+#include "core/world.h"
 #include "utility/direction.h"
 
-ChunkMesh::ChunkMesh(Chunk* chunk) : _chunk(chunk) {
+ChunkMesh::ChunkMesh(World* world, Chunk* chunk) :
+    _chunk(chunk),
+    _world(world)
+{
     glGenVertexArrays(1, &_vaoId);
     glGenBuffers(1, &_vboId);
     glGenBuffers(1, &_eboId);
@@ -19,56 +24,60 @@ void ChunkMesh::markAsDirty() {
 void ChunkMesh::markAsDirtyWithNeighbours() {
     markAsDirty();
 
-    if (_chunk->_leftNeighbour != nullptr) {
-        _chunk->_leftNeighbour->_mesh->markAsDirty();
-    }
+    auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
-    if (_chunk->_rightNeighbour != nullptr) {
-        _chunk->_rightNeighbour->_mesh->markAsDirty();
+    if (leftNeighbour != nullptr) {
+        leftNeighbour->_mesh->markAsDirty();
     }
-
-    if (_chunk->_upNeighbour != nullptr) {
-        _chunk->_upNeighbour->_mesh->markAsDirty();
+    if (rightNeighbour != nullptr) {
+        rightNeighbour->_mesh->markAsDirty();
     }
-
-    if (_chunk->_downNeighbour != nullptr) {
-        _chunk->_downNeighbour->_mesh->markAsDirty();
+    if (downNeighbour != nullptr) {
+        downNeighbour->_mesh->markAsDirty();
     }
-
-    if (_chunk->_frontNeighbour != nullptr) {
-        _chunk->_frontNeighbour->_mesh->markAsDirty();
+    if (upNeighbour != nullptr) {
+        upNeighbour->_mesh->markAsDirty();
     }
-
-    if (_chunk->_backNeighbour != nullptr) {
-        _chunk->_backNeighbour->_mesh->markAsDirty();
+    if (backNeighbour != nullptr) {
+        backNeighbour->_mesh->markAsDirty();
+    }
+    if (frontNeighbour != nullptr) {
+        frontNeighbour->_mesh->markAsDirty();
     }
 }
 
 void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate localCoordinate) {
     markAsDirty();
 
-    if (localCoordinate.x == 0 && _chunk->_leftNeighbour != nullptr) {
-        _chunk->_leftNeighbour->_mesh->markAsDirty();
-    }
+    auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
-    if (localCoordinate.x == CHUNK_SIZE - 1 && _chunk->_rightNeighbour != nullptr) {
-        _chunk->_rightNeighbour->_mesh->markAsDirty();
+    if (localCoordinate.x == 0 && leftNeighbour != nullptr) {
+        leftNeighbour->_mesh->markAsDirty();
     }
-
-    if (localCoordinate.y == 0 && _chunk->_downNeighbour != nullptr) {
-        _chunk->_downNeighbour->_mesh->markAsDirty();
+    if (localCoordinate.x == CHUNK_SIZE - 1 && rightNeighbour != nullptr) {
+        rightNeighbour->_mesh->markAsDirty();
     }
-
-    if (localCoordinate.y == CHUNK_SIZE - 1 && _chunk->_upNeighbour != nullptr) {
-        _chunk->_upNeighbour->_mesh->markAsDirty();
+    if (localCoordinate.y == 0 && downNeighbour != nullptr) {
+        downNeighbour->_mesh->markAsDirty();
     }
-
-    if (localCoordinate.z == 0 && _chunk->_backNeighbour != nullptr) {
-        _chunk->_backNeighbour->_mesh->markAsDirty();
+    if (localCoordinate.y == CHUNK_SIZE - 1 && upNeighbour != nullptr) {
+        upNeighbour->_mesh->markAsDirty();
     }
-
-    if (localCoordinate.z == CHUNK_SIZE - 1 && _chunk->_frontNeighbour != nullptr) {
-        _chunk->_frontNeighbour->_mesh->markAsDirty();
+    if (localCoordinate.z == 0 && backNeighbour != nullptr) {
+        backNeighbour->_mesh->markAsDirty();
+    }
+    if (localCoordinate.z == CHUNK_SIZE - 1 && frontNeighbour != nullptr) {
+        frontNeighbour->_mesh->markAsDirty();
     }
 }
 
@@ -77,6 +86,14 @@ void ChunkMesh::regenerateMesh() {
 
     _vertices.clear();
     _indices.clear();
+
+    // get neighbouring chunks
+    auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
@@ -90,12 +107,13 @@ void ChunkMesh::regenerateMesh() {
                 bool isHighlighted = glm::ivec3{x, y, z} == _highlightedBlockIndex;
                 auto localCoordinate = Coordinate{glm::vec3{x, y, z}};
 
-                auto leftNeighbour = localCoordinate.leftNeighbour();
-                auto rightNeighbour = localCoordinate.rightNeighbour();
-                auto downNeighbour = localCoordinate.downNeighbour();
-                auto upNeighbour = localCoordinate.upNeighbour();
-                auto backNeighbour = localCoordinate.backNeighbour();
-                auto frontNeighbour = localCoordinate.frontNeighbour();
+                // get neighbouring local coordinates
+                auto left = localCoordinate.leftNeighbour();
+                auto right = localCoordinate.rightNeighbour();
+                auto down = localCoordinate.downNeighbour();
+                auto up = localCoordinate.upNeighbour();
+                auto back = localCoordinate.backNeighbour();
+                auto front = localCoordinate.frontNeighbour();
 
                 bool shouldRenderLeftFace = true;
                 bool shouldRenderRightFace = true;
@@ -104,46 +122,46 @@ void ChunkMesh::regenerateMesh() {
                 bool shouldRenderBackFace = true;
                 bool shouldRenderFrontFace = true;
 
-                if (leftNeighbour.isInBounds()) {
-                    shouldRenderLeftFace = _chunk->_blocks[leftNeighbour.x][leftNeighbour.y][leftNeighbour.z]->getType() == BlockType::AIR;
-                } else if (_chunk->_leftNeighbour != nullptr) {
+                if (left.isInBounds()) {
+                    shouldRenderLeftFace = _chunk->_blocks[left.x][left.y][left.z]->getType() == BlockType::AIR;
+                } else if (leftNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{CHUNK_SIZE - 1, y, z}};
-                    shouldRenderLeftFace = _chunk->_leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderLeftFace = leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
                 }
 
-                if (rightNeighbour.isInBounds()) {
-                    shouldRenderRightFace = _chunk->_blocks[rightNeighbour.x][rightNeighbour.y][rightNeighbour.z]->getType() == BlockType::AIR;
-                } else if (_chunk->_rightNeighbour != nullptr) {
+                if (right.isInBounds()) {
+                    shouldRenderRightFace = _chunk->_blocks[right.x][right.y][right.z]->getType() == BlockType::AIR;
+                } else if (rightNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{0, y, z}};
-                    shouldRenderRightFace = _chunk->_rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderRightFace = rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
                 }
 
-                if (downNeighbour.isInBounds()) {
-                    shouldRenderBottomFace = _chunk->_blocks[downNeighbour.x][downNeighbour.y][downNeighbour.z]->getType() == BlockType::AIR;
-                } else if (_chunk->_downNeighbour != nullptr) {
+                if (down.isInBounds()) {
+                    shouldRenderBottomFace = _chunk->_blocks[down.x][down.y][down.z]->getType() == BlockType::AIR;
+                } else if (downNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, CHUNK_SIZE - 1, z}};
-                    shouldRenderBottomFace = _chunk->_downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderBottomFace = downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
                 }
 
-                if (upNeighbour.isInBounds()) {
-                    shouldRenderTopFace = _chunk->_blocks[upNeighbour.x][upNeighbour.y][upNeighbour.z]->getType() == BlockType::AIR;
-                } else if (_chunk->_upNeighbour != nullptr) {
+                if (up.isInBounds()) {
+                    shouldRenderTopFace = _chunk->_blocks[up.x][up.y][up.z]->getType() == BlockType::AIR;
+                } else if (upNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, 0, z}};
-                    shouldRenderTopFace = _chunk->_upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderTopFace = upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
                 }
 
-                if (backNeighbour.isInBounds()) {
-                    shouldRenderBackFace = _chunk->_blocks[backNeighbour.x][backNeighbour.y][backNeighbour.z]->getType() == BlockType::AIR;
-                } else if (_chunk->_backNeighbour != nullptr) {
+                if (back.isInBounds()) {
+                    shouldRenderBackFace = _chunk->_blocks[back.x][back.y][back.z]->getType() == BlockType::AIR;
+                } else if (backNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, CHUNK_SIZE - 1}};
-                    shouldRenderBackFace = _chunk->_backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderBackFace = backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
                 }
 
-                if (frontNeighbour.isInBounds()) {
-                    shouldRenderFrontFace = _chunk->_blocks[frontNeighbour.x][frontNeighbour.y][frontNeighbour.z]->getType() == BlockType::AIR;
-                } else if (_chunk->_frontNeighbour != nullptr) {
+                if (front.isInBounds()) {
+                    shouldRenderFrontFace = _chunk->_blocks[front.x][front.y][front.z]->getType() == BlockType::AIR;
+                } else if (frontNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, 0}};
-                    shouldRenderFrontFace = _chunk->_frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderFrontFace = frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
                 }
 
                 if (shouldRenderLeftFace) {

@@ -1,5 +1,7 @@
 #include <core/player.h>
 
+#include "core/chunk.h"
+
 void Player::update(const Window* window) {
     processCursor(window);
 
@@ -450,6 +452,18 @@ void Player::setAimingAtBlock() {
 glm::vec3 Player::getPosition() const
 {
     return _position;
+}
+
+Coordinate Player::getBlockCoordinate() const {
+    return Coordinate{
+        static_cast<int>(std::floor(_position.x)),
+        static_cast<int>(std::floor(_position.y)),
+        static_cast<int>(std::floor(_position.z))
+    };
+}
+
+Coordinate Player::getChunkCoordinate() const {
+    return getBlockCoordinate().toChunkFromWorld();
 }
 
 AABB Player::getBoundingBox() const {

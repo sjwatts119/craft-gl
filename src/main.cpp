@@ -26,7 +26,7 @@ int main() {
         }
 
         player.update(&window);
-        world.update();
+        world.update(&window, &player);
         debug.update(&player, &world);
 
         renderManager.render(&player, &window, &world, &interface, &debug);

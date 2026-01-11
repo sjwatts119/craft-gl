@@ -17,9 +17,9 @@ static constexpr int SCREEN_HEIGHT = 1440;
 
 static constexpr auto SCREEN_TITLE = "craft-gl";
 
-static constexpr int CHUNK_COUNT_X = 8;
+static constexpr int CHUNK_COUNT_X = 2;
 static constexpr int CHUNK_COUNT_Y = 8;
-static constexpr int CHUNK_COUNT_Z = 8;
+static constexpr int CHUNK_COUNT_Z = 2;
 
 static constexpr float STANDING_ON_NEGATIVE_Y_OFFSET = -0.5f; // amount to push down detection point when checking for stood on block
 

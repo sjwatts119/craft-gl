@@ -1,6 +1,7 @@
 #include <ranges>
 #include <render/renderManager.h>
 
+#include "core/chunk.h"
 #include "geometry/frustum.h"
 #include "render/renderable/debug.h"
 
