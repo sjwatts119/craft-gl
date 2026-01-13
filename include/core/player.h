@@ -138,9 +138,9 @@ public:
 
     [[nodiscard]] const Camera *getCamera() const;
 
-    [[nodiscard]] const Inventory *getInventory() const;
-
     [[nodiscard]] const Crosshair *getCrosshair() const;
+
+    Inventory *getInventory();
 
     [[nodiscard]] bool debugIsEnabled() const;
 };

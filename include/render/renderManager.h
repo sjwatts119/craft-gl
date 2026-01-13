@@ -29,9 +29,9 @@ private:
 
     void renderCrosshair(const Window *window, const Player *player) const;
 
-    void renderInventory(const Window *window, const Player *player) const;
+    void renderInventory(const Window *window, Player *player) const;
 
-    void renderInterface(const Window *window, const Player *player) const;
+    void renderInterface(const Window *window, Player *player) const;
 
     void renderDebug(const Player *player, const Window *window, Debug *debug) const;
 public:
@@ -39,5 +39,5 @@ public:
 
     static void clear();
 
-    void render(const Player *player, const Window *window, World *world, Debug *debug) const;
+    void render(Player *player, const Window *window, World *world, Debug *debug) const;
 };

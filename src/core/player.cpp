@@ -21,6 +21,10 @@ void Player::tick(const Window* window) {
     applyGravity();
     applyResistance();
     capMomentum();
+
+    if (_inventory.isDirty()) {
+        _inventory.regenerateMesh();
+    }
 }
 
 /**
@@ -152,10 +156,6 @@ void Player::processKeyboard(const Window* window) {
     {
         _inventory.selectBlockType(static_cast<BlockType>(5));
     }
-
-    // TODO track dirty state to avoid regenerating every frame
-    _inventory.regenerateMesh();
-    _inventory.upload();
 
     // if (glfwGetKey(window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
     // {
@@ -568,7 +568,7 @@ const Crosshair *Player::getCrosshair() const {
     return &_crosshair;
 }
 
-const Inventory *Player::getInventory() const {
+Inventory *Player::getInventory() {
     return &_inventory;
 }
 

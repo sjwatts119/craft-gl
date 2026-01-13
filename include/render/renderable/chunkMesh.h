@@ -18,8 +18,7 @@ private:
     World *_world;
 
     bool _dirty = true;
-    bool _uploadNeeded = false;
-
+    bool _uploadNeeded = true;
 
 public:
     glm::ivec3 _highlightedBlockIndex{-1};

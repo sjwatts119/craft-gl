@@ -7,19 +7,27 @@
 #include "core/block.h"
 #include "geometry/AABB.h"
 #include "render/buffer/blockData.h"
+#include "render/renderable/chunkMesh.h"
 
 Inventory::Inventory() {
     genBuffers();
-    regenerateMesh();
-    upload();
 }
 
 BlockType Inventory::getSelectedBlockType() const {
     return _selectedBlockType;
 }
 
+void Inventory::markAsDirty() {
+    _dirty = true;
+}
+
+bool Inventory::isDirty() const {
+    return _dirty;
+}
+
 void Inventory::selectBlockType(const BlockType type) {
     _selectedBlockType = type;
+    markAsDirty();
 }
 
 void Inventory::selectNextBlockType() {
@@ -30,6 +38,7 @@ void Inventory::selectNextBlockType() {
     }
 
     _selectedBlockType = static_cast<BlockType>(nextType);
+    markAsDirty();
 }
 
 void Inventory::selectPreviousBlockType() {
@@ -40,6 +49,7 @@ void Inventory::selectPreviousBlockType() {
     }
 
     _selectedBlockType = static_cast<BlockType>(previousType);
+    markAsDirty();
 }
 
 void Inventory::regenerateMesh() {
@@ -47,6 +57,17 @@ void Inventory::regenerateMesh() {
 
     _vertices = block.getBufferVertices();
     _indices = Block::getBufferIndices();
+
+    _dirty = false;
+    _uploadNeeded = true;
+}
+
+void Inventory::uploadIfRegenerated() {
+    if (!_uploadNeeded) {
+        return;
+    }
+
+    upload();
 }
 
 void Inventory::upload() {
@@ -72,6 +93,8 @@ void Inventory::upload() {
 
     glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((8 * sizeof(float)) + sizeof(int)));
     glEnableVertexAttribArray(4);
+
+    _uploadNeeded = false;
 }
 
 void Inventory::bind() const {

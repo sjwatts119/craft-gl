@@ -17,6 +17,9 @@ private:
     std::array<BlockData, 24> _vertices;
     std::array<GLuint, 36> _indices;
 
+    bool _dirty = true;
+    bool _uploadNeeded = true;
+
     const float _blockSize = 75.0f;
     Light _light{
         glm::vec3{_blockSize, _blockSize * 2.0f, _blockSize * 2.0f},
@@ -29,6 +32,10 @@ public:
 
     [[nodiscard]] BlockType getSelectedBlockType() const;
 
+    void markAsDirty();
+
+    bool isDirty() const;
+
     void selectBlockType(BlockType type);
 
     void selectNextBlockType();
@@ -36,6 +43,8 @@ public:
     void selectPreviousBlockType();
 
     void regenerateMesh();
+
+    void uploadIfRegenerated();
 
     void upload() override;
 

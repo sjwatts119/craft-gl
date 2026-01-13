@@ -73,7 +73,8 @@ void RenderManager::renderCrosshair(const Window *window, const Player *player) 
     player->getCrosshair()->render();
 }
 
-void RenderManager::renderInventory(const Window* window, const Player* player) const {
+void RenderManager::renderInventory(const Window* window, Player* player) const {
+    player->getInventory()->uploadIfRegenerated();
     player->getInventory()->bind();
 
     _shaderManager._inventoryShader.use();
@@ -90,7 +91,7 @@ void RenderManager::renderInventory(const Window* window, const Player* player) 
     player->getInventory()->render();
 }
 
-void RenderManager::renderInterface(const Window* window, const Player* player) const {
+void RenderManager::renderInterface(const Window* window, Player* player) const {
     glDisable(GL_DEPTH_TEST);
 
     renderCrosshair(window, player);
@@ -99,7 +100,7 @@ void RenderManager::renderInterface(const Window* window, const Player* player) 
     glEnable(GL_DEPTH_TEST);
 }
 
-void RenderManager::render(const Player* player, const Window* window, World* world, Debug* debug) const {
+void RenderManager::render(Player* player, const Window* window, World* world, Debug* debug) const {
     renderBlocks(player, window, world);
 
     if (player->debugIsEnabled()) {
