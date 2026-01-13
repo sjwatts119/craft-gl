@@ -102,7 +102,7 @@ void World::destroyBlock(const Coordinate worldCoordinate) const {
     chunk->destroyBlock(localCoordinate);
 }
 
-void World::placeBlock(const Coordinate worldCoordinate) const {
+void World::placeBlock(const Coordinate worldCoordinate, const BlockType blockType) const {
     const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
     const auto chunk = chunkAt(chunkCoordinate);
 
@@ -114,7 +114,7 @@ void World::placeBlock(const Coordinate worldCoordinate) const {
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
     std::cout << "placed " << worldCoordinate << std::endl;
-    chunk->placeBlock(localCoordinate);
+    chunk->placeBlock(localCoordinate, blockType);
 }
 
 void World::changeChunks(const Player* player) {
@@ -151,12 +151,10 @@ void World::changeChunks(const Player* player) {
     }
 
     if (!chunksToUnload.empty()) {
-        std::cout << "Unloading " << chunksToUnload.size() << " chunks." <<  std::endl;
         unloadChunks(chunksToUnload);
     }
 
     if (!chunksToLoad.empty()) {
-        std::cout << "Loading " << chunksToLoad.size() << " chunks." << std::endl;
         loadChunks(chunksToLoad);
     }
 }

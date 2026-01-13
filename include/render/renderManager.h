@@ -9,7 +9,7 @@
 #include "texture/textureManager.h"
 #include "core/player.h"
 #include "utility/coordinate.h"
-#include "core/block/block.h"
+#include "core/block.h"
 #include "glm/vec3.hpp"
 #include "utility/coordinate.h"
 #include "render/renderable/debug.h"

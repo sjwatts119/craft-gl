@@ -5,7 +5,7 @@
 #include <ostream>
 
 #include "utility/constant.h"
-#include "core/block/block.h"
+#include "core/block.h"
 #include "utility/blockFace.h"
 
 struct Coordinate {

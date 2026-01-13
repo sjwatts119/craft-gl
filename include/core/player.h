@@ -38,6 +38,7 @@ class Player {
     bool _firstMouseInput = true;
     float _mouseLastXPosition = SCREEN_WIDTH / 2.0f;
     float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
+
     bool _debug = false;
 
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
@@ -46,6 +47,8 @@ class Player {
 
     bool _grounded = false;
     float _slip = BLOCK_SLIPPERINESS_FACTOR;
+
+    BlockType _selectedBlockType = BlockType::STONE;
 
     /** Debounce States **/
     bool _mouse1WasPressed = false;

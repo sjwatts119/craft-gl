@@ -15,14 +15,11 @@
 #include "utility/blockFace.h"
 
 class Block {
-protected:
+private:
     BlockType _type;
     bool _highlighted;
     bool _destructible;
     float _slipperiness;
-
-    Block(const BlockType type, const bool destructible, const float slipperiness)
-        : _type(type), _highlighted(false), _destructible(destructible), _slipperiness(slipperiness) {}
 
     /**
      * Counter-clockwise winding
@@ -109,7 +106,13 @@ protected:
     static constexpr std::array<GLuint, 6> RIGHT_INDICES = {0, 1, 2, 2, 3, 0};
 
 public:
-    virtual ~Block() = default;
+    explicit Block(BlockType type);
+
+    static bool destructibleFromType(BlockType type);
+
+    static float slipperinessFromType(BlockType type);
+
+    static BlockTextureId textureIdFromTypeAndFace(BlockType type, BlockFace face);
 
     static constexpr const std::array<VertexData, 4> &getTopVertices() {
         return TOP_VERTICES;
@@ -171,7 +174,5 @@ public:
 
     void setDestructible(bool destructible);
 
-    [[nodiscard]]
-
-    virtual BlockTextureId getTextureId(BlockFace face) = 0;
+    BlockTextureId getTextureId(BlockFace face) const;
 };

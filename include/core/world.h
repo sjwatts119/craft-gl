@@ -47,7 +47,7 @@ public:
 
     void destroyBlock(Coordinate worldCoordinate) const;
 
-    void placeBlock(Coordinate worldCoordinate) const;
+    void placeBlock(Coordinate worldCoordinate, BlockType blockType) const;
 
     void changeChunks(const Player *player);
 

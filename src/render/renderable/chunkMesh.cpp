@@ -1,6 +1,7 @@
 #include "render/renderable/chunkMesh.h"
 
 #include "core/chunk.h"
+#include "core/block.h"
 #include "core/world.h"
 #include "utility/direction.h"
 

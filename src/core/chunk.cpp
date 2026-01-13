@@ -1,11 +1,5 @@
 #include "core/chunk.h"
 
-#include "core/block/air.h"
-#include "core/block/bedrock.h"
-#include "core/block/dirt.h"
-#include "core/block/grass.h"
-#include "core/block/packedIce.h"
-#include "core/block/stone.h"
 #include "render/renderable/chunkMesh.h"
 
 Chunk::Chunk(World* world, const Coordinate coordinate) :
@@ -49,15 +43,15 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
                 };
 
                 if (blockWorldCoordinate.y > targetHeight) {
-                    _blocks[x][y][z] = std::make_unique<Air>();
+                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::AIR);
                 } else if (blockWorldCoordinate.y == targetHeight) {
-                    _blocks[x][y][z] = std::make_unique<Grass>();
+                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::GRASS);
                 } else if (blockWorldCoordinate.y > targetHeight - 5) {
-                    _blocks[x][y][z] = std::make_unique<Dirt>();
+                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::DIRT);
                 } else if (blockWorldCoordinate.y == 0) {
-                    _blocks[x][y][z] = std::make_unique<Bedrock>();
+                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::AIR);
                 } else {
-                    _blocks[x][y][z] = std::make_unique<Stone>();
+                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::STONE);
                 }
             }
         }
@@ -70,13 +64,13 @@ void Chunk::destroyBlock(const Coordinate localCoordinate) {
         return;
     }
 
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Air>();
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(BlockType::AIR);
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }
 
-void Chunk::placeBlock(const Coordinate localCoordinate) {
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<PackedIce>();
+void Chunk::placeBlock(const Coordinate localCoordinate, const BlockType blockType) {
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(blockType);
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }

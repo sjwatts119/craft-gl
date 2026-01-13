@@ -126,6 +126,39 @@ void Player::processKeyboard(const Window* window) {
     }
 
     /**
+     * Block selection
+     */
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_1) == GLFW_PRESS)
+    {
+        _selectedBlockType = static_cast<BlockType>(0);
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_2) == GLFW_PRESS)
+    {
+        _selectedBlockType = static_cast<BlockType>(1);
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_3) == GLFW_PRESS)
+    {
+        _selectedBlockType = static_cast<BlockType>(2);
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_4) == GLFW_PRESS)
+    {
+        _selectedBlockType = static_cast<BlockType>(3);
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_5) == GLFW_PRESS)
+    {
+        _selectedBlockType = static_cast<BlockType>(4);
+    }
+
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_6) == GLFW_PRESS)
+    {
+        _selectedBlockType = static_cast<BlockType>(5);
+    }
+
+    /**
      * Mode toggles
      */
     const auto mIsPressed = glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS;
@@ -139,6 +172,14 @@ void Player::processKeyboard(const Window* window) {
         _debug = !_debug;
     }
     _tabWasPressed = tabIsPressed;
+
+    /**
+     * Kill window
+     */
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    {
+        glfwSetWindowShouldClose(window->getWindow(), true);
+    }
 }
 
 /**
@@ -377,7 +418,7 @@ void Player::placeBlock() const {
         return;
     }
 
-    _world->placeBlock(newWorldCoordinate);
+    _world->placeBlock(newWorldCoordinate, _selectedBlockType);
 }
 
 

@@ -8,7 +8,7 @@
 #include "geometry/AABB.h"
 #include "utility/coordinate.h"
 #include "utility/constant.h"
-#include "block/block.h"
+#include "block.h"
 #include "utility/blockFace.h"
 
 class World;
@@ -40,5 +40,5 @@ public:
 
     void destroyBlock(Coordinate localCoordinate);
 
-    void placeBlock(Coordinate localCoordinate);
+    void placeBlock(Coordinate localCoordinate, BlockType blockType);
 };
