@@ -98,7 +98,6 @@ void World::destroyBlock(const Coordinate worldCoordinate) const {
 
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
-    std::cout << "destroyed " << worldCoordinate << std::endl;
     chunk->destroyBlock(localCoordinate);
 }
 
@@ -113,7 +112,6 @@ void World::placeBlock(const Coordinate worldCoordinate, const BlockType blockTy
 
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
-    std::cout << "placed " << worldCoordinate << std::endl;
     chunk->placeBlock(localCoordinate, blockType);
 }
 

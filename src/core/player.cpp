@@ -428,6 +428,8 @@ void Player::destroyHighlightedBlock() const {
         return;
     }
 
+    std::cout << "attempting to destroy " << _highlightedBlockWorldCoordinate.value() << std::endl;
+
     _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
 }
 
@@ -438,6 +440,8 @@ void Player::placeBlock() const {
 
     // push the coordinate to the position of the new block based on highlighted face
     const auto newWorldCoordinate = _highlightedBlockWorldCoordinate.value().moveTowards(_highlightedBlockFace.value());
+
+    std::cout << "attempting to place " << newWorldCoordinate << std::endl;
 
     if (AABB::forBlock(newWorldCoordinate).intersects(_boundingBox)) {
         std::cout << "Cannot place block inside player bounding box" << std::endl;

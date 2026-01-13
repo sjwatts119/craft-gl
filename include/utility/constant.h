@@ -12,8 +12,8 @@ static constexpr int MAX_TICKS_PER_FRAME = 5;
 static constexpr int CHUNK_SIZE = 32;
 static constexpr int BLOCK_COUNT = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 
-static constexpr int WINDOW_WIDTH = 1920;
-static constexpr int WINDOW_HEIGHT = 1080;
+static constexpr int WINDOW_WIDTH = 2560;
+static constexpr int WINDOW_HEIGHT = 1440;
 
 static constexpr auto WINDOW_TITLE = "craft-gl";
 
