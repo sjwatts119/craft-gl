@@ -189,7 +189,7 @@ void World::regenerateDirtyMeshes() {
         }
 
         if (threads.size() >= threadCount) {
-            continue;
+            break;
         }
 
         threads.emplace_back([this, coordinate] {
@@ -198,8 +198,11 @@ void World::regenerateDirtyMeshes() {
     }
 }
 
-void World::update(const Player* player) {
+void World::tick(const Player* player) {
     changeChunks(player);
+}
+
+void World::update() {
     deleteOldChunks();
     regenerateDirtyMeshes();
 }

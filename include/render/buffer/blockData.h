@@ -1,6 +1,7 @@
 #pragma once
 
 #include <cstddef>
+#include "material/blockTextureList.h"
 
 struct BlockData {
     float x, y, z;

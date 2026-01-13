@@ -55,7 +55,9 @@ public:
 
     void regenerateDirtyMeshes();
 
-    void update(const Player *player);
+    void tick(const Player *player);
+
+    void update();
 
     [[nodiscard]] const Light &getSun() const;
 };

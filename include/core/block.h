@@ -21,6 +21,44 @@ private:
     bool _destructible;
     float _slipperiness;
 
+    static constexpr std::array<VertexData, 24> ALL_VERTICES = {{
+        // Top face
+        {{0.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
+        {{1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
+        {{1.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
+        {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+
+        // Bottom face
+        {{0.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
+        {{1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
+        {{1.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
+        {{0.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+
+        // Back face
+        {{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}},  // bottom-left
+        {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}},  // bottom-right
+        {{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},  // top-right
+        {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},  // top-left
+
+        // Front face
+        {{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},  // bottom-left
+        {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},  // bottom-right
+        {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},  // top-right
+        {{0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},  // top-left
+
+        // Left face
+        {{0.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
+        {{0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
+        {{0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
+        {{0.0f, 1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+
+        // Right face
+        {{1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
+        {{1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
+        {{1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
+        {{1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+    }};
+
     /**
      * Counter-clockwise winding
      */
@@ -93,6 +131,21 @@ private:
         }
     };
 
+    static constexpr std::array<GLuint, 36> ALL_INDICES = {
+        // Top face
+        0, 1, 2, 2, 3, 0,
+        // Bottom face
+        4, 5, 6, 6, 7, 4,
+        // Back face
+        8, 9, 10, 10, 11, 8,
+        // Front face
+        12, 13, 14, 14, 15, 12,
+        // Left face
+        16, 17, 18, 18, 19, 16,
+        // Right face
+        20, 21, 22, 22, 23, 20
+    };
+
     static constexpr std::array<GLuint, 6> TOP_INDICES = {0, 1, 2, 2, 3, 0};
 
     static constexpr std::array<GLuint, 6> BOTTOM_INDICES = {0, 1, 2, 2, 3, 0};
@@ -113,6 +166,10 @@ public:
     static float slipperinessFromType(BlockType type);
 
     static BlockTextureId textureIdFromTypeAndFace(BlockType type, BlockFace face);
+
+    static constexpr const std::array<VertexData, 24> &getAllVertices() {
+        return ALL_VERTICES;
+    }
 
     static constexpr const std::array<VertexData, 4> &getTopVertices() {
         return TOP_VERTICES;
@@ -136,6 +193,10 @@ public:
 
     static constexpr const std::array<VertexData, 4> &getRightVertices() {
         return RIGHT_VERTICES;
+    }
+
+    static constexpr const std::array<GLuint, 36> &getAllIndices() {
+        return ALL_INDICES;
     }
 
     static constexpr const std::array<GLuint, 6> &getTopIndices() {
@@ -174,5 +235,5 @@ public:
 
     void setDestructible(bool destructible);
 
-    BlockTextureId getTextureId(BlockFace face) const;
+    [[nodiscard]] BlockTextureId getTextureId(BlockFace face) const;
 };

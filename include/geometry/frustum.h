@@ -30,7 +30,6 @@ private:
         far = glm::normalize(far);
     }
 
-
 public:
     glm::vec4 left;
     glm::vec4 right;
@@ -64,9 +63,8 @@ public:
                 (plane->z >= 0) ? aabb.maxZ : aabb.minZ
             };
 
-            const auto inside = plane->x * positiveVertex.x + plane->y * positiveVertex.y + plane->z * positiveVertex.z + plane->w;
-
-            if (inside < 0) {
+            // is the positive vertex outside the plane?
+            if (plane->x * positiveVertex.x + plane->y * positiveVertex.y + plane->z * positiveVertex.z + plane->w < 0) {
                 return false;
             }
         }

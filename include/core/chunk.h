@@ -21,14 +21,14 @@ private:
 
 public:
     Coordinate _coordinate;
-    AABB _boundingBox{};
+    AABB _boundingBox;
 
     glm::ivec3 _highlightedBlock{-1};
 
     std::unique_ptr<Block> _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 
-    explicit Chunk(World* world, const Coordinate coordinate);
+    explicit Chunk(World* world, Coordinate coordinate);
 
     ~Chunk();
 

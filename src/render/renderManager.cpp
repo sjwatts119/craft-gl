@@ -34,38 +34,26 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, Wor
 
     _shaderManager._blockShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
     _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
+    _shaderManager._blockShader.setLight("uSun" , world->getSun());
 
-    Frustum viewFrustum{*player->getCamera(), window->getWidth(), window->getHeight()};
+    const Frustum viewFrustum{*player->getCamera(), window->getWidth(), window->getHeight()};
 
     for (const auto &chunk: world->_chunks | std::views::values) {
-        // average cost of testing 8x8x8 world is roughly 60us per frame
-        if (!viewFrustum.fastIntersects(AABB::forChunk(chunk->_coordinate))) {
+        if (!viewFrustum.fastIntersects(chunk->_boundingBox)) {
             continue;
         }
 
+        chunk->_mesh->uploadIfRegenerated();
         chunk->_mesh->bind();
 
         _shaderManager._blockShader.setMat4("uModelMatrix", chunk->localToWorldMatrix());
-        _shaderManager._blockShader.setLight("uSun" , world->getSun());
 
         chunk->_mesh->render();
     }
-
-    glBindVertexArray(0);
-}
-
-void RenderManager::renderInterface(const Window *window, Interface *interface) const {
-    interface->_crosshair.bind();
-
-    _shaderManager._crosshairShader.use();
-    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
-
-    interface->_crosshair.render();
-
-    glBindVertexArray(0);
 }
 
 void RenderManager::renderDebug(const Player *player, const Window* window, Debug *debug) const {
+    debug->upload(); // todo don't upload every frame
     debug->bind();
 
     _shaderManager._debugShader.use();
@@ -74,16 +62,29 @@ void RenderManager::renderDebug(const Player *player, const Window* window, Debu
     _shaderManager._debugShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
 
     debug->render();
-
-    glBindVertexArray(0);
 }
 
-void RenderManager::render(const Player* player, const Window* window, World* world, Interface* interface, Debug* debug) const {
+void RenderManager::renderCrosshair(const Window *window, const Player *player) const {
+    player->getCrosshair()->bind();
+
+    _shaderManager._crosshairShader.use();
+    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
+
+    player->getCrosshair()->render();
+}
+
+void RenderManager::renderInterface(const Window* window, const Player* player) const {
+    renderCrosshair(window, player);
+}
+
+void RenderManager::render(const Player* player, const Window* window, World* world, Debug* debug) const {
     renderBlocks(player, window, world);
 
-    renderInterface(window, interface);
-
-    if (player->getDebug()) {
+    if (player->debugIsEnabled()) {
         renderDebug(player, window, debug);
     }
+
+    renderInterface(window, player);
+
+    glBindVertexArray(0);
 }

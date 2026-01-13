@@ -9,13 +9,15 @@ ChunkMesh::ChunkMesh(World* world, Chunk* chunk) :
     _chunk(chunk),
     _world(world)
 {
-    glGenVertexArrays(1, &_vaoId);
-    glGenBuffers(1, &_vboId);
-    glGenBuffers(1, &_eboId);
+    genBuffers();
 }
 
 bool ChunkMesh::isDirty() const {
     return _dirty;
+}
+
+bool ChunkMesh::uploadNeeded() const {
+    return _uploadNeeded;
 }
 
 void ChunkMesh::markAsDirty() {
@@ -296,8 +298,7 @@ void ChunkMesh::regenerateMesh() {
     }
 
     _dirty = false;
-
-    // std::cout << "Generated mesh with vertex count: " << _vertices.size() << std::endl;
+    _uploadNeeded = true;
 }
 
 void ChunkMesh::setHighlightedBlock(const glm::ivec3 index) {
@@ -314,7 +315,15 @@ void ChunkMesh::unsetHighlightedBlock() {
     markAsDirtyWithAffectedNeighbours(Coordinate{previousIndex});
 }
 
-void ChunkMesh::bind() {
+void ChunkMesh::uploadIfRegenerated() {
+    if (!_uploadNeeded) {
+        return;
+    }
+
+    upload();
+}
+
+void ChunkMesh::upload() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);
@@ -337,14 +346,18 @@ void ChunkMesh::bind() {
 
     glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((8 * sizeof(float)) + sizeof(int)));
     glEnableVertexAttribArray(4);
+
+    _uploadNeeded = false;
 }
 
-void ChunkMesh::render() {
+void ChunkMesh::bind() const {
+    glBindVertexArray(_vaoId);
+}
+
+void ChunkMesh::render() const {
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
 }
 
 void ChunkMesh::cleanup() const {
-    glDeleteVertexArrays(1, &_vaoId);
-    glDeleteBuffers(1, &_vboId);
-    glDeleteBuffers(1, &_eboId);
+    deleteBuffers();
 }

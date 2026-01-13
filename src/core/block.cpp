@@ -48,8 +48,9 @@ BlockTextureId Block::textureIdFromTypeAndFace(const BlockType type, const Block
             return BlockTextureId::DIAMOND_BLOCK;
         case BlockType::PACKED_ICE:
             return BlockTextureId::PACKED_ICE;
-        case BlockType::AIR:
         case BlockType::ERROR:
+            return BlockTextureId::ERROR;
+        case BlockType::AIR:
         default:
             return BlockTextureId::NONE;
     }

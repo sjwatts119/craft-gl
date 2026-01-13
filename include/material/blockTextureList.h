@@ -5,6 +5,7 @@
 #include <vector>
 
 enum class BlockTextureId : int {
+    ERROR = -2,
     NONE = -1,
     GRASS_BLOCK_TOP = 0,
     GRASS_BLOCK_SIDE = 1,

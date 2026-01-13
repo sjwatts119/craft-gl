@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <glad/glad.h>
 #include <glm/glm.hpp>
 #include <glm/ext/matrix_transform.hpp>
 
@@ -11,10 +10,6 @@
 
 class Crosshair final : public Renderable {
 public:
-    GLuint _vboId{};
-    GLuint _vaoId{};
-    GLuint _eboId{};
-
     /**
      * Counter-clockwise winding
      */
@@ -31,9 +26,13 @@ public:
 
     Crosshair();
 
-    void bind() override;
+    void upload() override;
 
-    void render() override;
+    void bind() const override;
+
+    void render() const override;
+
+    void cleanup() const override;
 
     static glm::mat4 localToWorldMatrix(const Window *window, const int crosshairSize = 1) {
         auto scaleFactor = static_cast<float>(window->getHeight()) * 0.00001;

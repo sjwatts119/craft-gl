@@ -130,33 +130,40 @@ void Player::processKeyboard(const Window* window) {
      */
     if (glfwGetKey(window->getWindow(), GLFW_KEY_1) == GLFW_PRESS)
     {
-        _selectedBlockType = static_cast<BlockType>(0);
+        _inventory.selectBlockType(static_cast<BlockType>(0));
     }
-
     if (glfwGetKey(window->getWindow(), GLFW_KEY_2) == GLFW_PRESS)
     {
-        _selectedBlockType = static_cast<BlockType>(1);
+        _inventory.selectBlockType(static_cast<BlockType>(1));
     }
-
     if (glfwGetKey(window->getWindow(), GLFW_KEY_3) == GLFW_PRESS)
     {
-        _selectedBlockType = static_cast<BlockType>(2);
+        _inventory.selectBlockType(static_cast<BlockType>(2));
     }
-
     if (glfwGetKey(window->getWindow(), GLFW_KEY_4) == GLFW_PRESS)
     {
-        _selectedBlockType = static_cast<BlockType>(3);
+        _inventory.selectBlockType(static_cast<BlockType>(3));
     }
-
     if (glfwGetKey(window->getWindow(), GLFW_KEY_5) == GLFW_PRESS)
     {
-        _selectedBlockType = static_cast<BlockType>(4);
+        _inventory.selectBlockType(static_cast<BlockType>(4));
     }
-
     if (glfwGetKey(window->getWindow(), GLFW_KEY_6) == GLFW_PRESS)
     {
-        _selectedBlockType = static_cast<BlockType>(5);
+        _inventory.selectBlockType(static_cast<BlockType>(5));
     }
+    // if (glfwGetKey(window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
+    // {
+    //     _inventory.selectBlockType(static_cast<BlockType>(6));
+    // }
+    // if (glfwGetKey(window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
+    // {
+    //     _inventory.selectBlockType(static_cast<BlockType>(7));
+    // }
+    // if (glfwGetKey(window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
+    // {
+    //     _inventory.selectBlockType(static_cast<BlockType>(8));
+    // }
 
     /**
      * Mode toggles
@@ -349,6 +356,20 @@ void Player::updateSlip() {
     auto pushedAABB = _boundingBox;
     pushedAABB.push(verticalPush);
 
+    const auto blockCoord = getBlockCoordinate();
+    const auto directlyBelowCoord = Coordinate{
+        blockCoord.x,
+        blockCoord.y - 1,
+        blockCoord.z
+    };
+
+    if (const auto blockBelow = _world->blockAt(directlyBelowCoord); blockBelow != nullptr && blockBelow->getType() != BlockType::AIR) {
+        if (pushedAABB.intersects(AABB::forBlock(directlyBelowCoord))) {
+            _slip = blockBelow->getSlipperinessFactor();
+            return;
+        }
+    }
+
     const int minX = static_cast<int>(std::floor(pushedAABB.minX));
     const int maxX = static_cast<int>(std::floor(pushedAABB.maxX));
     const int minZ = static_cast<int>(std::floor(pushedAABB.minZ));
@@ -356,6 +377,7 @@ void Player::updateSlip() {
     const int checkY = static_cast<int>(std::floor(_position.y + STANDING_ON_NEGATIVE_Y_OFFSET));
 
     // spin around the bottom of the player bounding box to find the block they are standing on
+    // start with the block entirely under the player and expand outwards
     for (int x = minX; x <= maxX; ++x) {
         for (int z = minZ; z <= maxZ; ++z) {
             if (Coordinate coord{x, checkY, z}; pushedAABB.intersects(AABB::forBlock(coord))) {
@@ -379,7 +401,7 @@ void Player::updateBoundingBox() {
  */
 void Player::updateCameraPosition(const Window* window)
 {
-    auto interpolationFactor = std::clamp(window->getTimeSinceLastTick() / TIME_PER_TICK, 0.0f, 1.0f);
+    const auto interpolationFactor = std::clamp(window->getTimeSinceLastTick() / TIME_PER_TICK, 0.0f, 1.0f);
     _camera._position = glm::mix(_lastPosition, _position, interpolationFactor) + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 
@@ -418,7 +440,7 @@ void Player::placeBlock() const {
         return;
     }
 
-    _world->placeBlock(newWorldCoordinate, _selectedBlockType);
+    _world->placeBlock(newWorldCoordinate, _inventory.getSelectedBlockType());
 }
 
 
@@ -537,6 +559,14 @@ const Camera *Player::getCamera() const {
     return &_camera;
 }
 
-bool Player::getDebug() const {
+const Crosshair *Player::getCrosshair() const {
+    return &_crosshair;
+}
+
+const Inventory *Player::getInventory() const {
+    return &_inventory;
+}
+
+bool Player::debugIsEnabled() const {
     return _debug;
 }

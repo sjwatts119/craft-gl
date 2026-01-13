@@ -3,8 +3,6 @@
 #include <iostream>
 #include <vector>
 
-#include <glad/glad.h>
-
 class TextureArray {
 private:
     std::vector<std::string> _paths;

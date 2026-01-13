@@ -1,8 +1,8 @@
 #include "render/texture/textureArray.h"
 
 #include <stb/stb_image.h>
-
 #include <utility>
+#include <glad/glad.h>
 
 TextureArray::TextureArray(std::vector<std::string> paths, const int format, const bool flip)
     : _paths(std::move(paths)), _format(format), _flip(flip) {

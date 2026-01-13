@@ -4,6 +4,7 @@
 #include <optional>
 
 #include "camera.h"
+#include "render/renderable/inventory.h"
 #include "glm/fwd.hpp"
 #include "glm/vec3.hpp"
 #include "glm/ext/matrix_transform.hpp"
@@ -14,6 +15,7 @@
 #include "render/renderable/chunkMesh.h"
 #include "geometry/ray.h"
 #include "render/window.h"
+#include "render/renderable/crosshair.h"
 #include "utility/direction.h"
 
 enum class MovementMode {
@@ -29,26 +31,14 @@ class Player {
     float _movementSensitivity = 25.0f;
     float _reach = 10.0f;
 
-    /** Dimensions **/
-    float _playerHeight = 1.8f;
-    float _playerWidth = 0.6f;
-    float _eyeHeight = _playerHeight - 0.2f;
-
     /** State **/
     bool _firstMouseInput = true;
-    float _mouseLastXPosition = SCREEN_WIDTH / 2.0f;
-    float _mouseLastYPosition = SCREEN_HEIGHT / 2.0f;
-
+    float _mouseLastXPosition = WINDOW_WIDTH / 2.0f;
+    float _mouseLastYPosition = WINDOW_HEIGHT / 2.0f;
     bool _debug = false;
-
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
     std::optional<BlockFace> _highlightedBlockFace;
     AABB _boundingBox;
-
-    bool _grounded = false;
-    float _slip = BLOCK_SLIPPERINESS_FACTOR;
-
-    BlockType _selectedBlockType = BlockType::STONE;
 
     /** Debounce States **/
     bool _mouse1WasPressed = false;
@@ -56,14 +46,24 @@ class Player {
     bool _tabWasPressed = false;
     bool _mWasPressed = false;
 
-    /** Position **/
+    /** Dimensions **/
+    float _playerHeight = 1.8f;
+    float _playerWidth = 0.6f;
+    float _eyeHeight = _playerHeight - 0.2f;
+
+    /** Physics **/
     glm::vec3 _position{0.0f, CHUNK_SIZE * 2 + 8, 0.0f};
     glm::vec3 _lastPosition = _position;
-
     glm::vec3 _momentum{0.0f};
+    bool _grounded = false;
+    float _slip = BLOCK_SLIPPERINESS_FACTOR;
 
+    /** Components **/
     Camera _camera{_position + glm::vec3{0.0f, _eyeHeight, 0.0f}};
+    Inventory _inventory;
+    Crosshair _crosshair;
 
+    /** References **/
     World *_world;
 
     void moveForward(float accelerationMultiplier);
@@ -138,5 +138,9 @@ public:
 
     [[nodiscard]] const Camera *getCamera() const;
 
-    [[nodiscard]] bool getDebug() const;
+    [[nodiscard]] const Inventory *getInventory() const;
+
+    [[nodiscard]] const Crosshair *getCrosshair() const;
+
+    [[nodiscard]] bool debugIsEnabled() const;
 };

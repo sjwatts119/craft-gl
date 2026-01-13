@@ -1,14 +1,12 @@
 #include "render/renderable/crosshair.h"
-
 #include "render/buffer/crosshairData.h"
 
 Crosshair::Crosshair() {
-    glGenVertexArrays(1, &_vaoId);
-    glGenBuffers(1, &_vboId);
-    glGenBuffers(1, &_eboId);
+    genBuffers();
+    upload();
 }
 
-void Crosshair::bind() {
+void Crosshair::upload() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);
@@ -25,8 +23,18 @@ void Crosshair::bind() {
 
     glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(CrosshairData::size()), reinterpret_cast<void *>(5 * sizeof(float)));
     glEnableVertexAttribArray(2);
+
+    glBindVertexArray(0);
 }
 
-void Crosshair::render() {
+void Crosshair::bind() const {
+    glBindVertexArray(_vaoId);
+}
+
+void Crosshair::render() const {
     glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(INDICES.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
+}
+
+void Crosshair::cleanup() const {
+    deleteBuffers();
 }

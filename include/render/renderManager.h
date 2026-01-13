@@ -13,13 +13,12 @@
 #include "glm/vec3.hpp"
 #include "utility/coordinate.h"
 #include "render/renderable/debug.h"
-#include "core/interface.h"
 #include "glad/glad.h"
 #include "render/shader/shader.h"
 #include "render/buffer/crosshairData.h"
 #include "core/world.h"
-#include "core/interface.h"
 #include "render/renderable/chunkMesh.h"
+#include "render/renderable/crosshair.h"
 
 class RenderManager {
 private:
@@ -28,7 +27,9 @@ private:
 
     void renderBlocks(const Player *player, const Window *window, World *world) const;
 
-    void renderInterface(const Window *window, Interface *interface) const;
+    void renderCrosshair(const Window *window, const Player *player) const;
+
+    void renderInterface(const Window *window, const Player *player) const;
 
     void renderDebug(const Player *player, const Window *window, Debug *debug) const;
 public:
@@ -36,5 +37,5 @@ public:
 
     static void clear();
 
-    void render(const Player *player, const Window *window, World *world, Interface *interface, Debug *debug) const;
+    void render(const Player *player, const Window *window, World *world, Debug *debug) const;
 };

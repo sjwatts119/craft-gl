@@ -1,6 +1,5 @@
 #pragma once
 
-#include <glad/glad.h>
 #include <vector>
 #include <glm/glm.hpp>
 
@@ -17,13 +16,12 @@ class ChunkMesh final : public Renderable {
 private:
     Chunk *_chunk;
     World *_world;
+
     bool _dirty = true;
+    bool _uploadNeeded = false;
+
 
 public:
-    GLuint _vboId{};
-    GLuint _vaoId{};
-    GLuint _eboId{};
-
     glm::ivec3 _highlightedBlockIndex{-1};
     std::vector<BlockData> _vertices;
     std::vector<GLuint> _indices;
@@ -31,6 +29,8 @@ public:
     explicit ChunkMesh(World* world, Chunk* chunk);
 
     [[nodiscard]] bool isDirty() const;
+
+    [[nodiscard]] bool uploadNeeded() const;
 
     void markAsDirty();
 
@@ -44,9 +44,13 @@ public:
 
     void unsetHighlightedBlock();
 
-    void bind() override;
+    void uploadIfRegenerated();
 
-    void render() override;
+    void upload() override;
 
-    void cleanup() const;
+    void bind() const override;
+
+    void render() const override;
+
+    void cleanup() const override;
 };
