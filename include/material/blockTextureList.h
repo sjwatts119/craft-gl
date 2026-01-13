@@ -3,6 +3,7 @@
 #include <string>
 #include <array>
 #include <vector>
+#include <optional>
 
 enum class BlockTextureId : int {
     ERROR = -2,

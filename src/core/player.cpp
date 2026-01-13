@@ -152,6 +152,11 @@ void Player::processKeyboard(const Window* window) {
     {
         _inventory.selectBlockType(static_cast<BlockType>(5));
     }
+
+    // TODO track dirty state to avoid regenerating every frame
+    _inventory.regenerateMesh();
+    _inventory.upload();
+
     // if (glfwGetKey(window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
     // {
     //     _inventory.selectBlockType(static_cast<BlockType>(6));

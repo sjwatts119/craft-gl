@@ -73,8 +73,30 @@ void RenderManager::renderCrosshair(const Window *window, const Player *player) 
     player->getCrosshair()->render();
 }
 
+void RenderManager::renderInventory(const Window* window, const Player* player) const {
+    player->getInventory()->bind();
+
+    _shaderManager._inventoryShader.use();
+
+    _textureManager._blockTextures.use(0);
+    _shaderManager._inventoryShader.setInt("uBlockTextures", 0);
+
+    _shaderManager._inventoryShader.setLight("uLight", player->getInventory()->getLight());
+
+    _shaderManager._inventoryShader.setMat4("uModelMatrix", player->getInventory()->getModelMatrix());
+    _shaderManager._inventoryShader.setMat4("uViewMatrix", Inventory::getViewMatrix());
+    _shaderManager._inventoryShader.setMat4("uProjectionMatrix", Inventory::getProjectionMatrix(window));
+
+    player->getInventory()->render();
+}
+
 void RenderManager::renderInterface(const Window* window, const Player* player) const {
+    glDisable(GL_DEPTH_TEST);
+
     renderCrosshair(window, player);
+    renderInventory(window, player);
+
+    glEnable(GL_DEPTH_TEST);
 }
 
 void RenderManager::render(const Player* player, const Window* window, World* world, Debug* debug) const {
