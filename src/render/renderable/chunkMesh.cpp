@@ -57,12 +57,12 @@ void ChunkMesh::markAsDirtyWithNeighbours() {
 void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate localCoordinate) {
     markAsDirty();
 
-    auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
-    auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
-    auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
-    auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
-    auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
-    auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
+    const auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    const auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    const auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    const auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    const auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    const auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
     if (localCoordinate.x == 0 && leftNeighbour != nullptr) {
         leftNeighbour->_mesh->markAsDirty();
@@ -101,9 +101,9 @@ void ChunkMesh::regenerateMesh() {
     for (int x = 0; x < CHUNK_SIZE; x++) {
         for (int y = 0; y < CHUNK_SIZE; y++) {
             for (int z = 0; z < CHUNK_SIZE; z++) {
-                auto block = _chunk->_blocks[x][y][z].get();
+                auto blockType = _chunk->_blocks[x][y][z];
 
-                if (block->getType() == BlockType::AIR) {
+                if (blockType == BlockType::AIR) {
                     continue;
                 }
 
@@ -126,45 +126,45 @@ void ChunkMesh::regenerateMesh() {
                 bool shouldRenderFrontFace = true;
 
                 if (left.isInBounds()) {
-                    shouldRenderLeftFace = _chunk->_blocks[left.x][left.y][left.z]->getType() == BlockType::AIR;
+                    shouldRenderLeftFace = _chunk->_blocks[left.x][left.y][left.z] == BlockType::AIR;
                 } else if (leftNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{CHUNK_SIZE - 1, y, z}};
-                    shouldRenderLeftFace = leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderLeftFace = leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
                 }
 
                 if (right.isInBounds()) {
-                    shouldRenderRightFace = _chunk->_blocks[right.x][right.y][right.z]->getType() == BlockType::AIR;
+                    shouldRenderRightFace = _chunk->_blocks[right.x][right.y][right.z] == BlockType::AIR;
                 } else if (rightNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{0, y, z}};
-                    shouldRenderRightFace = rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderRightFace = rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
                 }
 
                 if (down.isInBounds()) {
-                    shouldRenderBottomFace = _chunk->_blocks[down.x][down.y][down.z]->getType() == BlockType::AIR;
+                    shouldRenderBottomFace = _chunk->_blocks[down.x][down.y][down.z] == BlockType::AIR;
                 } else if (downNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, CHUNK_SIZE - 1, z}};
-                    shouldRenderBottomFace = downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderBottomFace = downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
                 }
 
                 if (up.isInBounds()) {
-                    shouldRenderTopFace = _chunk->_blocks[up.x][up.y][up.z]->getType() == BlockType::AIR;
+                    shouldRenderTopFace = _chunk->_blocks[up.x][up.y][up.z] == BlockType::AIR;
                 } else if (upNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, 0, z}};
-                    shouldRenderTopFace = upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderTopFace = upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
                 }
 
                 if (back.isInBounds()) {
-                    shouldRenderBackFace = _chunk->_blocks[back.x][back.y][back.z]->getType() == BlockType::AIR;
+                    shouldRenderBackFace = _chunk->_blocks[back.x][back.y][back.z] == BlockType::AIR;
                 } else if (backNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, CHUNK_SIZE - 1}};
-                    shouldRenderBackFace = backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderBackFace = backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
                 }
 
                 if (front.isInBounds()) {
-                    shouldRenderFrontFace = _chunk->_blocks[front.x][front.y][front.z]->getType() == BlockType::AIR;
+                    shouldRenderFrontFace = _chunk->_blocks[front.x][front.y][front.z] == BlockType::AIR;
                 } else if (frontNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, 0}};
-                    shouldRenderFrontFace = frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]->getType() == BlockType::AIR;
+                    shouldRenderFrontFace = frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
                 }
 
                 if (shouldRenderLeftFace) {
@@ -181,7 +181,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block->getTextureId(FACE_LEFT),
+                            // block->getTextureId(FACE_LEFT),
+                            Block::textureIdFromTypeAndFace(blockType, FACE_LEFT),
                             isHighlighted
                         };
 
@@ -202,7 +203,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block->getTextureId(FACE_RIGHT),
+                            Block::textureIdFromTypeAndFace(blockType, FACE_RIGHT),
                             isHighlighted
                         };
 
@@ -223,7 +224,8 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block->getTextureId(FACE_BOTTOM),
+                            Block::textureIdFromTypeAndFace(blockType, FACE_BOTTOM),
+
                             isHighlighted
                         };
 
@@ -244,7 +246,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block->getTextureId(FACE_TOP),
+                            Block::textureIdFromTypeAndFace(blockType, FACE_TOP),
                             isHighlighted
                         };
 
@@ -265,7 +267,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block->getTextureId(FACE_BACK),
+                            Block::textureIdFromTypeAndFace(blockType, FACE_BACK),
                             isHighlighted
                         };
 
@@ -286,7 +288,7 @@ void ChunkMesh::regenerateMesh() {
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
-                            block->getTextureId(FACE_FRONT),
+                            Block::textureIdFromTypeAndFace(blockType, FACE_FRONT),
                             isHighlighted
                         };
 

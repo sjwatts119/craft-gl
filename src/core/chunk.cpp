@@ -43,15 +43,15 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
                 };
 
                 if (blockWorldCoordinate.y > targetHeight) {
-                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::AIR);
+                    _blocks[x][y][z] = BlockType::AIR;
                 } else if (blockWorldCoordinate.y == targetHeight) {
-                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::GRASS);
+                    _blocks[x][y][z] = BlockType::GRASS;
                 } else if (blockWorldCoordinate.y > targetHeight - 5) {
-                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::DIRT);
+                    _blocks[x][y][z] = BlockType::DIRT;
                 } else if (blockWorldCoordinate.y == 0) {
-                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::AIR);
+                    _blocks[x][y][z] = BlockType::AIR;
                 } else {
-                    _blocks[x][y][z] = std::make_unique<Block>(BlockType::STONE);
+                    _blocks[x][y][z] = BlockType::STONE;
                 }
             }
         }
@@ -59,18 +59,18 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
 }
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
-    if (!_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z]->getDestructible()) {
+    if (!Block::destructibleFromType(_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z])) {
         std::cout << "block at " << localCoordinate << " is indestructible." << std::endl;
         return;
     }
 
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(BlockType::AIR);
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = BlockType::AIR;
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }
 
 void Chunk::placeBlock(const Coordinate localCoordinate, const BlockType blockType) {
-    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = std::make_unique<Block>(blockType);
+    _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = blockType;
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }

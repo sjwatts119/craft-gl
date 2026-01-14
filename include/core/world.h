@@ -41,7 +41,7 @@ public:
 
     void unloadChunks(const std::vector<Coordinate> &chunkCoordinates);
 
-    [[nodiscard]] Block *blockAt(Coordinate worldCoordinate) const;
+    [[nodiscard]] BlockType *blockAt(Coordinate worldCoordinate) const;
 
     [[nodiscard]] Chunk *chunkAt(Coordinate chunkCoordinate) const;
 

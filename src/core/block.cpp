@@ -7,7 +7,7 @@ Block::Block(const BlockType type)
       _slipperiness(slipperinessFromType(type)) {
 }
 
-bool Block::destructibleFromType(const BlockType type) {
+bool Block::destructibleFromType(const BlockType &type) {
     switch (type) {
         case BlockType::BEDROCK:
         case BlockType::AIR:
@@ -18,7 +18,7 @@ bool Block::destructibleFromType(const BlockType type) {
     }
 }
 
-float Block::slipperinessFromType(const BlockType type) {
+float Block::slipperinessFromType(const BlockType &type) {
     switch (type) {
         case BlockType::PACKED_ICE:
             return 0.98f;
@@ -27,7 +27,7 @@ float Block::slipperinessFromType(const BlockType type) {
     }
 }
 
-BlockTextureId Block::textureIdFromTypeAndFace(const BlockType type, const BlockFace face) {
+BlockTextureId Block::textureIdFromTypeAndFace(const BlockType &type, const BlockFace &face) {
     switch (type) {
         case BlockType::GRASS:
             switch (face) {

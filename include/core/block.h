@@ -110,11 +110,11 @@ private:
 public:
     explicit Block(BlockType type);
 
-    static bool destructibleFromType(BlockType type);
+    static bool destructibleFromType(const BlockType &type);
 
-    static float slipperinessFromType(BlockType type);
+    static float slipperinessFromType(const BlockType &type);
 
-    static BlockTextureId textureIdFromTypeAndFace(BlockType type, BlockFace face);
+    static BlockTextureId textureIdFromTypeAndFace(const BlockType &type, const BlockFace &face);
 
     static constexpr const std::array<VertexData, 4> &getTopVertices() {
         return TOP_VERTICES;

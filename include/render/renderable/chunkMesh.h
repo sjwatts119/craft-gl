@@ -4,7 +4,6 @@
 #include <glm/glm.hpp>
 
 #include "renderable.h"
-#include "core/block.h"
 #include "utility/coordinate.h"
 #include "render/buffer/blockData.h"
 #include "utility/direction.h"

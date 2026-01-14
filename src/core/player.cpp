@@ -309,7 +309,7 @@ void Player::updatePosition() {
             for (int z = minZ; z <= maxZ; z++) {
                 auto block = _world->blockAt(Coordinate{x, y, z});
 
-                if (block == nullptr || block->getType() == BlockType::AIR) {
+                if (block == nullptr || *block == BlockType::AIR) {
                     continue;
                 }
 
@@ -368,9 +368,9 @@ void Player::updateSlip() {
         blockCoord.z
     };
 
-    if (const auto blockBelow = _world->blockAt(directlyBelowCoord); blockBelow != nullptr && blockBelow->getType() != BlockType::AIR) {
+    if (const auto blockBelow = _world->blockAt(directlyBelowCoord); blockBelow != nullptr && *blockBelow != BlockType::AIR) {
         if (pushedAABB.intersects(AABB::forBlock(directlyBelowCoord))) {
-            _slip = blockBelow->getSlipperinessFactor();
+            _slip = Block::slipperinessFromType(*blockBelow);
             return;
         }
     }
@@ -386,8 +386,8 @@ void Player::updateSlip() {
     for (int x = minX; x <= maxX; ++x) {
         for (int z = minZ; z <= maxZ; ++z) {
             if (Coordinate coord{x, checkY, z}; pushedAABB.intersects(AABB::forBlock(coord))) {
-                if (const auto block = _world->blockAt(coord); block != nullptr && block->getType() != BlockType::AIR) {
-                    _slip = block->getSlipperinessFactor();
+                if (const auto block = _world->blockAt(coord); block != nullptr && *block != BlockType::AIR) {
+                    _slip = Block::slipperinessFromType(*block);
                     return;
                 }
             }
@@ -484,7 +484,7 @@ void Player::setAimingAtBlock() {
     std::optional<Coordinate> aimedAtCoordinate;
 
     for (const auto& coord : traversed) {
-        if (const auto block = _world->blockAt(coord); block == nullptr || block->getType() == BlockType::AIR) {
+        if (const auto block = _world->blockAt(coord); block == nullptr || *block == BlockType::AIR) {
             continue;
         }
 

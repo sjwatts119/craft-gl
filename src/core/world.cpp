@@ -65,7 +65,7 @@ void World::unloadChunks(const std::vector<Coordinate>& chunkCoordinates) {
     }
 }
 
-Block *World::blockAt(const Coordinate worldCoordinate) const {
+BlockType *World::blockAt(const Coordinate worldCoordinate) const {
     const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
     const auto chunk = chunkAt(chunkCoordinate);
 
@@ -74,7 +74,7 @@ Block *World::blockAt(const Coordinate worldCoordinate) const {
     }
 
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
-    return chunk->_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z].get();
+    return &chunk->_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z];
 }
 
 Chunk *World::chunkAt(const Coordinate chunkCoordinate) const {
