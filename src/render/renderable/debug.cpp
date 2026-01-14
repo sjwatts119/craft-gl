@@ -9,6 +9,10 @@ Debug::Debug() {
 }
 
 void Debug::update(const Player* player, const World* world) {
+    if (!player->debugIsEnabled()) {
+        return;
+    }
+
     _vertices.clear();
     _indices.clear();
 
