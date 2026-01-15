@@ -37,7 +37,7 @@ vec4 darken(vec4 colour) {
     float g = colour.g - (colour.g * darkenFactor);
     float b = colour.b - (colour.b * darkenFactor);
 
-    return colour - vec4(r, g, b, colour.a);
+    return colour - vec4(r, g, b, 0.0f);
 }
 
 vec4 colourFromBlockType() {
@@ -47,7 +47,7 @@ vec4 colourFromBlockType() {
     }
     // Air
     else if (TexIndex == -1) {
-        return vec4(0.0f, 0.0f, 0.0f, 0.0f);
+        return vec4(0.0f, 0.0f, 0.0f, 1.0f);
     }
     else {
         return texture(uBlockTextures, vec3(TexCoords, TexIndex));
@@ -70,7 +70,7 @@ void main()
     float diffuseStrength = max(dot(normal, lightDirection), 0.0f);
     vec4 diffuseLight = baseColour * (vec4(Sun.diffuse, 1.0f) * diffuseStrength);
 
-    /** SPECULAR **/
+//    /** SPECULAR **/
 //    float shininess = 5.0f;
 //
 //    // Get the direction from this fragment to the camera
@@ -82,6 +82,10 @@ void main()
 //    vec4 specularLight = specularAmount * baseColour;
 
     vec4 litColour = ambientLight + diffuseLight;
+
+    if (litColour.a == 0.0f) {
+        discard;
+    }
 
     /** HIGHLIGHT MODIFIER **/
     if (IsHighlighted == 0) {

@@ -110,6 +110,8 @@ private:
 public:
     explicit Block(BlockType type);
 
+    static bool transparentFromType(const BlockType &type);
+
     static bool destructibleFromType(const BlockType &type);
 
     static float slipperinessFromType(const BlockType &type);

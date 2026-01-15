@@ -168,10 +168,10 @@ void Player::processKeyboard(const Window* window) {
     {
         _inventory.selectBlockType(static_cast<BlockType>(7));
     }
-    // if (glfwGetKey(window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
-    // {
-    //     _inventory.selectBlockType(static_cast<BlockType>(8));
-    // }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
+    {
+        _inventory.selectBlockType(static_cast<BlockType>(8));
+    }
 
     /**
      * Mode toggles

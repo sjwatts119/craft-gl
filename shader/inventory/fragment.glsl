@@ -40,5 +40,9 @@ void main()
 
     vec4 litColour = ambientLight + diffuseLight;
 
+    if (litColour.a == 0.0f) {
+        discard;
+    }
+
     FragColour = litColour;
 }

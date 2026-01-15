@@ -126,45 +126,45 @@ void ChunkMesh::regenerateMesh() {
                 bool shouldRenderFrontFace = true;
 
                 if (left.isInBounds()) {
-                    shouldRenderLeftFace = _chunk->_blocks[left.x][left.y][left.z] == BlockType::AIR;
+                    shouldRenderLeftFace = Block::transparentFromType(_chunk->_blocks[left.x][left.y][left.z]);
                 } else if (leftNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{CHUNK_SIZE - 1, y, z}};
-                    shouldRenderLeftFace = leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
+                    shouldRenderLeftFace = Block::transparentFromType(leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (right.isInBounds()) {
-                    shouldRenderRightFace = _chunk->_blocks[right.x][right.y][right.z] == BlockType::AIR;
+                    shouldRenderRightFace = Block::transparentFromType(_chunk->_blocks[right.x][right.y][right.z]);
                 } else if (rightNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{0, y, z}};
-                    shouldRenderRightFace = rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
+                    shouldRenderRightFace = Block::transparentFromType(rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (down.isInBounds()) {
-                    shouldRenderBottomFace = _chunk->_blocks[down.x][down.y][down.z] == BlockType::AIR;
+                    shouldRenderBottomFace = Block::transparentFromType(_chunk->_blocks[down.x][down.y][down.z]);
                 } else if (downNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, CHUNK_SIZE - 1, z}};
-                    shouldRenderBottomFace = downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
+                    shouldRenderBottomFace = Block::transparentFromType(downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (up.isInBounds()) {
-                    shouldRenderTopFace = _chunk->_blocks[up.x][up.y][up.z] == BlockType::AIR;
+                    shouldRenderTopFace = Block::transparentFromType(_chunk->_blocks[up.x][up.y][up.z]);
                 } else if (upNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, 0, z}};
-                    shouldRenderTopFace = upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
+                    shouldRenderTopFace = Block::transparentFromType(upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (back.isInBounds()) {
-                    shouldRenderBackFace = _chunk->_blocks[back.x][back.y][back.z] == BlockType::AIR;
+                    shouldRenderBackFace = Block::transparentFromType(_chunk->_blocks[back.x][back.y][back.z]);
                 } else if (backNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, CHUNK_SIZE - 1}};
-                    shouldRenderBackFace = backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
+                    shouldRenderBackFace = Block::transparentFromType(backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (front.isInBounds()) {
-                    shouldRenderFrontFace = _chunk->_blocks[front.x][front.y][front.z] == BlockType::AIR;
+                    shouldRenderFrontFace = Block::transparentFromType(_chunk->_blocks[front.x][front.y][front.z]);
                 } else if (frontNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, 0}};
-                    shouldRenderFrontFace = frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z] == BlockType::AIR;
+                    shouldRenderFrontFace = Block::transparentFromType(frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (shouldRenderLeftFace) {

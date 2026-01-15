@@ -12,5 +12,6 @@ enum class BlockType: int {
     DIAMOND_BLOCK = 5,
     PACKED_ICE = 6,
     BEDROCK = 7,
-    COUNT = 8
+    GLASS_BLOCK = 8,
+    COUNT = 9
 };
