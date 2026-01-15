@@ -14,6 +14,7 @@ static constexpr int BLOCK_COUNT = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 
 static constexpr int WINDOW_WIDTH = 2560;
 static constexpr int WINDOW_HEIGHT = 1440;
+static constexpr bool WINDOW_FULLSCREEN = true;
 
 static constexpr auto WINDOW_TITLE = "craft-gl";
 

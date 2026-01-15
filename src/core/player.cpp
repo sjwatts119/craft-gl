@@ -25,6 +25,10 @@ void Player::tick(const Window* window) {
     if (_inventory.isDirty()) {
         _inventory.regenerateMesh();
     }
+
+    if (_mode != MovementMode::FLYING && isOutOfWorld()) {
+        respawn();
+    }
 }
 
 /**
@@ -156,15 +160,14 @@ void Player::processKeyboard(const Window* window) {
     {
         _inventory.selectBlockType(static_cast<BlockType>(5));
     }
-
-    // if (glfwGetKey(window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
-    // {
-    //     _inventory.selectBlockType(static_cast<BlockType>(6));
-    // }
-    // if (glfwGetKey(window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
-    // {
-    //     _inventory.selectBlockType(static_cast<BlockType>(7));
-    // }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
+    {
+        _inventory.selectBlockType(static_cast<BlockType>(6));
+    }
+    if (glfwGetKey(window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
+    {
+        _inventory.selectBlockType(static_cast<BlockType>(7));
+    }
     // if (glfwGetKey(window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
     // {
     //     _inventory.selectBlockType(static_cast<BlockType>(8));
@@ -401,6 +404,11 @@ void Player::updateBoundingBox() {
     _boundingBox = AABB::forPlayer(_position, _playerWidth, _playerHeight);
 }
 
+void Player::respawn() {
+    _momentum = {0.0f, 0.0f, 0.0f};
+    _position = {0.0f, WORLD_HEIGHT * CHUNK_SIZE, 0.0f};
+}
+
 /**
  * AIMING & CAMERA
  */
@@ -558,6 +566,10 @@ std::vector<Coordinate> Player::getSurroundingChunkCoordinates() const {
 
 
     return visibleChunks;
+}
+
+bool Player::isOutOfWorld() const {
+    return _position.y - std::ceil(_playerHeight) < -50.0f;
 }
 
 AABB Player::getBoundingBox() const {

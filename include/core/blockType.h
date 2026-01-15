@@ -7,8 +7,10 @@ enum class BlockType: int {
     GRASS = 0,
     DIRT = 1,
     STONE = 2,
-    BEDROCK = 3,
-    DIAMOND_BLOCK = 4,
-    PACKED_ICE = 5,
-    COUNT = 6
+    OAK_LOG = 3,
+    OAK_PLANKS = 4,
+    DIAMOND_BLOCK = 5,
+    PACKED_ICE = 6,
+    BEDROCK = 7,
+    COUNT = 8
 };

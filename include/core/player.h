@@ -116,6 +116,8 @@ public:
 
     void updateBoundingBox();
 
+    void respawn();
+
     void zoom(float offset);
 
     void destroyHighlightedBlock() const;
@@ -133,6 +135,8 @@ public:
     [[nodiscard]] Coordinate getChunkCoordinate() const;
 
     [[nodiscard]] std::vector<Coordinate> getSurroundingChunkCoordinates() const ;
+
+    [[nodiscard]] bool isOutOfWorld() const;
 
     [[nodiscard]] AABB getBoundingBox() const;
 

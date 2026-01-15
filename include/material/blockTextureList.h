@@ -12,21 +12,27 @@ enum class BlockTextureId : int {
     GRASS_BLOCK_SIDE = 1,
     DIRT = 2,
     STONE = 3,
-    BEDROCK = 4,
-    DIAMOND_BLOCK = 5,
-    PACKED_ICE = 6,
-    COUNT = 7
+    OAK_LOG_TOP = 4,
+    OAK_LOG_SIDE = 5,
+    OAK_PLANKS = 6,
+    DIAMOND_BLOCK = 7,
+    PACKED_ICE = 8,
+    BEDROCK = 9,
+    COUNT = 10
 };
 
 namespace BlockTextureList {
-    inline constexpr std::array<const char *, 7> TEXTURES = {
+    inline constexpr std::array<const char *, 10> TEXTURES = {
         "../asset/texture/block/goodVibes/grass_block_top.png",
         "../asset/texture/block/goodVibes/grass_block_side.png",
         "../asset/texture/block/goodVibes/dirt.png",
         "../asset/texture/block/goodVibes/stone.png",
-        "../asset/texture/block/goodVibes/bedrock.png",
+        "../asset/texture/block/goodVibes/oak_log_top.png",
+        "../asset/texture/block/goodVibes/oak_log_side.png",
+        "../asset/texture/block/goodVibes/oak_planks.png",
         "../asset/texture/block/goodVibes/diamond_block.png",
         "../asset/texture/block/goodVibes/packed_ice.png",
+        "../asset/texture/block/goodVibes/bedrock.png"
     };
 
     inline std::optional<std::string> get(BlockTextureId id) {

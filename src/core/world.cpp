@@ -168,6 +168,7 @@ void World::deleteOldChunks() {
     const auto deletionsThisFrame = std::min(CHUNK_DELETIONS_PER_FRAME, static_cast<int>(_oldChunks.size()));
 
     for (int i = 0; i < deletionsThisFrame; i++) {
+        _oldChunks.back()->_mesh->markAsDirtyWithNeighbours();
         _oldChunks.back()->_mesh->cleanup();
         _oldChunks.pop_back();
     }

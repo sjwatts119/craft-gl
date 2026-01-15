@@ -16,5 +16,7 @@ Mouse 1 => Place Block
 
 Mouse 2 => Remove Block
 
+Number Keys 1-9 => Select Block
+
 ## Interface
 Tab => Toggle Debug Mode

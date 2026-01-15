@@ -42,12 +42,22 @@ BlockTextureId Block::textureIdFromTypeAndFace(const BlockType &type, const Bloc
             return BlockTextureId::DIRT;
         case BlockType::STONE:
             return BlockTextureId::STONE;
-        case BlockType::BEDROCK:
-            return BlockTextureId::BEDROCK;
+        case BlockType::OAK_LOG:
+            switch (face) {
+                case FACE_TOP:
+                case FACE_BOTTOM:
+                    return BlockTextureId::OAK_LOG_TOP;
+                default:
+                    return BlockTextureId::OAK_LOG_SIDE;
+            }
+        case BlockType::OAK_PLANKS:
+            return BlockTextureId::OAK_PLANKS;
         case BlockType::DIAMOND_BLOCK:
             return BlockTextureId::DIAMOND_BLOCK;
         case BlockType::PACKED_ICE:
             return BlockTextureId::PACKED_ICE;
+        case BlockType::BEDROCK:
+            return BlockTextureId::BEDROCK;
         case BlockType::ERROR:
             return BlockTextureId::ERROR;
         case BlockType::AIR:

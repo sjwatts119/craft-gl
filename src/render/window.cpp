@@ -23,7 +23,8 @@ void Window::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    _window = glfwCreateWindow(_width, _height, _title.c_str(), nullptr, nullptr);
+    const auto monitor = WINDOW_FULLSCREEN ? glfwGetPrimaryMonitor() : nullptr;
+    _window = glfwCreateWindow(_width, _height, _title.c_str(), monitor, nullptr);
 
     if (_window == nullptr) {
         glfwTerminate();

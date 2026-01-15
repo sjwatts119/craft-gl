@@ -49,7 +49,7 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
                 } else if (blockWorldCoordinate.y > targetHeight - 5) {
                     _blocks[x][y][z] = BlockType::DIRT;
                 } else if (blockWorldCoordinate.y == 0) {
-                    _blocks[x][y][z] = BlockType::AIR;
+                    _blocks[x][y][z] = BlockType::BEDROCK;
                 } else {
                     _blocks[x][y][z] = BlockType::STONE;
                 }
