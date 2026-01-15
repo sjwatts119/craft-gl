@@ -24,11 +24,16 @@ vec4 colourFromBlockType() {
 
 void main()
 {
+    vec4 baseColour = colourFromBlockType();
+
+    if (baseColour.a < 0.5f) {
+        discard;
+    }
+
     vec3 normal = normalize(Normal);
     vec3 cameraPosition = vec3(0.0f);
 
     /** BASE **/
-    vec4 baseColour = colourFromBlockType();
 
     /** AMBIENT **/
     vec4 ambientLight = baseColour * vec4(Light.ambient, 1.0f);

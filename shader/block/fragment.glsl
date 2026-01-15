@@ -56,11 +56,15 @@ vec4 colourFromBlockType() {
 
 void main()
 {
+    vec4 baseColour = colourFromBlockType();
+
+    if (baseColour.a < 0.1f) {
+        discard;
+    }
+
     vec3 normal = normalize(Normal);
     vec3 cameraPosition = vec3(0.0f);
 
-    /** BASE **/
-    vec4 baseColour = colourFromBlockType();
 
     /** AMBIENT **/
     vec4 ambientLight = baseColour * vec4(Sun.ambient, 1.0f);
@@ -82,10 +86,6 @@ void main()
 //    vec4 specularLight = specularAmount * baseColour;
 
     vec4 litColour = ambientLight + diffuseLight;
-
-    if (litColour.a == 0.0f) {
-        discard;
-    }
 
     /** HIGHLIGHT MODIFIER **/
     if (IsHighlighted == 0) {
