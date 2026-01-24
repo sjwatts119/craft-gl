@@ -52,7 +52,7 @@ class Player {
     float _eyeHeight = _playerHeight - 0.2f;
 
     /** Physics **/
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 2 + 8, 0.0f};
+    glm::vec3 _position{0.0f, CHUNK_SIZE * 3 + 8, 0.0f};
     glm::vec3 _lastPosition = _position;
     glm::vec3 _momentum{0.0f};
     bool _grounded = false;

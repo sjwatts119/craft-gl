@@ -29,8 +29,11 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
             const auto currentWorldX = worldCoordinate.x + x;
             const auto currentWorldZ = worldCoordinate.z + z;
 
-            const auto heightSample = perlin->octave2D_01(currentWorldX * 0.001, currentWorldZ * 0.001, 8);
-            auto targetHeight = std::floor(heightSample * (WORLD_HEIGHT * CHUNK_SIZE));
+            auto targetHeight = MINIMUM_TERRAIN_HEIGHT;
+
+            auto heightSample = perlin->octave2D_01(currentWorldX * 0.001, currentWorldZ * 0.001, 8);
+            heightSample = std::floor(heightSample * (MAXIMUM_TERRAIN_HEIGHT - MINIMUM_TERRAIN_HEIGHT));
+            targetHeight += static_cast<int>(heightSample);
 
             // std::cout << "Target height: " << targetHeight << std::endl;
             // std::cout << "Max chunk height: " << worldCoordinate.y + CHUNK_SIZE << std::endl;

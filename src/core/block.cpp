@@ -10,6 +10,7 @@ Block::Block(const BlockType type)
 bool Block::transparentFromType(const BlockType &type) {
     switch (type) {
         case BlockType::GLASS_BLOCK:
+        case BlockType::OAK_LEAVES:
         case BlockType::AIR:
             return true;
         default:
@@ -60,6 +61,8 @@ BlockTextureId Block::textureIdFromTypeAndFace(const BlockType &type, const Bloc
                 default:
                     return BlockTextureId::OAK_LOG_SIDE;
             }
+        case BlockType::OAK_LEAVES:
+            return BlockTextureId::OAK_LEAVES;
         case BlockType::OAK_PLANKS:
             return BlockTextureId::OAK_PLANKS;
         case BlockType::DIAMOND_BLOCK:

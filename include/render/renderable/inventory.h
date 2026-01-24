@@ -12,7 +12,7 @@
 
 class Inventory final : public Renderable {
 private:
-    BlockType _selectedBlockType = BlockType::DIAMOND_BLOCK;
+    BlockType _selectedBlockType = BlockType::OAK_LEAVES;
 
     std::array<BlockData, 24> _vertices;
     std::array<GLuint, 36> _indices;
@@ -34,7 +34,7 @@ public:
 
     void markAsDirty();
 
-    bool isDirty() const;
+    [[nodiscard]] bool isDirty() const;
 
     void selectBlockType(BlockType type);
 

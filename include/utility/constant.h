@@ -12,6 +12,9 @@ static constexpr int MAX_TICKS_PER_FRAME = 5;
 static constexpr int CHUNK_SIZE = 32;
 static constexpr int BLOCK_COUNT = CHUNK_SIZE * CHUNK_SIZE * CHUNK_SIZE;
 
+static constexpr int MINIMUM_TERRAIN_HEIGHT = 64;
+static constexpr int MAXIMUM_TERRAIN_HEIGHT = 192;
+
 static constexpr int WINDOW_WIDTH = 2560;
 static constexpr int WINDOW_HEIGHT = 1440;
 static constexpr bool WINDOW_FULLSCREEN = true;
