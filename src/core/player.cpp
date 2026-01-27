@@ -486,8 +486,8 @@ void Player::clearAimingAtBlock() {
 }
 
 void Player::setAimingAtBlock() {
-    Ray ray {_camera._position, _camera._forward};
-    const auto traversed = ray.traversedCoordinates(10.0f);
+    const Ray ray {_camera._position, _camera._forward};
+    const auto traversed = ray.traversedCoordinates(_reach);
 
     std::optional<Coordinate> aimedAtCoordinate;
 
