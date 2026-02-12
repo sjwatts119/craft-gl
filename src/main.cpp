@@ -28,5 +28,5 @@ int main() {
         Craft::window->swapBuffers();
     }
 
-    Craft::window->destroy();
+    Craft::destroy();
 }

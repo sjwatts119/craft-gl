@@ -14,4 +14,6 @@ namespace Craft {
     extern Debug *debug;
 
     void setup();
+
+    void destroy();
 }

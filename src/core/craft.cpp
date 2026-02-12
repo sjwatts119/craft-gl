@@ -28,4 +28,8 @@ namespace Craft {
         static Debug _debug;
         debug = &_debug;
     }
+
+    void destroy() {
+        window->destroy();
+    }
 }
