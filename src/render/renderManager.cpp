@@ -34,7 +34,7 @@ void RenderManager::renderBlocks() const {
     _shaderManager._blockShader.setInt("uBlockTextures", 0);
 
     _shaderManager._blockShader.setMat4("uViewMatrix", Craft::player->getCamera()->getViewMatrix());
-    _shaderManager._blockShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix(Craft::window));
+    _shaderManager._blockShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix());
     _shaderManager._blockShader.setLight("uSun" , Craft::world->getSun());
 
     const Frustum viewFrustum{*Craft::player->getCamera(), Craft::window->getWidth(), Craft::window->getHeight()};
@@ -60,7 +60,7 @@ void RenderManager::renderDebug() const {
     _shaderManager._debugShader.use();
 
     _shaderManager._debugShader.setMat4("uViewMatrix", Craft::player->getCamera()->getViewMatrix());
-    _shaderManager._debugShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix(Craft::window));
+    _shaderManager._debugShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix());
 
     Craft::debug->render();
 }

@@ -2,13 +2,15 @@
 
 #include "render/renderable/chunkMesh.h"
 
-Chunk::Chunk(World* world, const Coordinate coordinate) :
-    _world(world),
+Chunk::Chunk(const Coordinate coordinate) :
     _coordinate(coordinate),
     _boundingBox(AABB::forChunk(coordinate)),
-    _mesh{std::make_unique<ChunkMesh>(_world, this)}
+    _mesh{std::make_unique<ChunkMesh>(this)}
 {
-    _localToWorldMatrix = glm::translate(glm::mat4(1.0f), _coordinate.toWorldFromChunk().toVec3());
+    _localToWorldMatrix = glm::translate(
+        glm::mat4(1.0f),
+        _coordinate.toWorldFromChunk().toVec3()
+    );
 }
 
 Chunk::~Chunk() = default;

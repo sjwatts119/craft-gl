@@ -1,5 +1,4 @@
 #pragma once
-#include <optional>
 
 class Debug;
 class Player;

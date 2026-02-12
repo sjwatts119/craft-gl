@@ -11,7 +11,6 @@
 #include "geometry/AABB.h"
 
 class Camera {
-
 public:
     /** Euler Angles **/
     float _pitch = 0.0f;
@@ -31,7 +30,7 @@ public:
     float _nearClip = 0.1f;
     float _farClip = 500.0f;
 
-    Camera(const glm::vec3 &position): _position(position) {
+    explicit Camera(const glm::vec3 &position): _position(position) {
         updateBasisVectors();
     }
 
@@ -45,7 +44,5 @@ public:
 
     [[nodiscard]] glm::mat4 getViewMatrix() const;
 
-    [[nodiscard]] glm::mat4 getProjectionMatrix(const int &width, const int &height) const;
-
-    [[nodiscard]] glm::mat4 getProjectionMatrix(const Window *window) const;
+    [[nodiscard]] glm::mat4 getProjectionMatrix() const;
 };

@@ -1,5 +1,8 @@
 #include "core/camera.h"
 
+#include "core/craft.h"
+#include "geometry/AABB.h"
+
 void Camera::updateBasisVectors() {
     glm::vec3 newCameraDirection;
 
@@ -34,12 +37,12 @@ glm::mat4 Camera::getViewMatrix() const
     return glm::lookAt(_position, _position + _forward, _up);
 }
 
-glm::mat4 Camera::getProjectionMatrix(const int& width, const int& height) const
+glm::mat4 Camera::getProjectionMatrix() const
 {
-    return glm::mat4(glm::perspective(glm::radians(_fov), static_cast<float>(width) / static_cast<float>(height), _nearClip, _farClip));
-}
-
-glm::mat4 Camera::getProjectionMatrix(const Window* window) const
-{
-    return getProjectionMatrix(window->getWidth(), window->getHeight());
+    return glm::perspective(
+        glm::radians(_fov),
+        static_cast<float>(Craft::window->getWidth()) / static_cast<float>(Craft::window->getHeight()),
+        _nearClip,
+        _farClip
+    );
 }

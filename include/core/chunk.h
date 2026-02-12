@@ -17,7 +17,6 @@ class ChunkMesh;
 class Chunk {
 private:
     glm::mat4 _localToWorldMatrix{};
-    World* _world;
 
 public:
     Coordinate _coordinate;
@@ -28,7 +27,7 @@ public:
     BlockType _blocks[Constant::CHUNK_SIZE][Constant::CHUNK_SIZE][Constant::CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 
-    explicit Chunk(World* world, Coordinate coordinate);
+    explicit Chunk(Coordinate coordinate);
 
     ~Chunk();
 

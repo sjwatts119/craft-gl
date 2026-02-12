@@ -14,7 +14,6 @@ class World;
 class ChunkMesh final : public Renderable {
 private:
     Chunk *_chunk;
-    World *_world;
 
     bool _dirty = true;
     bool _uploadNeeded = true;
@@ -24,7 +23,7 @@ public:
     std::vector<BlockData> _vertices;
     std::vector<GLuint> _indices;
 
-    explicit ChunkMesh(World* world, Chunk* chunk);
+    explicit ChunkMesh(Chunk *chunk);
 
     [[nodiscard]] bool isDirty() const;
 

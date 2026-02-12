@@ -21,7 +21,7 @@ void World::addInitialChunks() {
         for (int z = Constant::RENDER_DISTANCE / -2; z < Constant::RENDER_DISTANCE / 2; z++) {
             for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
                 const Coordinate coordinate {x, y, z};
-                auto chunk = std::make_unique<Chunk>(this, coordinate);
+                auto chunk = std::make_unique<Chunk>(coordinate);
                 _chunks.emplace(coordinate, std::move(chunk));
                 coordinates.push_back(coordinate);
             }
@@ -42,7 +42,7 @@ void World::loadChunks(const std::vector<Coordinate>& chunkCoordinates) {
     std::vector<Coordinate> coordinates;
 
     for (const auto &chunkCoordinate : chunkCoordinates) {
-        auto chunk = std::make_unique<Chunk>(this, chunkCoordinate);
+        auto chunk = std::make_unique<Chunk>(chunkCoordinate);
         _chunks.emplace(chunkCoordinate, std::move(chunk));
         coordinates.push_back(chunkCoordinate);
     }

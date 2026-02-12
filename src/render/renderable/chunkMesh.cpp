@@ -2,13 +2,11 @@
 
 #include "core/chunk.h"
 #include "core/block.h"
+#include "core/craft.h"
 #include "core/world.h"
 #include "utility/direction.h"
 
-ChunkMesh::ChunkMesh(World* world, Chunk* chunk) :
-    _chunk(chunk),
-    _world(world)
-{
+ChunkMesh::ChunkMesh(Chunk *chunk) : _chunk(chunk) {
     genBuffers();
 }
 
@@ -27,12 +25,12 @@ void ChunkMesh::markAsDirty() {
 void ChunkMesh::markAsDirtyWithNeighbours() {
     markAsDirty();
 
-    auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
-    auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
-    auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
-    auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
-    auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
-    auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
+    auto leftNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    auto rightNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    auto downNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    auto upNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    auto backNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    auto frontNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
     if (leftNeighbour != nullptr) {
         leftNeighbour->_mesh->markAsDirty();
@@ -57,12 +55,12 @@ void ChunkMesh::markAsDirtyWithNeighbours() {
 void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate localCoordinate) {
     markAsDirty();
 
-    const auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
-    const auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
-    const auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
-    const auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
-    const auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
-    const auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
+    const auto leftNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    const auto rightNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    const auto downNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    const auto upNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    const auto backNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    const auto frontNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
     if (localCoordinate.x == 0 && leftNeighbour != nullptr) {
         leftNeighbour->_mesh->markAsDirty();
@@ -91,12 +89,12 @@ void ChunkMesh::regenerateMesh() {
     _indices.clear();
 
     // get neighbouring chunks
-    auto leftNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
-    auto rightNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
-    auto downNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
-    auto upNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
-    auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
-    auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
+    auto leftNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    auto rightNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    auto downNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    auto upNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    auto backNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    auto frontNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
     for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
         for (int y = 0; y < Constant::CHUNK_SIZE; y++) {

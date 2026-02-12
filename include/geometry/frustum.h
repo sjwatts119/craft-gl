@@ -43,7 +43,7 @@ public:
     }
 
     Frustum(const Camera &camera, const int screenWidth, const int screenHeight) {
-        buildFromMatrix(camera.getProjectionMatrix(screenWidth, screenHeight) * camera.getViewMatrix());
+        buildFromMatrix(camera.getProjectionMatrix() * camera.getViewMatrix());
     }
 
     /**
