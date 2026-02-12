@@ -2,26 +2,27 @@
 
 #include <ranges>
 #include "core/chunk.h"
+#include "core/craft.h"
 
 Debug::Debug() {
     genBuffers();
     upload();
 }
 
-void Debug::update(const Player* player, const World* world) {
-    if (!player->debugIsEnabled()) {
+void Debug::update() {
+    if (!Craft::player->debugIsEnabled()) {
         return;
     }
 
     _vertices.clear();
     _indices.clear();
 
-    for (const auto &chunk: world->_chunks | std::views::values) {
+    for (const auto &chunk: Craft::world->_chunks | std::views::values) {
         const auto& chunkAABB = chunk->_boundingBox;
         addAABB(chunkAABB);
     }
 
-    addAABB(player->getBoundingBox());
+    addAABB(Craft::player->getBoundingBox());
 }
 
 /**

@@ -49,13 +49,13 @@ public:
 
     void placeBlock(Coordinate worldCoordinate, BlockType blockType) const;
 
-    void changeChunks(const Player *player);
+    void changeChunks();
 
     void deleteOldChunks();
 
     void regenerateDirtyMeshes();
 
-    void tick(const Player *player);
+    void tick();
 
     void update();
 

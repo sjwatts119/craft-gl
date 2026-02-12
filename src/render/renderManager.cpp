@@ -2,6 +2,7 @@
 #include <render/renderManager.h>
 
 #include "core/chunk.h"
+#include "core/craft.h"
 #include "geometry/frustum.h"
 #include "render/renderable/debug.h"
 
@@ -26,19 +27,19 @@ void RenderManager::clear() {
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 }
 
-void RenderManager::renderBlocks(const Player* player, const Window* window, World* world) const {
+void RenderManager::renderBlocks() const {
     _shaderManager._blockShader.use();
 
     _textureManager._blockTextures.use(0);
     _shaderManager._blockShader.setInt("uBlockTextures", 0);
 
-    _shaderManager._blockShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
-    _shaderManager._blockShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
-    _shaderManager._blockShader.setLight("uSun" , world->getSun());
+    _shaderManager._blockShader.setMat4("uViewMatrix", Craft::player->getCamera()->getViewMatrix());
+    _shaderManager._blockShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix(Craft::window));
+    _shaderManager._blockShader.setLight("uSun" , Craft::world->getSun());
 
-    const Frustum viewFrustum{*player->getCamera(), window->getWidth(), window->getHeight()};
+    const Frustum viewFrustum{*Craft::player->getCamera(), Craft::window->getWidth(), Craft::window->getHeight()};
 
-    for (const auto &chunk: world->_chunks | std::views::values) {
+    for (const auto &chunk: Craft::world->_chunks | std::views::values) {
         if (!viewFrustum.fastIntersects(chunk->_boundingBox)) {
             continue;
         }
@@ -52,62 +53,62 @@ void RenderManager::renderBlocks(const Player* player, const Window* window, Wor
     }
 }
 
-void RenderManager::renderDebug(const Player *player, const Window* window, Debug *debug) const {
-    debug->upload(); // todo don't upload every frame
-    debug->bind();
+void RenderManager::renderDebug() const {
+    Craft::debug->upload(); // todo don't upload every frame
+    Craft::debug->bind();
 
     _shaderManager._debugShader.use();
 
-    _shaderManager._debugShader.setMat4("uViewMatrix", player->getCamera()->getViewMatrix());
-    _shaderManager._debugShader.setMat4("uProjectionMatrix", player->getCamera()->getProjectionMatrix(window));
+    _shaderManager._debugShader.setMat4("uViewMatrix", Craft::player->getCamera()->getViewMatrix());
+    _shaderManager._debugShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix(Craft::window));
 
-    debug->render();
+    Craft::debug->render();
 }
 
-void RenderManager::renderCrosshair(const Window *window, const Player *player) const {
-    player->getCrosshair()->bind();
+void RenderManager::renderCrosshair() const {
+    Craft::player->getCrosshair()->bind();
 
     _shaderManager._crosshairShader.use();
-    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(window));
+    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(Craft::window));
 
-    player->getCrosshair()->render();
+    Craft::player->getCrosshair()->render();
 }
 
-void RenderManager::renderInventory(const Window* window, Player* player) const {
-    player->getInventory()->uploadIfRegenerated();
-    player->getInventory()->bind();
+void RenderManager::renderInventory() const {
+    Craft::player->getInventory()->uploadIfRegenerated();
+    Craft::player->getInventory()->bind();
 
     _shaderManager._inventoryShader.use();
 
     _textureManager._blockTextures.use(0);
     _shaderManager._inventoryShader.setInt("uBlockTextures", 0);
 
-    _shaderManager._inventoryShader.setLight("uLight", player->getInventory()->getLight());
+    _shaderManager._inventoryShader.setLight("uLight", Craft::player->getInventory()->getLight());
 
-    _shaderManager._inventoryShader.setMat4("uModelMatrix", player->getInventory()->getModelMatrix());
+    _shaderManager._inventoryShader.setMat4("uModelMatrix", Craft::player->getInventory()->getModelMatrix());
     _shaderManager._inventoryShader.setMat4("uViewMatrix", Inventory::getViewMatrix());
-    _shaderManager._inventoryShader.setMat4("uProjectionMatrix", Inventory::getProjectionMatrix(window));
+    _shaderManager._inventoryShader.setMat4("uProjectionMatrix", Inventory::getProjectionMatrix(Craft::window));
 
-    player->getInventory()->render();
+    Craft::player->getInventory()->render();
 }
 
-void RenderManager::renderInterface(const Window* window, Player* player) const {
+void RenderManager::renderInterface() const {
     glDisable(GL_DEPTH_TEST);
 
-    renderCrosshair(window, player);
-    renderInventory(window, player);
+    renderCrosshair();
+    renderInventory();
 
     glEnable(GL_DEPTH_TEST);
 }
 
-void RenderManager::render(Player* player, const Window* window, World* world, Debug* debug) const {
-    renderBlocks(player, window, world);
+void RenderManager::render() const {
+    renderBlocks();
 
-    if (player->debugIsEnabled()) {
-        renderDebug(player, window, debug);
+    if (Craft::player->debugIsEnabled()) {
+        renderDebug();
     }
 
-    renderInterface(window, player);
+    renderInterface();
 
     glBindVertexArray(0);
 }

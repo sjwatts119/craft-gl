@@ -94,7 +94,7 @@ class Player {
 
     void updateSlip();
 
-    void updateCameraPosition(const Window* window);
+    void updateCameraPosition();
 
     void aim(float yawOffset, float pitchOffset);
 
@@ -102,17 +102,17 @@ public:
     explicit Player(World *world): _world(world) {
     }
 
-    void update(const Window *window);
+    void update();
 
-    void tick(const Window *window);
+    void tick();
 
-    void processCursor(const Window *window);
+    void processCursor();
 
-    void processMouse(const Window *window);
+    void processMouse();
 
     [[nodiscard]] float slipperinessAccelerationMultiplier() const;
 
-    void processKeyboard(const Window *window);
+    void processKeyboard();
 
     void updateBoundingBox();
 

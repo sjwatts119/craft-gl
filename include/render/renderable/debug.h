@@ -13,7 +13,7 @@ private:
 public:
     Debug();
 
-    void update(const Player* player, const World* world);
+    void update();
 
     void upload() override;
 

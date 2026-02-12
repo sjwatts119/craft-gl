@@ -25,19 +25,19 @@ private:
     ShaderManager _shaderManager;
     TextureManager _textureManager;
 
-    void renderBlocks(const Player *player, const Window *window, World *world) const;
+    void renderBlocks() const;
 
-    void renderCrosshair(const Window *window, const Player *player) const;
+    void renderCrosshair() const;
 
-    void renderInventory(const Window *window, Player *player) const;
+    void renderInventory() const;
 
-    void renderInterface(const Window *window, Player *player) const;
+    void renderInterface() const;
 
-    void renderDebug(const Player *player, const Window *window, Debug *debug) const;
+    void renderDebug() const;
 public:
     explicit RenderManager(const Window *window);
 
     static void clear();
 
-    void render(Player *player, const Window *window, World *world, Debug *debug) const;
+    void render() const;
 };

@@ -1,19 +1,20 @@
 #include <core/player.h>
 
 #include "core/chunk.h"
+#include "core/craft.h"
 
-void Player::update(const Window* window) {
-    processCursor(window);
+void Player::update() {
+    processCursor();
 
-    updateCameraPosition(window);
+    updateCameraPosition();
     setAimingAtBlock();
 }
 
-void Player::tick(const Window* window) {
+void Player::tick() {
     updateLastPosition();
 
-    processMouse(window);
-    processKeyboard(window);
+    processMouse();
+    processKeyboard();
 
     updateSlip();
     updatePosition();
@@ -34,9 +35,9 @@ void Player::tick(const Window* window) {
 /**
  * INPUT HANDLING
  */
-void Player::processCursor(const Window* window) {
+void Player::processCursor() {
     double xPosition, yPosition;
-    glfwGetCursorPos(window->getWindow(), &xPosition, &yPosition);
+    glfwGetCursorPos(Craft::window->getWindow(), &xPosition, &yPosition);
 
     // Prevent jerky first frame from huge offset when user clicks in the window.
     if (_firstMouseInput) {
@@ -57,9 +58,9 @@ void Player::processCursor(const Window* window) {
     aim(xOffset, yOffset);
 }
 
-void Player::processMouse(const Window* window) {
+void Player::processMouse() {
     /** Left mouse button **/
-    const bool mouse1IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
+    const bool mouse1IsPressed = glfwGetMouseButton(Craft::window->getWindow(), GLFW_MOUSE_BUTTON_1) == GLFW_PRESS;
 
     // Prevent holding down the button
     if (mouse1IsPressed && !_mouse1WasPressed) {
@@ -69,7 +70,7 @@ void Player::processMouse(const Window* window) {
     _mouse1WasPressed = mouse1IsPressed;
 
     /** Right mouse button **/
-    const bool mouse2IsPressed = glfwGetMouseButton(window->getWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS;
+    const bool mouse2IsPressed = glfwGetMouseButton(Craft::window->getWindow(), GLFW_MOUSE_BUTTON_2) == GLFW_PRESS;
 
     // Prevent holding down the button
     if (mouse2IsPressed && !_mouse2WasPressed) {
@@ -97,38 +98,38 @@ float Player::slipperinessAccelerationMultiplier() const {
     return WALKING_ACCELERATION * accelerationMultiplier;
 }
 
-void Player::processKeyboard(const Window* window) {
+void Player::processKeyboard() {
     const auto accelerationMultiplier = slipperinessAccelerationMultiplier();
 
     /**
      * Movement
      */
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
     {
         moveForward(accelerationMultiplier);
     }
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
     {
         moveBackward(accelerationMultiplier);
     }
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
     {
         moveLeft(accelerationMultiplier);
     }
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
     {
         moveRight(accelerationMultiplier);
     }
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
     {
         moveUp(accelerationMultiplier);
     }
 
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
     {
         moveDown(accelerationMultiplier);
     }
@@ -136,39 +137,39 @@ void Player::processKeyboard(const Window* window) {
     /**
      * Block selection
      */
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_1) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_1) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(0));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_2) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_2) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(1));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_3) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_3) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(2));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_4) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_4) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(3));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_5) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_5) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(4));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_6) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_6) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(5));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(6));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(7));
     }
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
     {
         _inventory.selectBlockType(static_cast<BlockType>(8));
     }
@@ -176,13 +177,13 @@ void Player::processKeyboard(const Window* window) {
     /**
      * Mode toggles
      */
-    const auto mIsPressed = glfwGetKey(window->getWindow(), GLFW_KEY_M) == GLFW_PRESS;
+    const auto mIsPressed = glfwGetKey(Craft::window->getWindow(), GLFW_KEY_M) == GLFW_PRESS;
     if (mIsPressed && !_mWasPressed) {
         _mode = _mode == MovementMode::WALKING ? MovementMode::FLYING : MovementMode::WALKING;
     }
     _mWasPressed = mIsPressed;
 
-    const auto tabIsPressed = glfwGetKey(window->getWindow(), GLFW_KEY_TAB) == GLFW_PRESS;
+    const auto tabIsPressed = glfwGetKey(Craft::window->getWindow(), GLFW_KEY_TAB) == GLFW_PRESS;
     if (tabIsPressed && !_tabWasPressed) {
         _debug = !_debug;
     }
@@ -191,9 +192,9 @@ void Player::processKeyboard(const Window* window) {
     /**
      * Kill window
      */
-    if (glfwGetKey(window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
     {
-        glfwSetWindowShouldClose(window->getWindow(), true);
+        glfwSetWindowShouldClose(Craft::window->getWindow(), true);
     }
 }
 
@@ -412,9 +413,9 @@ void Player::respawn() {
 /**
  * AIMING & CAMERA
  */
-void Player::updateCameraPosition(const Window* window)
+void Player::updateCameraPosition()
 {
-    const auto interpolationFactor = std::clamp(window->getTimeSinceLastTick() / TIME_PER_TICK, 0.0f, 1.0f);
+    const auto interpolationFactor = std::clamp(Craft::window->getTimeSinceLastTick() / TIME_PER_TICK, 0.0f, 1.0f);
     _camera._position = glm::mix(_lastPosition, _position, interpolationFactor) + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 

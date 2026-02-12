@@ -5,6 +5,7 @@
 #include <iostream>
 
 #include "core/chunk.h"
+#include "core/craft.h"
 #include "render/renderable/chunkMesh.h"
 
 World::World() {
@@ -115,10 +116,10 @@ void World::placeBlock(const Coordinate worldCoordinate, const BlockType blockTy
     chunk->placeBlock(localCoordinate, blockType);
 }
 
-void World::changeChunks(const Player* player) {
+void World::changeChunks() {
     const auto threads = std::thread::hardware_concurrency();
 
-    const auto nearbyCoordinates = player->getSurroundingChunkCoordinates();
+    const auto nearbyCoordinates = Craft::player->getSurroundingChunkCoordinates();
 
     const std::unordered_set<Coordinate, CoordinateHash> nearbySet(
         nearbyCoordinates.begin(),
@@ -197,8 +198,8 @@ void World::regenerateDirtyMeshes() {
     }
 }
 
-void World::tick(const Player* player) {
-    changeChunks(player);
+void World::tick() {
+    changeChunks();
 }
 
 void World::update() {
