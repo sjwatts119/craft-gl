@@ -35,7 +35,7 @@ private:
 
     void renderDebug() const;
 public:
-    explicit RenderManager(const Window *window);
+    RenderManager();
 
     static void clear();
 

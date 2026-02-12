@@ -311,7 +311,7 @@ void Player::updatePosition() {
     for (int x = minX; x <= maxX; x++) {
         for (int y = minY; y <= maxY; y++) {
             for (int z = minZ; z <= maxZ; z++) {
-                auto block = _world->blockAt(Coordinate{x, y, z});
+                auto block = Craft::world->blockAt(Coordinate{x, y, z});
 
                 if (block == nullptr || *block == BlockType::AIR) {
                     continue;
@@ -372,7 +372,7 @@ void Player::updateSlip() {
         blockCoord.z
     };
 
-    if (const auto blockBelow = _world->blockAt(directlyBelowCoord); blockBelow != nullptr && *blockBelow != BlockType::AIR) {
+    if (const auto blockBelow = Craft::world->blockAt(directlyBelowCoord); blockBelow != nullptr && *blockBelow != BlockType::AIR) {
         if (pushedAABB.intersects(AABB::forBlock(directlyBelowCoord))) {
             _slip = Block::slipperinessFromType(*blockBelow);
             return;
@@ -390,7 +390,7 @@ void Player::updateSlip() {
     for (int x = minX; x <= maxX; ++x) {
         for (int z = minZ; z <= maxZ; ++z) {
             if (Coordinate coord{x, checkY, z}; pushedAABB.intersects(AABB::forBlock(coord))) {
-                if (const auto block = _world->blockAt(coord); block != nullptr && *block != BlockType::AIR) {
+                if (const auto block = Craft::world->blockAt(coord); block != nullptr && *block != BlockType::AIR) {
                     _slip = Block::slipperinessFromType(*block);
                     return;
                 }
@@ -439,7 +439,7 @@ void Player::destroyHighlightedBlock() const {
 
     std::cout << "attempting to destroy " << _highlightedBlockWorldCoordinate.value() << std::endl;
 
-    _world->destroyBlock(_highlightedBlockWorldCoordinate.value());
+    Craft::world->destroyBlock(_highlightedBlockWorldCoordinate.value());
 }
 
 void Player::placeBlock() const {
@@ -458,7 +458,7 @@ void Player::placeBlock() const {
         return;
     }
 
-    _world->placeBlock(newWorldCoordinate, _inventory.getSelectedBlockType());
+    Craft::world->placeBlock(newWorldCoordinate, _inventory.getSelectedBlockType());
 }
 
 
@@ -470,10 +470,10 @@ void Player::clearAimingAtBlock() {
         return;
     }
 
-    const auto chunk = _world->_chunks.find(_highlightedBlockWorldCoordinate.value().toChunkFromWorld());
+    const auto chunk = Craft::world->_chunks.find(_highlightedBlockWorldCoordinate.value().toChunkFromWorld());
 
     // chunk is out of bounds or not found
-    if (chunk == _world->_chunks.end()) {
+    if (chunk == Craft::world->_chunks.end()) {
         _highlightedBlockWorldCoordinate = std::nullopt;
         _highlightedBlockFace = std::nullopt;
         return;
@@ -493,7 +493,7 @@ void Player::setAimingAtBlock() {
     std::optional<Coordinate> aimedAtCoordinate;
 
     for (const auto& coord : traversed) {
-        if (const auto block = _world->blockAt(coord); block == nullptr || *block == BlockType::AIR) {
+        if (const auto block = Craft::world->blockAt(coord); block == nullptr || *block == BlockType::AIR) {
             continue;
         }
 
@@ -506,8 +506,8 @@ void Player::setAimingAtBlock() {
         return;
     }
 
-    const auto containingChunk = _world->_chunks.find(aimedAtCoordinate.value().toChunkFromWorld());
-    if (containingChunk == _world->_chunks.end()) {
+    const auto containingChunk = Craft::world->_chunks.find(aimedAtCoordinate.value().toChunkFromWorld());
+    if (containingChunk == Craft::world->_chunks.end()) {
         clearAimingAtBlock();
         return;
     }

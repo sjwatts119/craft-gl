@@ -4,13 +4,15 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
+#include "utility/constant.h"
+
 class Window {
 private:
-    int _width;
-    int _height;
-    float _aspectRatio;
+    int _width = WINDOW_WIDTH;
+    int _height = WINDOW_HEIGHT;
+    float _aspectRatio = static_cast<float>(_width) / _height;
 
-    std::string _title;
+    std::string _title = WINDOW_TITLE;
 
     float _deltaTime = 0.0f;
     float _sinceLastFrame = 0.0f;
@@ -28,7 +30,7 @@ private:
     void updateTickTime();
 
 public:
-    Window(int width, int height, std::string title);
+    Window();
 
     void makeCurrent() const;
 

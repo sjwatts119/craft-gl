@@ -6,9 +6,9 @@
 #include "geometry/frustum.h"
 #include "render/renderable/debug.h"
 
-RenderManager::RenderManager(const Window* window) {
+RenderManager::RenderManager() {
     // Viewport
-    glViewport(0, 0, window->getWidth(), window->getHeight());
+    glViewport(0, 0, Craft::window->getWidth(), Craft::window->getHeight());
 
     // Clear color (sky blue)
     glClearColor(0.43138f, 0.69412f, 1.0f, 1.0f);

@@ -4,14 +4,9 @@
 
 #include "utility/constant.h"
 
-Window::Window(
-    const int width,
-    const int height,
-    std::string title
-): _width(width), _height(height), _title(std::move(title)) {
-    _aspectRatio = static_cast<float>(width) / static_cast<float>(height);
-
+Window::Window() {
     initWindow();
+    makeCurrent();
 }
 
 void Window::initWindow() {

@@ -1,4 +1,5 @@
 #pragma once
+#include <optional>
 
 class Debug;
 class Player;
@@ -12,4 +13,6 @@ namespace Craft {
     extern World *world;
     extern Player *player;
     extern Debug *debug;
+
+    void setup();
 }

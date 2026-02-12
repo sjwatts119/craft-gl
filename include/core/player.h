@@ -63,9 +63,6 @@ class Player {
     Inventory _inventory;
     Crosshair _crosshair;
 
-    /** References **/
-    World *_world;
-
     void moveForward(float accelerationMultiplier);
 
     void moveBackward(float accelerationMultiplier);
@@ -99,9 +96,6 @@ class Player {
     void aim(float yawOffset, float pitchOffset);
 
 public:
-    explicit Player(World *world): _world(world) {
-    }
-
     void update();
 
     void tick();

@@ -7,41 +7,27 @@
 #include "core/craft.h"
 
 int main() {
-    Window window{WINDOW_WIDTH, WINDOW_HEIGHT, WINDOW_TITLE};
-    Craft::window = &window;
-    Craft::window->makeCurrent();
+    Craft::setup();
 
-    RenderManager renderManager{&window};
-    Craft::renderManager = &renderManager;
+    while (Craft::window->open()) {
+        Craft::window->update();
 
-    World world;
-    Craft::world = &world;
+        Craft::renderManager->clear();
 
-    Player player{&world};
-    Craft::player = &player;
-
-    Debug debug;
-    Craft::debug = &debug;
-
-    while (window.open()) {
-        window.update();
-
-        RenderManager::clear();
-
-        for (int i = 0; i < window.getTicksElapsed(); i++) {
-            player.tick();
-            world.tick();
+        for (int i = 0; i < Craft::window->getTicksElapsed(); i++) {
+            Craft::player->tick();
+            Craft::world->tick();
         }
 
-        world.update();
-        player.update();
-        debug.update();
+        Craft::world->update();
+        Craft::player->update();
+        Craft::debug->update();
 
-        renderManager.render();
+        Craft::renderManager->render();
 
-        Window::poll();
-        window.swapBuffers();
+        Craft::window->poll();
+        Craft::window->swapBuffers();
     }
 
-    Window::destroy();
+    Craft::window->destroy();
 }
