@@ -17,9 +17,9 @@ World::~World() = default;
 void World::addInitialChunks() {
     std::vector<Coordinate> coordinates;
 
-    for (int x = (RENDER_DISTANCE / -2); x < (RENDER_DISTANCE / 2); x++) {
-        for (int z = RENDER_DISTANCE / -2; z < RENDER_DISTANCE / 2; z++) {
-            for (int y = 0; y < WORLD_HEIGHT; y++) {
+    for (int x = (Constant::RENDER_DISTANCE / -2); x < (Constant::RENDER_DISTANCE / 2); x++) {
+        for (int z = Constant::RENDER_DISTANCE / -2; z < Constant::RENDER_DISTANCE / 2; z++) {
+            for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
                 const Coordinate coordinate {x, y, z};
                 auto chunk = std::make_unique<Chunk>(this, coordinate);
                 _chunks.emplace(coordinate, std::move(chunk));
@@ -166,7 +166,7 @@ void World::deleteOldChunks() {
         return;
     }
 
-    const auto deletionsThisFrame = std::min(CHUNK_DELETIONS_PER_FRAME, static_cast<int>(_oldChunks.size()));
+    const auto deletionsThisFrame = std::min(Constant::CHUNK_DELETIONS_PER_FRAME, static_cast<int>(_oldChunks.size()));
 
     for (int i = 0; i < deletionsThisFrame; i++) {
         _oldChunks.back()->_mesh->markAsDirtyWithNeighbours();

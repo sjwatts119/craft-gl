@@ -67,19 +67,19 @@ void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate localCoordina
     if (localCoordinate.x == 0 && leftNeighbour != nullptr) {
         leftNeighbour->_mesh->markAsDirty();
     }
-    if (localCoordinate.x == CHUNK_SIZE - 1 && rightNeighbour != nullptr) {
+    if (localCoordinate.x == Constant::CHUNK_SIZE - 1 && rightNeighbour != nullptr) {
         rightNeighbour->_mesh->markAsDirty();
     }
     if (localCoordinate.y == 0 && downNeighbour != nullptr) {
         downNeighbour->_mesh->markAsDirty();
     }
-    if (localCoordinate.y == CHUNK_SIZE - 1 && upNeighbour != nullptr) {
+    if (localCoordinate.y == Constant::CHUNK_SIZE - 1 && upNeighbour != nullptr) {
         upNeighbour->_mesh->markAsDirty();
     }
     if (localCoordinate.z == 0 && backNeighbour != nullptr) {
         backNeighbour->_mesh->markAsDirty();
     }
-    if (localCoordinate.z == CHUNK_SIZE - 1 && frontNeighbour != nullptr) {
+    if (localCoordinate.z == Constant::CHUNK_SIZE - 1 && frontNeighbour != nullptr) {
         frontNeighbour->_mesh->markAsDirty();
     }
 }
@@ -98,9 +98,9 @@ void ChunkMesh::regenerateMesh() {
     auto backNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
     auto frontNeighbour = _world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int y = 0; y < CHUNK_SIZE; y++) {
-            for (int z = 0; z < CHUNK_SIZE; z++) {
+    for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
+        for (int y = 0; y < Constant::CHUNK_SIZE; y++) {
+            for (int z = 0; z < Constant::CHUNK_SIZE; z++) {
                 auto blockType = _chunk->_blocks[x][y][z];
 
                 if (blockType == BlockType::AIR) {
@@ -128,7 +128,7 @@ void ChunkMesh::regenerateMesh() {
                 if (left.isInBounds()) {
                     shouldRenderLeftFace = Block::transparentFromType(_chunk->_blocks[left.x][left.y][left.z]);
                 } else if (leftNeighbour != nullptr) {
-                    const auto localOffset = Coordinate{glm::vec3{CHUNK_SIZE - 1, y, z}};
+                    const auto localOffset = Coordinate{glm::vec3{Constant::CHUNK_SIZE - 1, y, z}};
                     shouldRenderLeftFace = Block::transparentFromType(leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
@@ -142,7 +142,7 @@ void ChunkMesh::regenerateMesh() {
                 if (down.isInBounds()) {
                     shouldRenderBottomFace = Block::transparentFromType(_chunk->_blocks[down.x][down.y][down.z]);
                 } else if (downNeighbour != nullptr) {
-                    const auto localOffset = Coordinate{glm::vec3{x, CHUNK_SIZE - 1, z}};
+                    const auto localOffset = Coordinate{glm::vec3{x, Constant::CHUNK_SIZE - 1, z}};
                     shouldRenderBottomFace = Block::transparentFromType(downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
@@ -156,7 +156,7 @@ void ChunkMesh::regenerateMesh() {
                 if (back.isInBounds()) {
                     shouldRenderBackFace = Block::transparentFromType(_chunk->_blocks[back.x][back.y][back.z]);
                 } else if (backNeighbour != nullptr) {
-                    const auto localOffset = Coordinate{glm::vec3{x, y, CHUNK_SIZE - 1}};
+                    const auto localOffset = Coordinate{glm::vec3{x, y, Constant::CHUNK_SIZE - 1}};
                     shouldRenderBackFace = Block::transparentFromType(backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 

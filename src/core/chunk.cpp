@@ -24,21 +24,21 @@ glm::mat4 Chunk::localToWorldMatrix() const {
 void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
     const auto worldCoordinate = _coordinate.toWorldFromChunk();
 
-    for (int x = 0; x < CHUNK_SIZE; x++) {
-        for (int z = 0; z < CHUNK_SIZE; z++) {
+    for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
+        for (int z = 0; z < Constant::CHUNK_SIZE; z++) {
             const auto currentWorldX = worldCoordinate.x + x;
             const auto currentWorldZ = worldCoordinate.z + z;
 
-            auto targetHeight = MINIMUM_TERRAIN_HEIGHT;
+            auto targetHeight = Constant::MINIMUM_TERRAIN_HEIGHT;
 
             auto heightSample = perlin->octave2D_01(currentWorldX * 0.001, currentWorldZ * 0.001, 8);
-            heightSample = std::floor(heightSample * (MAXIMUM_TERRAIN_HEIGHT - MINIMUM_TERRAIN_HEIGHT));
+            heightSample = std::floor(heightSample * (Constant::MAXIMUM_TERRAIN_HEIGHT - Constant::MINIMUM_TERRAIN_HEIGHT));
             targetHeight += static_cast<int>(heightSample);
 
             // std::cout << "Target height: " << targetHeight << std::endl;
             // std::cout << "Max chunk height: " << worldCoordinate.y + CHUNK_SIZE << std::endl;
 
-            for (int y = 0; y < CHUNK_SIZE; y++) {
+            for (int y = 0; y < Constant::CHUNK_SIZE; y++) {
                 const Coordinate blockWorldCoordinate {
                     worldCoordinate.x + x,
                     worldCoordinate.y + y,

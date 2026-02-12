@@ -25,9 +25,9 @@ AABB AABB::forChunk(const Coordinate &chunkCoord) {
                 static_cast<float>(worldCoord.z)
             },
             {
-                static_cast<float>(worldCoord.x) + CHUNK_SIZE,
-                static_cast<float>(worldCoord.y) + CHUNK_SIZE,
-                static_cast<float>(worldCoord.z) + CHUNK_SIZE
+                static_cast<float>(worldCoord.x) + Constant::CHUNK_SIZE,
+                static_cast<float>(worldCoord.y) + Constant::CHUNK_SIZE,
+                static_cast<float>(worldCoord.z) + Constant::CHUNK_SIZE
             }
     };
 }
@@ -103,14 +103,14 @@ float AABB::clipX(const AABB &against, float deltaX) const {
 
     // Moving right
     if (deltaX > 0 && maxX <= against.minX) {
-        if (const auto clip = against.minX - maxX - EPSILON; deltaX > clip) {
+        if (const auto clip = against.minX - maxX - Constant::EPSILON; deltaX > clip) {
             deltaX = clip;
         }
     }
 
     // Moving left
     if (deltaX < 0 && minX >= against.maxX) {
-        if (const auto clip = against.maxX - minX + EPSILON; deltaX < clip) {
+        if (const auto clip = against.maxX - minX + Constant::EPSILON; deltaX < clip) {
             deltaX = clip;
         }
     }
@@ -126,7 +126,7 @@ float AABB::clipY(const AABB &against, float deltaY) const {
 
     // Moving up
     if (deltaY > 0 && maxY <= against.minY) {
-        if (const auto clip = against.minY - maxY - EPSILON; deltaY > clip) {
+        if (const auto clip = against.minY - maxY - Constant::EPSILON; deltaY > clip) {
             deltaY = clip;
         }
 
@@ -134,7 +134,7 @@ float AABB::clipY(const AABB &against, float deltaY) const {
 
     // Moving down
     if (deltaY < 0 && minY >= against.maxY) {
-        if (const auto clip = against.maxY - minY + EPSILON; deltaY < clip) {
+        if (const auto clip = against.maxY - minY + Constant::EPSILON; deltaY < clip) {
             deltaY = clip;
         }
     }
@@ -149,14 +149,14 @@ float AABB::clipZ(const AABB &against, float deltaZ) const {
 
     // Moving backwards
     if (deltaZ > 0 && maxZ <= against.minZ) {
-        if (const auto clip = against.minZ - maxZ - EPSILON; deltaZ > clip) {
+        if (const auto clip = against.minZ - maxZ - Constant::EPSILON; deltaZ > clip) {
             deltaZ = clip;
         }
     }
 
     // Moving forwards
     if (deltaZ < 0 && minZ >= against.maxZ) {
-        if (const auto clip = against.maxZ - minZ + EPSILON; deltaZ < clip) {
+        if (const auto clip = against.maxZ - minZ + Constant::EPSILON; deltaZ < clip) {
             deltaZ = clip;
         }
     }

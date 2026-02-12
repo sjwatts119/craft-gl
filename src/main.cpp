@@ -12,8 +12,6 @@ int main() {
     while (Craft::window->open()) {
         Craft::window->update();
 
-        Craft::renderManager->clear();
-
         for (int i = 0; i < Craft::window->getTicksElapsed(); i++) {
             Craft::player->tick();
             Craft::world->tick();
@@ -23,6 +21,7 @@ int main() {
         Craft::player->update();
         Craft::debug->update();
 
+        Craft::renderManager->clear();
         Craft::renderManager->render();
 
         Craft::window->poll();

@@ -33,8 +33,8 @@ class Player {
 
     /** State **/
     bool _firstMouseInput = true;
-    float _mouseLastXPosition = WINDOW_WIDTH / 2.0f;
-    float _mouseLastYPosition = WINDOW_HEIGHT / 2.0f;
+    float _mouseLastXPosition = Constant::WINDOW_WIDTH / 2.0f;
+    float _mouseLastYPosition = Constant::WINDOW_HEIGHT / 2.0f;
     bool _debug = false;
     std::optional<Coordinate> _highlightedBlockWorldCoordinate;
     std::optional<BlockFace> _highlightedBlockFace;
@@ -52,11 +52,11 @@ class Player {
     float _eyeHeight = _playerHeight - 0.2f;
 
     /** Physics **/
-    glm::vec3 _position{0.0f, CHUNK_SIZE * 3 + 8, 0.0f};
+    glm::vec3 _position{0.0f, Constant::CHUNK_SIZE * 3 + 8, 0.0f};
     glm::vec3 _lastPosition = _position;
     glm::vec3 _momentum{0.0f};
     bool _grounded = false;
-    float _slip = BLOCK_SLIPPERINESS_FACTOR;
+    float _slip = Constant::BLOCK_SLIPPERINESS_FACTOR;
 
     /** Components **/
     Camera _camera{_position + glm::vec3{0.0f, _eyeHeight, 0.0f}};

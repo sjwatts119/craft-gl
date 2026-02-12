@@ -8,11 +8,11 @@
 
 class Window {
 private:
-    int _width = WINDOW_WIDTH;
-    int _height = WINDOW_HEIGHT;
+    int _width = Constant::WINDOW_WIDTH;
+    int _height = Constant::WINDOW_HEIGHT;
     float _aspectRatio = static_cast<float>(_width) / _height;
 
-    std::string _title = WINDOW_TITLE;
+    std::string _title = Constant::WINDOW_TITLE;
 
     float _deltaTime = 0.0f;
     float _sinceLastFrame = 0.0f;

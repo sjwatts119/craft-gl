@@ -26,7 +26,7 @@ private:
         glm::vec3(0.6f, 0.6f, 0.6f)
     };
 
-    siv::PerlinNoise _perlin{WORLD_SEED};
+    siv::PerlinNoise _perlin{Constant::WORLD_SEED};
 public:
     std::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks; // Active chunks
     std::vector<std::unique_ptr<Chunk>> _oldChunks; // Unloaded chunks waiting to be deleted

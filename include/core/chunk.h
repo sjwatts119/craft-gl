@@ -25,7 +25,7 @@ public:
 
     glm::ivec3 _highlightedBlock{-1};
 
-    BlockType _blocks[CHUNK_SIZE][CHUNK_SIZE][CHUNK_SIZE];
+    BlockType _blocks[Constant::CHUNK_SIZE][Constant::CHUNK_SIZE][Constant::CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 
     explicit Chunk(World* world, Coordinate coordinate);

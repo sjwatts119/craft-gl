@@ -49,9 +49,9 @@ public:
      */
     [[nodiscard]] Coordinate toChunkFromWorld() const {
         return Coordinate{
-            std::floor(static_cast<float>(x) / CHUNK_SIZE),
-            std::floor(static_cast<float>(y) / CHUNK_SIZE),
-            std::floor(static_cast<float>(z) / CHUNK_SIZE)
+            std::floor(static_cast<float>(x) / Constant::CHUNK_SIZE),
+            std::floor(static_cast<float>(y) / Constant::CHUNK_SIZE),
+            std::floor(static_cast<float>(z) / Constant::CHUNK_SIZE)
         };
     }
 
@@ -60,9 +60,9 @@ public:
      */
     [[nodiscard]] Coordinate toLocalFromWorld() const {
         return Coordinate{
-            positiveMod(x, CHUNK_SIZE),
-            positiveMod(y, CHUNK_SIZE),
-            positiveMod(z, CHUNK_SIZE)
+            positiveMod(x, Constant::CHUNK_SIZE),
+            positiveMod(y, Constant::CHUNK_SIZE),
+            positiveMod(z, Constant::CHUNK_SIZE)
         };
     }
 
@@ -71,9 +71,9 @@ public:
      */
     [[nodiscard]] Coordinate toWorldFromChunk() const {
         return Coordinate{
-            x * CHUNK_SIZE,
-            y * CHUNK_SIZE,
-            z * CHUNK_SIZE
+            x * Constant::CHUNK_SIZE,
+            y * Constant::CHUNK_SIZE,
+            z * Constant::CHUNK_SIZE
         };
     }
 
@@ -82,22 +82,22 @@ public:
      */
     [[nodiscard]] Coordinate toWorldFromChunk(const Coordinate &localOffset) const {
         return Coordinate{
-            x * CHUNK_SIZE + localOffset.x,
-            y * CHUNK_SIZE + localOffset.y,
-            z * CHUNK_SIZE + localOffset.z
+            x * Constant::CHUNK_SIZE + localOffset.x,
+            y * Constant::CHUNK_SIZE + localOffset.y,
+            z * Constant::CHUNK_SIZE + localOffset.z
         };
     }
 
     [[nodiscard]] bool isInBounds() const {
-        if (x < 0 || x >= CHUNK_SIZE) {
+        if (x < 0 || x >= Constant::CHUNK_SIZE) {
             return false;
         }
 
-        if (y < 0 || y >= CHUNK_SIZE) {
+        if (y < 0 || y >= Constant::CHUNK_SIZE) {
             return false;
         }
 
-        if (z < 0 || z >= CHUNK_SIZE) {
+        if (z < 0 || z >= Constant::CHUNK_SIZE) {
             return false;
         }
 

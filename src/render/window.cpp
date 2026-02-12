@@ -18,7 +18,7 @@ void Window::initWindow() {
     glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
     glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-    const auto monitor = WINDOW_FULLSCREEN ? glfwGetPrimaryMonitor() : nullptr;
+    const auto monitor = Constant::WINDOW_FULLSCREEN ? glfwGetPrimaryMonitor() : nullptr;
     _window = glfwCreateWindow(_width, _height, _title.c_str(), monitor, nullptr);
 
     if (_window == nullptr) {
@@ -79,14 +79,14 @@ bool Window::open() const {
 }
 
 void Window::tick() {
-    const auto ticks = static_cast<int>(std::floor(_sinceLastTick / TIME_PER_TICK));
+    const auto ticks = static_cast<int>(std::floor(_sinceLastTick / Constant::TIME_PER_TICK));
 
-    _ticksElapsed = std::min(ticks, MAX_TICKS_PER_FRAME);
-    _sinceLastTick = _sinceLastTick - (_ticksElapsed * TIME_PER_TICK);
+    _ticksElapsed = std::min(ticks, Constant::MAX_TICKS_PER_FRAME);
+    _sinceLastTick = _sinceLastTick - (_ticksElapsed * Constant::TIME_PER_TICK);
 }
 
 bool Window::shouldTick() const {
-    return _sinceLastTick >= TIME_PER_TICK;
+    return _sinceLastTick >= Constant::TIME_PER_TICK;
 }
 
 bool Window::ticked() const {

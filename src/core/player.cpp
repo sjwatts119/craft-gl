@@ -82,20 +82,20 @@ void Player::processMouse() {
 
 float Player::slipperinessAccelerationMultiplier() const {
     if (_mode == MovementMode::FLYING) {
-        return WALKING_ACCELERATION;
+        return Constant::WALKING_ACCELERATION;
     }
 
     if (!_grounded) {
-        return NO_SLIPPERINESS;
+        return Constant::NO_SLIPPERINESS;
     }
 
-    constexpr auto baseSlip = BLOCK_SLIPPERINESS_FACTOR * HORIZONTAL_RESISTANCE_FACTOR;
-    const auto currentSlip = _slip * HORIZONTAL_RESISTANCE_FACTOR;
+    constexpr auto baseSlip = Constant::BLOCK_SLIPPERINESS_FACTOR * Constant::HORIZONTAL_RESISTANCE_FACTOR;
+    const auto currentSlip = _slip * Constant::HORIZONTAL_RESISTANCE_FACTOR;
 
     const auto accelerationRatio = (baseSlip / currentSlip);
     const auto accelerationMultiplier = accelerationRatio * accelerationRatio * accelerationRatio;
 
-    return WALKING_ACCELERATION * accelerationMultiplier;
+    return Constant::WALKING_ACCELERATION * accelerationMultiplier;
 }
 
 void Player::processKeyboard() {
@@ -226,7 +226,7 @@ void Player::jump() {
         return;
     }
 
-    _momentum.y = JUMP_VELOCITY;
+    _momentum.y = Constant::JUMP_VELOCITY;
 }
 
 void Player::flyUp(const float accelerationMultiplier) {
@@ -246,41 +246,41 @@ void Player::applyGravity() {
         return;
     }
 
-    _momentum.y -= GRAVITY_ACCELERATION;
+    _momentum.y -= Constant::GRAVITY_ACCELERATION;
 }
 
 void Player::applyResistance() {
     if (_mode == MovementMode::FLYING) {
-        _momentum *= FLYING_RESISTANCE_FACTOR;
+        _momentum *= Constant::FLYING_RESISTANCE_FACTOR;
 
         return;
     }
 
     const auto horizontalResistanceFactor = _grounded
-        ? _slip * HORIZONTAL_RESISTANCE_FACTOR
-        : HORIZONTAL_RESISTANCE_FACTOR;
+        ? _slip * Constant::HORIZONTAL_RESISTANCE_FACTOR
+        : Constant::HORIZONTAL_RESISTANCE_FACTOR;
 
     _momentum.x *= horizontalResistanceFactor;
-    _momentum.y *= VERTICAL_RESISTANCE_FACTOR;
+    _momentum.y *= Constant::VERTICAL_RESISTANCE_FACTOR;
     _momentum.z *= horizontalResistanceFactor;
 }
 
 void Player::capMomentum() {
     _momentum = glm::clamp(
         _momentum,
-        -glm::vec3{TERMINAL_VELOCITY},
-        glm::vec3{TERMINAL_VELOCITY}
+        -glm::vec3{Constant::TERMINAL_VELOCITY},
+        glm::vec3{Constant::TERMINAL_VELOCITY}
     );
 
-    if (std::abs(_momentum.x) < EPSILON) {
+    if (std::abs(_momentum.x) < Constant::EPSILON) {
         _momentum.x = 0.0f;
     }
 
-    if (std::abs(_momentum.y) < EPSILON) {
+    if (std::abs(_momentum.y) < Constant::EPSILON) {
         _momentum.y = 0.0f;
     }
 
-    if (std::abs(_momentum.z) < EPSILON) {
+    if (std::abs(_momentum.z) < Constant::EPSILON) {
         _momentum.z = 0.0f;
     }
 }
@@ -357,11 +357,11 @@ void Player::updatePosition() {
 
 void Player::updateSlip() {
     if (!_grounded) {
-        _slip = BLOCK_SLIPPERINESS_FACTOR;
+        _slip = Constant::BLOCK_SLIPPERINESS_FACTOR;
         return;
     }
 
-    constexpr auto verticalPush = glm::vec3{0.0f, STANDING_ON_NEGATIVE_Y_OFFSET, 0.0f};
+    constexpr auto verticalPush = glm::vec3{0.0f, Constant::STANDING_ON_NEGATIVE_Y_OFFSET, 0.0f};
     auto pushedAABB = _boundingBox;
     pushedAABB.push(verticalPush);
 
@@ -383,7 +383,7 @@ void Player::updateSlip() {
     const int maxX = static_cast<int>(std::floor(pushedAABB.maxX));
     const int minZ = static_cast<int>(std::floor(pushedAABB.minZ));
     const int maxZ = static_cast<int>(std::floor(pushedAABB.maxZ));
-    const int checkY = static_cast<int>(std::floor(_position.y + STANDING_ON_NEGATIVE_Y_OFFSET));
+    const int checkY = static_cast<int>(std::floor(_position.y + Constant::STANDING_ON_NEGATIVE_Y_OFFSET));
 
     // spin around the bottom of the player bounding box to find the block they are standing on
     // start with the block entirely under the player and expand outwards
@@ -398,7 +398,7 @@ void Player::updateSlip() {
         }
     }
 
-    _slip = BLOCK_SLIPPERINESS_FACTOR;
+    _slip = Constant::BLOCK_SLIPPERINESS_FACTOR;
 }
 
 void Player::updateBoundingBox() {
@@ -407,7 +407,7 @@ void Player::updateBoundingBox() {
 
 void Player::respawn() {
     _momentum = {0.0f, 0.0f, 0.0f};
-    _position = {0.0f, WORLD_HEIGHT * CHUNK_SIZE, 0.0f};
+    _position = {0.0f, Constant::WORLD_HEIGHT * Constant::CHUNK_SIZE, 0.0f};
 }
 
 /**
@@ -415,7 +415,7 @@ void Player::respawn() {
  */
 void Player::updateCameraPosition()
 {
-    const auto interpolationFactor = std::clamp(Craft::window->getTimeSinceLastTick() / TIME_PER_TICK, 0.0f, 1.0f);
+    const auto interpolationFactor = std::clamp(Craft::window->getTimeSinceLastTick() / Constant::TIME_PER_TICK, 0.0f, 1.0f);
     _camera._position = glm::mix(_lastPosition, _position, interpolationFactor) + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 
@@ -553,9 +553,9 @@ std::vector<Coordinate> Player::getSurroundingChunkCoordinates() const {
     const auto playerChunkCoordinate = getChunkCoordinate();
 
     // TODO this should not be a cube, but a sphere
-    for (int x = -RENDER_DISTANCE; x <= RENDER_DISTANCE; x++) {
-        for (int z = -RENDER_DISTANCE; z <= RENDER_DISTANCE; z++) {
-            for (int y = 0; y < WORLD_HEIGHT; y++) {
+    for (int x = -Constant::RENDER_DISTANCE; x <= Constant::RENDER_DISTANCE; x++) {
+        for (int z = -Constant::RENDER_DISTANCE; z <= Constant::RENDER_DISTANCE; z++) {
+            for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
                 visibleChunks.emplace_back(
                     playerChunkCoordinate.x + x,
                     y,
