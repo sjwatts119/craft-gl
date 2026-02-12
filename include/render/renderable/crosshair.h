@@ -5,6 +5,7 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "renderable.h"
+#include "core/craft.h"
 #include "render/buffer/vertexData.h"
 #include "render/window.h"
 
@@ -34,10 +35,16 @@ public:
 
     void cleanup() const override;
 
-    static glm::mat4 localToWorldMatrix(const Window *window, const int crosshairSize = 1) {
-        auto scaleFactor = static_cast<float>(window->getHeight()) * 0.00001;
+    static glm::mat4 localToWorldMatrix(const int crosshairSize = 1) {
+        auto scaleFactor = static_cast<float>(Craft::window->getHeight()) * 0.00001;
         scaleFactor *= crosshairSize;
 
-        return glm::scale(glm::mat4{1.0f}, glm::vec3(scaleFactor / window->getAspectRatio(), scaleFactor, 0.01f));
+        return glm::scale(
+            glm::mat4{1.0f},
+            glm::vec3(
+                scaleFactor / Craft::window->getAspectRatio(),
+                scaleFactor,
+                0.01f)
+            );
     }
 };

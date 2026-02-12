@@ -5,6 +5,9 @@
 #include <glm/ext/matrix_transform.hpp>
 
 #include "core/block.h"
+#include "core/craft.h"
+#include "geometry/AABB.h"
+#include "geometry/AABB.h"
 #include "geometry/AABB.h"
 #include "render/buffer/blockData.h"
 #include "render/renderable/chunkMesh.h"
@@ -129,9 +132,9 @@ glm::mat4 Inventory::getViewMatrix() {
     return glm::mat4{1.0f};
 }
 
-glm::mat4 Inventory::getProjectionMatrix(const Window *window) {
-    const auto width = window->getWidth();
-    const auto height = window->getHeight();
+glm::mat4 Inventory::getProjectionMatrix() {
+    const auto width = Craft::window->getWidth();
+    const auto height = Craft::window->getHeight();
 
     return glm::ortho(
         0.0f,

@@ -42,7 +42,7 @@ public:
         buildFromMatrix(glm::mat4(projectionMatrix * viewMatrix));
     }
 
-    Frustum(const Camera &camera, const int screenWidth, const int screenHeight) {
+    explicit Frustum(const Camera &camera) {
         buildFromMatrix(camera.getProjectionMatrix() * camera.getViewMatrix());
     }
 

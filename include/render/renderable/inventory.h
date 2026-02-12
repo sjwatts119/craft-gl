@@ -58,7 +58,7 @@ public:
 
     static glm::mat4 getViewMatrix() ;
 
-    static glm::mat4 getProjectionMatrix(const Window *window);
+    static glm::mat4 getProjectionMatrix();
 
     [[nodiscard]] const Light &getLight() const;
 };

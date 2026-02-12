@@ -37,7 +37,7 @@ void RenderManager::renderBlocks() const {
     _shaderManager._blockShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix());
     _shaderManager._blockShader.setLight("uSun" , Craft::world->getSun());
 
-    const Frustum viewFrustum{*Craft::player->getCamera(), Craft::window->getWidth(), Craft::window->getHeight()};
+    const Frustum viewFrustum{*Craft::player->getCamera()};
 
     for (const auto &chunk: Craft::world->_chunks | std::views::values) {
         if (!viewFrustum.fastIntersects(chunk->_boundingBox)) {
@@ -69,7 +69,7 @@ void RenderManager::renderCrosshair() const {
     Craft::player->getCrosshair()->bind();
 
     _shaderManager._crosshairShader.use();
-    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix(Craft::window));
+    _shaderManager._crosshairShader.setMat4("uModelMatrix", Crosshair::localToWorldMatrix());
 
     Craft::player->getCrosshair()->render();
 }
@@ -87,7 +87,7 @@ void RenderManager::renderInventory() const {
 
     _shaderManager._inventoryShader.setMat4("uModelMatrix", Craft::player->getInventory()->getModelMatrix());
     _shaderManager._inventoryShader.setMat4("uViewMatrix", Inventory::getViewMatrix());
-    _shaderManager._inventoryShader.setMat4("uProjectionMatrix", Inventory::getProjectionMatrix(Craft::window));
+    _shaderManager._inventoryShader.setMat4("uProjectionMatrix", Inventory::getProjectionMatrix());
 
     Craft::player->getInventory()->render();
 }
