@@ -29,29 +29,25 @@ private:
     siv::PerlinNoise _perlin{Constant::WORLD_SEED};
 public:
     std::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks; // Active chunks
-    std::vector<std::unique_ptr<Chunk>> _oldChunks; // Unloaded chunks waiting to be deleted
 
     World();
 
     ~World();
+    void init();
 
     void addInitialChunks();
-
-    void loadChunks(const std::vector<Coordinate> &chunkCoordinates);
-
-    void unloadChunks(const std::vector<Coordinate> &chunkCoordinates);
 
     [[nodiscard]] BlockType *blockAt(Coordinate worldCoordinate) const;
 
     [[nodiscard]] Chunk *chunkAt(Coordinate chunkCoordinate) const;
 
+    [[nodiscard]] int terrainHeightAt(Coordinate worldCoordinate) const;
+
+    void destroyBlockQuietly(Coordinate worldCoordinate) const;
     void destroyBlock(Coordinate worldCoordinate) const;
 
+    void placeBlockQuietly(Coordinate worldCoordinate, BlockType blockType) const;
     void placeBlock(Coordinate worldCoordinate, BlockType blockType) const;
-
-    void changeChunks();
-
-    void deleteOldChunks();
 
     void regenerateDirtyMeshes();
 

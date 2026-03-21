@@ -8,73 +8,48 @@
 #include "core/craft.h"
 #include "render/renderable/chunkMesh.h"
 
-World::World() {
-    addInitialChunks();
-}
+World::World() {}
 
 World::~World() = default;
+
+void World::init() {
+    addInitialChunks();
+}
 
 void World::addInitialChunks() {
     const std::vector<Coordinate> visibleCoordinates = Craft::player->getSurroundingChunkCoordinates();
     const std::vector <Coordinate> edgeCoordinates = Craft::player->getSurroundingEdgeChunkCoordinates();
 
-    // Create visible chunks
+    // Create prototypes
     for (const auto &coordinate : visibleCoordinates) {
         auto chunk = std::make_unique<Chunk>(coordinate);
         _chunks.emplace(coordinate, std::move(chunk));
     }
-
-    // Create edge chunks (invisible)
     for (const auto &coordinate : edgeCoordinates) {
         auto chunk = std::make_unique<Chunk>(coordinate);
         _chunks.emplace(coordinate, std::move(chunk));
     }
 
-    std::vector<std::jthread> threads;
-
-    // Generate blocks for visible chunks
+    // Generate blocks
     for (const auto &coordinate : visibleCoordinates) {
-        threads.emplace_back([this, coordinate] {
-            _chunks[coordinate]->generateBlocks(&_perlin);
-            _chunks[coordinate]->setGenerationStep(GenerationStep::COMPLETE);
-            _chunks[coordinate]->_mesh->markAsDirty();
-        });
+        _chunks[coordinate]->generateBlocks(&_perlin);
+    }
+    for (const auto &coordinate : edgeCoordinates) {
+        _chunks[coordinate]->generateBlocks(&_perlin);
     }
 
-    // Generate blocks for edge chunks
-    for (const auto &coordinate : edgeCoordinates)
-    {
-        threads.emplace_back([this, coordinate] {
-            _chunks[coordinate]->generateBlocks(&_perlin);
-        });
+    // Decorate chunks
+    for (const auto &coordinate : visibleCoordinates) {
+        _chunks[coordinate]->generateDecorations(&_perlin);
     }
-}
-
-void World::loadChunks(const std::vector<Coordinate>& chunkCoordinates) {
-    std::vector<Coordinate> coordinates;
-
-    for (const auto &chunkCoordinate : chunkCoordinates) {
-        auto chunk = std::make_unique<Chunk>(chunkCoordinate);
-        _chunks.emplace(chunkCoordinate, std::move(chunk));
-        coordinates.push_back(chunkCoordinate);
+    for (const auto &coordinate : edgeCoordinates) {
+        _chunks[coordinate]->generateDecorations(&_perlin);
     }
 
-    std::vector<std::jthread> threads;
-
-    for (const auto &coordinate : coordinates) {
-        threads.emplace_back([this, coordinate] {
-            _chunks[coordinate]->generateBlocks(&_perlin);
-            _chunks[coordinate]->_mesh->markAsDirtyWithNeighbours();
-        });
-    };
-}
-
-void World::unloadChunks(const std::vector<Coordinate>& chunkCoordinates) {
-    for (const auto &chunkCoordinate : chunkCoordinates) {
-        if (auto chunk = _chunks.find(chunkCoordinate); chunk != _chunks.end()) {
-            _oldChunks.push_back(std::move(chunk->second));
-            _chunks.erase(chunk);
-        }
+    // Generate meshes
+    for (const auto &coordinate : visibleCoordinates) {
+        _chunks[coordinate]->setGenerationStep(GenerationStep::MESHED);
+        _chunks[coordinate]->_mesh->markAsDirty();
     }
 }
 
@@ -100,6 +75,13 @@ Chunk *World::chunkAt(const Coordinate chunkCoordinate) const {
     return chunkResult->second.get();
 }
 
+int World::terrainHeightAt(const Coordinate worldCoordinate) const {
+    auto heightSample = _perlin.octave2D_01(worldCoordinate.x * 0.001, worldCoordinate.z * 0.001, 8);
+    heightSample = std::floor(heightSample * (Constant::MAXIMUM_TERRAIN_HEIGHT - Constant::MINIMUM_TERRAIN_HEIGHT));
+
+    return static_cast<int>(Constant::MINIMUM_TERRAIN_HEIGHT + heightSample);
+}
+
 void World::destroyBlock(const Coordinate worldCoordinate) const {
     const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
     const auto chunk = chunkAt(chunkCoordinate);
@@ -112,6 +94,20 @@ void World::destroyBlock(const Coordinate worldCoordinate) const {
     const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
     chunk->destroyBlock(localCoordinate);
+}
+
+void World::destroyBlockQuietly(const Coordinate worldCoordinate) const {
+    const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
+    const auto chunk = chunkAt(chunkCoordinate);
+
+    if (chunk == nullptr) {
+        std::cerr << "No chunk found at " << worldCoordinate << " to destroy block." << std::endl;
+        return;
+    }
+
+    const auto localCoordinate = worldCoordinate.toLocalFromWorld();
+
+    chunk->destroyBlockQuietly(localCoordinate);
 }
 
 void World::placeBlock(const Coordinate worldCoordinate, const BlockType blockType) const {
@@ -128,63 +124,19 @@ void World::placeBlock(const Coordinate worldCoordinate, const BlockType blockTy
     chunk->placeBlock(localCoordinate, blockType);
 }
 
-void World::changeChunks() {
-    const auto threads = std::thread::hardware_concurrency();
+void World::placeBlockQuietly(const Coordinate worldCoordinate, const BlockType blockType) const {
 
-    const auto nearbyCoordinates = Craft::player->getSurroundingChunkCoordinates();
+    const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
+    const auto chunk = chunkAt(chunkCoordinate);
 
-    const std::unordered_set<Coordinate, CoordinateHash> nearbySet(
-        nearbyCoordinates.begin(),
-        nearbyCoordinates.end()
-    );
-
-    std::vector<Coordinate> chunksToLoad;
-    std::vector<Coordinate> chunksToUnload;
-
-    for (const auto &coordinate : nearbyCoordinates) {
-        if (!_chunks.contains(coordinate)) {
-            chunksToLoad.push_back(coordinate);
-        }
-
-        if (chunksToLoad.size() >= threads) {
-            break;
-        }
-    }
-
-    for (const auto &coordinate : _chunks | std::views::keys) {
-        if (!nearbySet.contains(coordinate)) {
-            chunksToUnload.push_back(coordinate);
-        }
-
-        if (chunksToUnload.size() >= threads) {
-            break;
-        }
-    }
-
-    if (!chunksToUnload.empty()) {
-        unloadChunks(chunksToUnload);
-    }
-
-    if (!chunksToLoad.empty()) {
-        loadChunks(chunksToLoad);
-    }
-}
-
-/**
- * Delete some old chunks that have been unloaded.
- */
-void World::deleteOldChunks() {
-    if (_oldChunks.empty()) {
+    if (chunk == nullptr) {
+        std::cerr << "No chunk found at " << worldCoordinate << " to place block." << std::endl;
         return;
     }
 
-    const auto deletionsThisFrame = std::min(Constant::CHUNK_DELETIONS_PER_FRAME, static_cast<int>(_oldChunks.size()));
+    const auto localCoordinate = worldCoordinate.toLocalFromWorld();
 
-    for (int i = 0; i < deletionsThisFrame; i++) {
-        _oldChunks.back()->_mesh->markAsDirtyWithNeighbours();
-        _oldChunks.back()->_mesh->cleanup();
-        _oldChunks.pop_back();
-    }
+    chunk->placeBlockQuietly(localCoordinate, blockType);
 }
 
 /**
@@ -215,11 +167,10 @@ void World::regenerateDirtyMeshes() {
 }
 
 void World::tick() {
-    // changeChunks();
+    //
 }
 
 void World::update() {
-    // deleteOldChunks();
     regenerateDirtyMeshes();
 }
 

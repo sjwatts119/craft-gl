@@ -171,6 +171,14 @@ inline std::ostream &operator<<(std::ostream &os, const Coordinate &coordinate) 
     return os;
 }
 
+inline Coordinate operator+(const Coordinate &a, const Coordinate &b) {
+    return Coordinate{a.x + b.x, a.y + b.y, a.z + b.z};
+}
+
+inline Coordinate operator-(const Coordinate &a, const Coordinate &b) {
+    return Coordinate{a.x - b.x, a.y - b.y, a.z - b.z};
+}
+
 /**
  * unordered_map needs a way to hash the object used as a key, so we use this struct.
  *

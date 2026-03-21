@@ -1,9 +1,12 @@
 #include "core/chunk.h"
 
+#include "core/craft.h"
+#include "core/world.h"
 #include "render/renderable/chunkMesh.h"
 
 Chunk::Chunk(const Coordinate coordinate) :
     _coordinate(coordinate),
+    _worldCoordinate(coordinate.toWorldFromChunk()),
     _boundingBox(AABB::forChunk(coordinate)),
     _mesh{std::make_unique<ChunkMesh>(this)}
 {
@@ -24,28 +27,15 @@ glm::mat4 Chunk::localToWorldMatrix() const {
 }
 
 void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
-    const auto worldCoordinate = _coordinate.toWorldFromChunk();
-
     for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
         for (int z = 0; z < Constant::CHUNK_SIZE; z++) {
-            const auto currentWorldX = worldCoordinate.x + x;
-            const auto currentWorldZ = worldCoordinate.z + z;
+            auto worldCoordinate = _worldCoordinate + Coordinate{x, 0, z};
 
-            auto targetHeight = Constant::MINIMUM_TERRAIN_HEIGHT;
-
-            auto heightSample = perlin->octave2D_01(currentWorldX * 0.001, currentWorldZ * 0.001, 8);
-            heightSample = std::floor(heightSample * (Constant::MAXIMUM_TERRAIN_HEIGHT - Constant::MINIMUM_TERRAIN_HEIGHT));
-            targetHeight += static_cast<int>(heightSample);
-
-            // std::cout << "Target height: " << targetHeight << std::endl;
-            // std::cout << "Max chunk height: " << worldCoordinate.y + CHUNK_SIZE << std::endl;
+            const auto targetHeight = Craft::world
+                ->terrainHeightAt(worldCoordinate);
 
             for (int y = 0; y < Constant::CHUNK_SIZE; y++) {
-                const Coordinate blockWorldCoordinate {
-                    worldCoordinate.x + x,
-                    worldCoordinate.y + y,
-                    worldCoordinate.z + z,
-                };
+                const Coordinate blockWorldCoordinate = worldCoordinate + Coordinate{0, y, 0};
 
                 if (blockWorldCoordinate.y > targetHeight) {
                     _blocks[x][y][z] = BlockType::AIR;
@@ -62,22 +52,97 @@ void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
         }
     }
 
-    setGenerationStep(GenerationStep::BLOCK);
+    setGenerationStep(GenerationStep::PROTOTYPE);
 }
 
-void Chunk::destroyBlock(const Coordinate localCoordinate) {
+void Chunk::generateDecorations(const siv::PerlinNoise* perlin) {
+    Coordinate localTreeCoordinate {0, 0, 0};
+    const Coordinate worldTreeCoordinate = _worldCoordinate + localTreeCoordinate;
+
+    const auto terrainHeight = Craft::world->terrainHeightAt(worldTreeCoordinate);
+
+    // Is the terrain height within this chunk?
+    if (terrainHeight < _worldCoordinate.y || terrainHeight >= _worldCoordinate.y + Constant::CHUNK_SIZE) {
+        return;
+    }
+
+    const auto localTerrainHeight = (terrainHeight - _worldCoordinate.y) + 1;
+
+    localTreeCoordinate.y = localTerrainHeight;
+    generateTree(localTreeCoordinate);
+}
+
+void Chunk::generateTree(const Coordinate localCoordinate) {
+    constexpr auto treeHeight = 7;
+    constexpr auto leafStartHeight = 4;
+    constexpr auto leafHeight = 3;
+    constexpr auto tuftHeight = 1;
+    constexpr auto peakHeight = 1;
+
+    constexpr auto leafDiameter = 4;
+    constexpr auto tuftDiameter = 2;
+    constexpr auto peakDiameter = 1;
+
+    for (int y = 0; y < treeHeight; y++) {
+        const auto blockCoordinate = localCoordinate + _worldCoordinate + Coordinate{0, y, 0};
+        Craft::world->placeBlockQuietly(blockCoordinate, BlockType::OAK_LOG);
+    }
+
+    for (int y = leafStartHeight; y < leafStartHeight + leafHeight; y++) {
+        for (int x = -leafDiameter / 2; x <= leafDiameter / 2; x++) {
+            for (int z = -leafDiameter / 2; z <= leafDiameter / 2; z++) {
+                const auto blockCoordinate = localCoordinate + _worldCoordinate + Coordinate{x, y, z};
+                Craft::world->placeBlockQuietly(blockCoordinate, BlockType::OAK_LEAVES);
+            }
+        }
+    }
+
+    for (int y = leafStartHeight + leafHeight; y < leafStartHeight + leafHeight + tuftHeight; y++) {
+        for (int x = -tuftDiameter / 2; x <= tuftDiameter / 2; x++) {
+            for (int z = -tuftDiameter / 2; z <= tuftDiameter / 2; z++) {
+                const auto blockCoordinate = localCoordinate + _worldCoordinate + Coordinate{x, y, z};
+                Craft::world->placeBlockQuietly(blockCoordinate, BlockType::OAK_LEAVES);
+            }
+        }
+    }
+
+    for (int y = leafStartHeight + leafHeight + tuftHeight; y < leafStartHeight + leafHeight + tuftHeight + peakHeight; y++) {
+        for (int x = -peakDiameter / 2; x <= peakDiameter / 2; x++) {
+            for (int z = -peakDiameter / 2; z <= peakDiameter / 2; z++) {
+                const auto blockCoordinate = localCoordinate + _worldCoordinate + Coordinate{x, y, z};
+                Craft::world->placeBlockQuietly(blockCoordinate, BlockType::OAK_LEAVES);
+            }
+        }
+    }
+}
+
+/**
+ * Destroy a block without marking mesh as dirty.
+ */
+void Chunk::destroyBlockQuietly(const Coordinate localCoordinate) {
     if (!Block::destructibleFromType(_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z])) {
         std::cout << "block at " << localCoordinate << " is indestructible." << std::endl;
         return;
     }
 
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = BlockType::AIR;
+}
+
+void Chunk::destroyBlock(const Coordinate localCoordinate) {
+    destroyBlockQuietly(localCoordinate);
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }
 
-void Chunk::placeBlock(const Coordinate localCoordinate, const BlockType blockType) {
+/**
+ * Place a block without marking mesh as dirty.
+ */
+void Chunk::placeBlockQuietly(const Coordinate localCoordinate, const BlockType blockType) {
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = blockType;
+}
+
+void Chunk::placeBlock(const Coordinate localCoordinate, const BlockType blockType) {
+    placeBlockQuietly(localCoordinate, blockType);
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
 }

@@ -24,6 +24,7 @@ namespace Craft {
 
         static World _world;
         world = &_world;
+        world->init();
 
         static Debug _debug;
         debug = &_debug;
