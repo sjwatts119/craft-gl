@@ -32,12 +32,20 @@ void World::addInitialChunks() {
 
     std::vector<std::jthread> threads;
 
-    // Generate blocks for visible
+    // Generate blocks for visible chunks
     for (const auto &coordinate : visibleCoordinates) {
         threads.emplace_back([this, coordinate] {
             _chunks[coordinate]->generateBlocks(&_perlin);
             _chunks[coordinate]->setGenerationStep(GenerationStep::COMPLETE);
             _chunks[coordinate]->_mesh->markAsDirty();
+        });
+    }
+
+    // Generate blocks for edge chunks
+    for (const auto &coordinate : edgeCoordinates)
+    {
+        threads.emplace_back([this, coordinate] {
+            _chunks[coordinate]->generateBlocks(&_perlin);
         });
     }
 }
@@ -188,7 +196,7 @@ void World::regenerateDirtyMeshes() {
 
     // Regenerate chunk meshes for dirty chunks
     for (auto &[coordinate, chunk]: _chunks) {
-        if (chunk->getGenerationStep() != GenerationStep::COMPLETE || chunk->getGenerationStep() == GenerationStep::MESHED) {
+        if (chunk->getGenerationStep() != GenerationStep::COMPLETE && chunk->getGenerationStep() != GenerationStep::MESHED) {
             continue;
         }
 
