@@ -42,7 +42,7 @@ public:
 
     [[nodiscard]] bool ticked() const;
 
-    static void poll();
+    void poll() const;
 
     void swapBuffers() const;
 

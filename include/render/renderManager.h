@@ -37,7 +37,7 @@ private:
 public:
     RenderManager();
 
-    static void clear();
+    void clear() const;
 
     void render() const;
 };
