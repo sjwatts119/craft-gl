@@ -602,6 +602,10 @@ std::optional<Coordinate> Player::getHighlightedBlockCoordinate() const {
     return _highlightedBlockWorldCoordinate;
 }
 
+MovementMode Player::getMovementMode() const {
+    return _mode;
+}
+
 const Camera *Player::getCamera() const {
     return &_camera;
 }

@@ -3,7 +3,7 @@
 #include <siv/perlin.h>
 
 namespace Constant {
-    static constexpr siv::PerlinNoise::seed_type WORLD_SEED = 1236;
+    static constexpr siv::PerlinNoise::seed_type WORLD_SEED = 1237;
 
     static constexpr float EPSILON = 0.0001f; // AABB intersection epsilon
 
@@ -17,14 +17,16 @@ namespace Constant {
     static constexpr int MINIMUM_TERRAIN_HEIGHT = 64;
     static constexpr int MAXIMUM_TERRAIN_HEIGHT = 192;
 
-    static constexpr int WINDOW_WIDTH = 2560;
-    static constexpr int WINDOW_HEIGHT = 1440;
-    static constexpr bool WINDOW_FULLSCREEN = true;
+    static constexpr int WINDOW_WIDTH = 1920;
+    static constexpr int WINDOW_HEIGHT = 1080;
+    static constexpr bool WINDOW_FULLSCREEN = false;
 
     static constexpr auto WINDOW_TITLE = "craft-gl";
 
     static constexpr int WORLD_HEIGHT = 8; // in chunks
     static constexpr int RENDER_DISTANCE = 8; // in chunks
+
+    static constexpr float TREE_GENERATION_CHANCE = 0.01f; // probability of tree generation at each block
 
     static constexpr int CHUNK_DELETIONS_PER_FRAME = 4;
     static constexpr int REMESHES_PER_THREAD_PER_FRAME = 2;

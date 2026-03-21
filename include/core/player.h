@@ -138,6 +138,8 @@ public:
 
     [[nodiscard]] std::optional<Coordinate> getHighlightedBlockCoordinate() const;
 
+    [[nodiscard]] MovementMode getMovementMode() const;
+
     [[nodiscard]] const Camera *getCamera() const;
 
     [[nodiscard]] const Crosshair *getCrosshair() const;

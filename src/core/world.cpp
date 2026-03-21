@@ -8,7 +8,7 @@
 #include "core/craft.h"
 #include "render/renderable/chunkMesh.h"
 
-World::World() {}
+World::World() = default;
 
 World::~World() = default;
 
@@ -125,12 +125,11 @@ void World::placeBlock(const Coordinate worldCoordinate, const BlockType blockTy
 }
 
 void World::placeBlockQuietly(const Coordinate worldCoordinate, const BlockType blockType) const {
-
     const auto chunkCoordinate = worldCoordinate.toChunkFromWorld();
     const auto chunk = chunkAt(chunkCoordinate);
 
     if (chunk == nullptr) {
-        std::cerr << "No chunk found at " << worldCoordinate << " to place block." << std::endl;
+        // std::cerr << "No chunk found at " << worldCoordinate << " to place block." << std::endl;
         return;
     }
 

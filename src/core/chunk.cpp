@@ -56,24 +56,34 @@ void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
 }
 
 void Chunk::generateDecorations(const siv::PerlinNoise* perlin) {
-    Coordinate localTreeCoordinate {0, 0, 0};
-    const Coordinate worldTreeCoordinate = _worldCoordinate + localTreeCoordinate;
+    std::mt19937 rng(Constant::WORLD_SEED + _coordinate.x + _coordinate.y * 31 + _coordinate.z * 961);
+    std::bernoulli_distribution dist(Constant::TREE_GENERATION_CHANCE);
 
-    const auto terrainHeight = Craft::world->terrainHeightAt(worldTreeCoordinate);
+    for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
+        for (int z = 0; z < Constant::CHUNK_SIZE; z++) {
+            if (!dist(rng)) {
+                continue;
+            }
 
-    // Is the terrain height within this chunk?
-    if (terrainHeight < _worldCoordinate.y || terrainHeight >= _worldCoordinate.y + Constant::CHUNK_SIZE) {
-        return;
+            Coordinate localTreeCoordinate {x, 0, z};
+            const Coordinate worldTreeCoordinate = _coordinate.toWorldFromChunk(localTreeCoordinate);
+
+            const auto terrainHeight = Craft::world->terrainHeightAt(worldTreeCoordinate);
+
+            if (_worldCoordinate.y < terrainHeight || _worldCoordinate.y > terrainHeight + Constant::CHUNK_SIZE) {
+                continue;
+            }
+
+            const auto localTerrainHeight = (terrainHeight - _worldCoordinate.y) + 1;
+
+            localTreeCoordinate.y = localTerrainHeight;
+            generateTree(localTreeCoordinate);
+        }
     }
-
-    const auto localTerrainHeight = (terrainHeight - _worldCoordinate.y) + 1;
-
-    localTreeCoordinate.y = localTerrainHeight;
-    generateTree(localTreeCoordinate);
 }
 
 void Chunk::generateTree(const Coordinate localCoordinate) {
-    constexpr auto treeHeight = 7;
+    constexpr auto treeHeight = 6;
     constexpr auto leafStartHeight = 4;
     constexpr auto leafHeight = 3;
     constexpr auto tuftHeight = 1;
@@ -120,9 +130,11 @@ void Chunk::generateTree(const Coordinate localCoordinate) {
  * Destroy a block without marking mesh as dirty.
  */
 void Chunk::destroyBlockQuietly(const Coordinate localCoordinate) {
-    if (!Block::destructibleFromType(_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z])) {
-        std::cout << "block at " << localCoordinate << " is indestructible." << std::endl;
-        return;
+    if (Craft::player->getMovementMode() != MovementMode::FLYING) {
+        if (!Block::destructibleFromType(_blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z])) {
+            std::cout << "block at " << localCoordinate << " is indestructible." << std::endl;
+            return;
+        }
     }
 
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = BlockType::AIR;
