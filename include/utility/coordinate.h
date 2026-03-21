@@ -104,6 +104,10 @@ public:
         return true;
     }
 
+    [[nodiscard]] bool isIn(std::vector<Coordinate> surrounding) const {
+        return std::ranges::find(surrounding, toChunkFromWorld()) != surrounding.end();
+    }
+
     bool operator==(const Coordinate &coordinate) const {
         return coordinate.x == x && coordinate.y == y && coordinate.z == z;
     }

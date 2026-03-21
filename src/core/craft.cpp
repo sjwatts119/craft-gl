@@ -19,11 +19,11 @@ namespace Craft {
         static RenderManager _renderManager;
         renderManager = &_renderManager;
 
-        static World _world;
-        world = &_world;
-
         static Player _player;
         player = &_player;
+
+        static World _world;
+        world = &_world;
 
         static Debug _debug;
         debug = &_debug;

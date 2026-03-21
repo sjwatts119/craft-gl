@@ -128,7 +128,9 @@ public:
 
     [[nodiscard]] Coordinate getChunkCoordinate() const;
 
-    [[nodiscard]] std::vector<Coordinate> getSurroundingChunkCoordinates() const ;
+    [[nodiscard]] std::vector<Coordinate> getSurroundingChunkCoordinates() const;
+
+    [[nodiscard]] std::vector<Coordinate> getSurroundingEdgeChunkCoordinates() const;
 
     [[nodiscard]] bool isOutOfWorld() const;
 

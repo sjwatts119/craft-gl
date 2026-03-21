@@ -15,24 +15,28 @@ World::World() {
 World::~World() = default;
 
 void World::addInitialChunks() {
-    std::vector<Coordinate> coordinates;
+    const std::vector<Coordinate> visibleCoordinates = Craft::player->getSurroundingChunkCoordinates();
+    const std::vector <Coordinate> edgeCoordinates = Craft::player->getSurroundingEdgeChunkCoordinates();
 
-    for (int x = (Constant::RENDER_DISTANCE / -2); x < (Constant::RENDER_DISTANCE / 2); x++) {
-        for (int z = Constant::RENDER_DISTANCE / -2; z < Constant::RENDER_DISTANCE / 2; z++) {
-            for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
-                const Coordinate coordinate {x, y, z};
-                auto chunk = std::make_unique<Chunk>(coordinate);
-                _chunks.emplace(coordinate, std::move(chunk));
-                coordinates.push_back(coordinate);
-            }
-        }
+    // Create visible chunks
+    for (const auto &coordinate : visibleCoordinates) {
+        auto chunk = std::make_unique<Chunk>(coordinate);
+        _chunks.emplace(coordinate, std::move(chunk));
+    }
+
+    // Create edge chunks (invisible)
+    for (const auto &coordinate : edgeCoordinates) {
+        auto chunk = std::make_unique<Chunk>(coordinate);
+        _chunks.emplace(coordinate, std::move(chunk));
     }
 
     std::vector<std::jthread> threads;
 
-    for (const auto &coordinate : coordinates) {
+    // Generate blocks for visible
+    for (const auto &coordinate : visibleCoordinates) {
         threads.emplace_back([this, coordinate] {
-            _chunks[coordinate]->addTestBlocksPerlin(&_perlin);
+            _chunks[coordinate]->generateBlocks(&_perlin);
+            _chunks[coordinate]->setGenerationStep(GenerationStep::COMPLETE);
             _chunks[coordinate]->_mesh->markAsDirty();
         });
     }
@@ -51,7 +55,7 @@ void World::loadChunks(const std::vector<Coordinate>& chunkCoordinates) {
 
     for (const auto &coordinate : coordinates) {
         threads.emplace_back([this, coordinate] {
-            _chunks[coordinate]->addTestBlocksPerlin(&_perlin);
+            _chunks[coordinate]->generateBlocks(&_perlin);
             _chunks[coordinate]->_mesh->markAsDirtyWithNeighbours();
         });
     };
@@ -184,6 +188,10 @@ void World::regenerateDirtyMeshes() {
 
     // Regenerate chunk meshes for dirty chunks
     for (auto &[coordinate, chunk]: _chunks) {
+        if (chunk->getGenerationStep() != GenerationStep::COMPLETE || chunk->getGenerationStep() == GenerationStep::MESHED) {
+            continue;
+        }
+
         if (!chunk->_mesh->isDirty()) {
             continue;
         }
@@ -199,11 +207,11 @@ void World::regenerateDirtyMeshes() {
 }
 
 void World::tick() {
-    changeChunks();
+    // changeChunks();
 }
 
 void World::update() {
-    deleteOldChunks();
+    // deleteOldChunks();
     regenerateDirtyMeshes();
 }
 

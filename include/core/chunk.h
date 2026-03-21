@@ -10,6 +10,7 @@
 #include "utility/constant.h"
 #include "block.h"
 #include "utility/blockFace.h"
+#include "utility/generationStep.h"
 
 class World;
 class ChunkMesh;
@@ -18,11 +19,13 @@ class Chunk {
 private:
     glm::mat4 _localToWorldMatrix{};
 
+    GenerationStep _step{GenerationStep::PROTOTYPE};
+
 public:
     Coordinate _coordinate;
     AABB _boundingBox;
 
-    BlockType _blocks[Constant::CHUNK_SIZE][Constant::CHUNK_SIZE][Constant::CHUNK_SIZE];
+    BlockType _blocks[Constant::CHUNK_SIZE][Constant::CHUNK_SIZE][Constant::CHUNK_SIZE]{BlockType::AIR};
     std::unique_ptr<ChunkMesh> _mesh;
 
     explicit Chunk(Coordinate coordinate);
@@ -33,9 +36,13 @@ public:
 
     [[nodiscard]] glm::mat4 localToWorldMatrix() const;
 
-    void addTestBlocksPerlin(const siv::PerlinNoise* perlin);
+    void generateBlocks(const siv::PerlinNoise* perlin);
 
     void destroyBlock(Coordinate localCoordinate);
 
     void placeBlock(Coordinate localCoordinate, BlockType blockType);
+
+    [[nodiscard]] GenerationStep getGenerationStep() const;
+
+    void setGenerationStep(GenerationStep step);
 };

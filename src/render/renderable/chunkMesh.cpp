@@ -25,12 +25,12 @@ void ChunkMesh::markAsDirty() {
 void ChunkMesh::markAsDirtyWithNeighbours() {
     markAsDirty();
 
-    auto leftNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
-    auto rightNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
-    auto downNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
-    auto upNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
-    auto backNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
-    auto frontNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
+    const auto leftNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_LEFT));
+    const auto rightNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_RIGHT));
+    const auto downNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BOTTOM));
+    const auto upNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_TOP));
+    const auto backNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_BACK));
+    const auto frontNeighbour = Craft::world->chunkAt(_chunk->_coordinate.moveTowards(FACE_FRONT));
 
     if (leftNeighbour != nullptr) {
         leftNeighbour->_mesh->markAsDirty();
@@ -300,6 +300,7 @@ void ChunkMesh::regenerateMesh() {
 
     _dirty = false;
     _uploadNeeded = true;
+    _chunk->setGenerationStep(GenerationStep::MESHED);
 }
 
 void ChunkMesh::uploadIfRegenerated() {

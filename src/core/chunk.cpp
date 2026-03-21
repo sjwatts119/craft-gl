@@ -23,7 +23,7 @@ glm::mat4 Chunk::localToWorldMatrix() const {
     return _localToWorldMatrix;
 }
 
-void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
+void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
     const auto worldCoordinate = _coordinate.toWorldFromChunk();
 
     for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
@@ -61,6 +61,8 @@ void Chunk::addTestBlocksPerlin(const siv::PerlinNoise* perlin) {
             }
         }
     }
+
+    setGenerationStep(GenerationStep::BLOCK);
 }
 
 void Chunk::destroyBlock(const Coordinate localCoordinate) {
@@ -78,4 +80,12 @@ void Chunk::placeBlock(const Coordinate localCoordinate, const BlockType blockTy
     _blocks[localCoordinate.x][localCoordinate.y][localCoordinate.z] = blockType;
 
     _mesh->markAsDirtyWithAffectedNeighbours(localCoordinate);
+}
+
+GenerationStep Chunk::getGenerationStep() const {
+    return _step;
+}
+
+void Chunk::setGenerationStep(const GenerationStep step) {
+    _step = step;
 }

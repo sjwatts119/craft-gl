@@ -40,6 +40,10 @@ void RenderManager::renderBlocks() const {
     const Frustum viewFrustum{*Craft::player->getCamera()};
 
     for (const auto &chunk: Craft::world->_chunks | std::views::values) {
+        if (chunk->getGenerationStep() != GenerationStep::MESHED) {
+            continue;
+        }
+
         if (!viewFrustum.fastIntersects(chunk->_boundingBox)) {
             continue;
         }

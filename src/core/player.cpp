@@ -139,39 +139,39 @@ void Player::processKeyboard() {
      */
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_1) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(0));
+        _inventory.selectBlockType(static_cast<BlockType>(1));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_2) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(1));
+        _inventory.selectBlockType(static_cast<BlockType>(2));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_3) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(2));
+        _inventory.selectBlockType(static_cast<BlockType>(3));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_4) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(3));
+        _inventory.selectBlockType(static_cast<BlockType>(4));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_5) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(4));
+        _inventory.selectBlockType(static_cast<BlockType>(5));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_6) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(5));
+        _inventory.selectBlockType(static_cast<BlockType>(6));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(6));
+        _inventory.selectBlockType(static_cast<BlockType>(7));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(7));
+        _inventory.selectBlockType(static_cast<BlockType>(8));
     }
     if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
     {
-        _inventory.selectBlockType(static_cast<BlockType>(8));
+        _inventory.selectBlockType(static_cast<BlockType>(9));
     }
 
     /**
@@ -548,10 +548,8 @@ Coordinate Player::getChunkCoordinate() const {
 
 std::vector<Coordinate> Player::getSurroundingChunkCoordinates() const {
     std::vector<Coordinate> visibleChunks;
-
     const auto playerChunkCoordinate = getChunkCoordinate();
 
-    // TODO this should not be a cube, but a sphere
     for (int x = -Constant::RENDER_DISTANCE; x <= Constant::RENDER_DISTANCE; x++) {
         for (int z = -Constant::RENDER_DISTANCE; z <= Constant::RENDER_DISTANCE; z++) {
             for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
@@ -564,8 +562,32 @@ std::vector<Coordinate> Player::getSurroundingChunkCoordinates() const {
         }
     }
 
-
     return visibleChunks;
+}
+
+std::vector<Coordinate> Player::getSurroundingEdgeChunkCoordinates() const {
+    std::vector<Coordinate> edgeChunks;
+    const auto playerChunkCoordinate = getChunkCoordinate();
+
+    constexpr auto bound = Constant::RENDER_DISTANCE + 1;
+
+    for (int x = -bound; x <= bound; x++) {
+        for (int z = -bound; z <= bound; z++) {
+            if (std::abs(x) <= Constant::RENDER_DISTANCE && std::abs(z) <= Constant::RENDER_DISTANCE) {
+                continue;
+            }
+
+            for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
+                edgeChunks.emplace_back(
+                    playerChunkCoordinate.x + x,
+                    y,
+                    playerChunkCoordinate.z + z
+                );
+            }
+        }
+    }
+
+    return edgeChunks;
 }
 
 bool Player::isOutOfWorld() const {

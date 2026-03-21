@@ -15,10 +15,10 @@ class ChunkMesh final : public Renderable {
 private:
     Chunk *_chunk;
 
-    bool _dirty = true;
-    bool _uploadNeeded = true;
-
+    bool _dirty = false;
+    bool _uploadNeeded = false;
 public:
+
     std::vector<BlockData> _vertices;
     std::vector<GLuint> _indices;
 

@@ -37,7 +37,7 @@ void Inventory::selectNextBlockType() {
     auto nextType = static_cast<int>(_selectedBlockType) + 1;
 
     if (nextType >= static_cast<int>(BlockType::COUNT)) {
-        nextType = 0;
+        nextType = 1;
     }
 
     _selectedBlockType = static_cast<BlockType>(nextType);
@@ -47,7 +47,7 @@ void Inventory::selectNextBlockType() {
 void Inventory::selectPreviousBlockType() {
     auto previousType = static_cast<int>(_selectedBlockType) - 1;
 
-    if (previousType < 0) {
+    if (previousType < 1) {
         previousType = static_cast<int>(BlockType::COUNT) - 1;
     }
 

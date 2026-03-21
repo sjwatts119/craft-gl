@@ -1,18 +1,18 @@
 #pragma once
 
 enum class BlockType: int {
-    ERROR = -2,
-    AIR = -1,
+    ERROR = -1,
+    AIR = 0,
 
-    GRASS = 0,
-    DIRT = 1,
-    STONE = 2,
-    OAK_LOG = 3,
-    OAK_LEAVES = 4,
-    OAK_PLANKS = 5,
-    DIAMOND_BLOCK = 6,
-    PACKED_ICE = 7,
-    BEDROCK = 8,
-    GLASS_BLOCK = 9,
-    COUNT = 10
+    GRASS = 1,
+    DIRT = 2,
+    STONE = 3,
+    OAK_LOG = 4,
+    OAK_LEAVES = 5,
+    OAK_PLANKS = 6,
+    DIAMOND_BLOCK = 7,
+    PACKED_ICE = 8,
+    BEDROCK = 9,
+    GLASS_BLOCK = 10,
+    COUNT = 11,
 };
