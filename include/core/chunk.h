@@ -22,8 +22,6 @@ public:
     Coordinate _coordinate;
     AABB _boundingBox;
 
-    glm::ivec3 _highlightedBlock{-1};
-
     BlockType _blocks[Constant::CHUNK_SIZE][Constant::CHUNK_SIZE][Constant::CHUNK_SIZE];
     std::unique_ptr<ChunkMesh> _mesh;
 

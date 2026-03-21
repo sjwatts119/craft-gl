@@ -479,11 +479,10 @@ void Player::clearAimingAtBlock() {
         return;
     }
 
-    chunk->second->_mesh->unsetHighlightedBlock();
-    chunk->second->_mesh->markAsDirty();
-
     _highlightedBlockWorldCoordinate = std::nullopt;
     _highlightedBlockFace = std::nullopt;
+
+    chunk->second->_mesh->markAsDirty();
 }
 
 void Player::setAimingAtBlock() {
@@ -524,7 +523,7 @@ void Player::setAimingAtBlock() {
 
     _highlightedBlockWorldCoordinate = aimedAtCoordinate;
     _highlightedBlockFace = hitFace;
-    containingChunk->second->_mesh->setHighlightedBlock(aimedAtCoordinate.value().toLocalFromWorld().toIVec3());
+    containingChunk->second->_mesh->markAsDirty();
 }
 
 /**
@@ -575,6 +574,10 @@ bool Player::isOutOfWorld() const {
 
 AABB Player::getBoundingBox() const {
     return _boundingBox;
+}
+
+std::optional<Coordinate> Player::getHighlightedBlockCoordinate() const {
+    return _highlightedBlockWorldCoordinate;
 }
 
 const Camera *Player::getCamera() const {

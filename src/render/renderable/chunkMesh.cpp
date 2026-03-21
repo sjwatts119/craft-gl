@@ -83,8 +83,6 @@ void ChunkMesh::markAsDirtyWithAffectedNeighbours(const Coordinate localCoordina
 }
 
 void ChunkMesh::regenerateMesh() {
-    // std::cout << "Regenerating mesh for chunk at coordinate {x: " << _chunk->_coordinate.x << " y: " << _chunk->_coordinate.y << " z: " << _chunk->_coordinate.z << "}" << std::endl;
-
     _vertices.clear();
     _indices.clear();
 
@@ -105,8 +103,11 @@ void ChunkMesh::regenerateMesh() {
                     continue;
                 }
 
-                bool isHighlighted = glm::ivec3{x, y, z} == _highlightedBlockIndex;
-                auto localCoordinate = Coordinate{glm::vec3{x, y, z}};
+                auto localCoordinate = Coordinate{x, y, z};
+                auto worldCoordinate = _chunk->_coordinate.toWorldFromChunk(localCoordinate);
+                auto highlightedCoordinate = Craft::player->getHighlightedBlockCoordinate();
+                bool isHighlighted = highlightedCoordinate.has_value()
+                    && highlightedCoordinate.value() == worldCoordinate;
 
                 // get neighbouring local coordinates
                 auto left = localCoordinate.leftNeighbour();
@@ -299,20 +300,6 @@ void ChunkMesh::regenerateMesh() {
 
     _dirty = false;
     _uploadNeeded = true;
-}
-
-void ChunkMesh::setHighlightedBlock(const glm::ivec3 index) {
-    _highlightedBlockIndex = index;
-
-    markAsDirtyWithAffectedNeighbours(Coordinate{index});
-}
-
-void ChunkMesh::unsetHighlightedBlock() {
-    const auto previousIndex = _highlightedBlockIndex;
-
-    _highlightedBlockIndex = glm::ivec3{-1};
-
-    markAsDirtyWithAffectedNeighbours(Coordinate{previousIndex});
 }
 
 void ChunkMesh::uploadIfRegenerated() {

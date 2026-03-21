@@ -134,6 +134,8 @@ public:
 
     [[nodiscard]] AABB getBoundingBox() const;
 
+    [[nodiscard]] std::optional<Coordinate> getHighlightedBlockCoordinate() const;
+
     [[nodiscard]] const Camera *getCamera() const;
 
     [[nodiscard]] const Crosshair *getCrosshair() const;

@@ -19,7 +19,6 @@ private:
     bool _uploadNeeded = true;
 
 public:
-    glm::ivec3 _highlightedBlockIndex{-1};
     std::vector<BlockData> _vertices;
     std::vector<GLuint> _indices;
 
@@ -36,10 +35,6 @@ public:
     void markAsDirtyWithAffectedNeighbours(Coordinate localCoordinate);
 
     void regenerateMesh();
-
-    void setHighlightedBlock(glm::ivec3 index);
-
-    void unsetHighlightedBlock();
 
     void uploadIfRegenerated();
 
