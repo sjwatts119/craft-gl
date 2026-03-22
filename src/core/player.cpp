@@ -372,6 +372,8 @@ void Player::updateSlip() {
         blockCoord.z
     };
 
+    // check the block directly below the player first.
+    // it might not exist though if they are stood on the edge of a block.
     if (const auto blockBelow = Craft::world->blockAt(directlyBelowCoord); blockBelow != nullptr && *blockBelow != BlockType::AIR) {
         if (pushedAABB.intersects(AABB::forBlock(directlyBelowCoord))) {
             _slip = Block::slipperinessFromType(*blockBelow);
@@ -385,8 +387,7 @@ void Player::updateSlip() {
     const int maxZ = static_cast<int>(std::floor(pushedAABB.maxZ));
     const int checkY = static_cast<int>(std::floor(_position.y + Constant::STANDING_ON_NEGATIVE_Y_OFFSET));
 
-    // spin around the bottom of the player bounding box to find the block they are standing on
-    // start with the block entirely under the player and expand outwards
+    // spin around the bottom of the player bounding box to find the block they are standing on.
     for (int x = minX; x <= maxX; ++x) {
         for (int z = minZ; z <= maxZ; ++z) {
             if (Coordinate coord{x, checkY, z}; pushedAABB.intersects(AABB::forBlock(coord))) {
@@ -546,7 +547,30 @@ Coordinate Player::getChunkCoordinate() const {
     return getBlockCoordinate().toChunkFromWorld();
 }
 
+/**
+ * Get all chunk coordinates within the player's render distance, including invisible chunks around the edge.
+ */
 std::vector<Coordinate> Player::getSurroundingChunkCoordinates() const {
+    std::vector<Coordinate> surroundingChunks;
+    const auto playerChunkCoordinate = getChunkCoordinate();
+    constexpr auto bound = Constant::RENDER_DISTANCE + 1;
+
+    for (int x = -bound; x <= bound; x++) {
+        for (int z = -bound; z <= bound; z++) {
+            for (int y = 0; y < Constant::WORLD_HEIGHT; y++) {
+                surroundingChunks.emplace_back(
+                    playerChunkCoordinate.x + x,
+                    y,
+                    playerChunkCoordinate.z + z
+                );
+            }
+        }
+    }
+
+    return surroundingChunks;
+}
+
+std::vector<Coordinate> Player::getSurroundingVisibleChunkCoordinates() const {
     std::vector<Coordinate> visibleChunks;
     const auto playerChunkCoordinate = getChunkCoordinate();
 

@@ -17,8 +17,8 @@ namespace Constant {
     static constexpr int MINIMUM_TERRAIN_HEIGHT = 64;
     static constexpr int MAXIMUM_TERRAIN_HEIGHT = 192;
 
-    static constexpr int WINDOW_WIDTH = 1920;
-    static constexpr int WINDOW_HEIGHT = 1080;
+    static constexpr int WINDOW_WIDTH = 2560;
+    static constexpr int WINDOW_HEIGHT = 1440;
     static constexpr bool WINDOW_FULLSCREEN = false;
 
     static constexpr auto WINDOW_TITLE = "craft-gl";
@@ -47,4 +47,6 @@ namespace Constant {
     static constexpr float BLOCK_SLIPPERINESS_FACTOR = 0.6f; // multiplier for horizontal resistance when on a block
 
     static constexpr float TERMINAL_VELOCITY = 3.92f; // blocks per tick
+
+    static constexpr int VOXEL_TRAVERSAL_LIMIT = 100; // maximum number of intersection points to check when traversing blocks with a ray
 }

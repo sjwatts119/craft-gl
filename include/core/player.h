@@ -130,6 +130,8 @@ public:
 
     [[nodiscard]] std::vector<Coordinate> getSurroundingChunkCoordinates() const;
 
+    [[nodiscard]] std::vector<Coordinate> getSurroundingVisibleChunkCoordinates() const;
+
     [[nodiscard]] std::vector<Coordinate> getSurroundingEdgeChunkCoordinates() const;
 
     [[nodiscard]] bool isOutOfWorld() const;

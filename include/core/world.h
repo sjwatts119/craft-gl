@@ -44,9 +44,11 @@ public:
     [[nodiscard]] int terrainHeightAt(Coordinate worldCoordinate) const;
 
     void destroyBlockQuietly(Coordinate worldCoordinate) const;
+
     void destroyBlock(Coordinate worldCoordinate) const;
 
     void placeBlockQuietly(Coordinate worldCoordinate, BlockType blockType) const;
+
     void placeBlock(Coordinate worldCoordinate, BlockType blockType) const;
 
     void regenerateDirtyMeshes();

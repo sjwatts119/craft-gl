@@ -37,7 +37,7 @@ public:
         auto tMax = (pos - _start + glm::max(step, 0.0f)) / _direction;
         auto traversedDistance = 0.0f;
 
-        while (traversedDistance <= t && traversed.size() < 100) {
+        while (traversedDistance <= t && traversed.size() < Constant::VOXEL_TRAVERSAL_LIMIT) {
             if (tMax.x < tMax.y) {
                 if (tMax.x < tMax.z) {
                     traversedDistance = tMax.x;

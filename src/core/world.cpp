@@ -17,38 +17,28 @@ void World::init() {
 }
 
 void World::addInitialChunks() {
-    const std::vector<Coordinate> visibleCoordinates = Craft::player->getSurroundingChunkCoordinates();
-    const std::vector <Coordinate> edgeCoordinates = Craft::player->getSurroundingEdgeChunkCoordinates();
+    const std::vector<Coordinate> allCoordinates = Craft::player->getSurroundingChunkCoordinates();
+    const std::vector<Coordinate> visibleCoordinates = Craft::player->getSurroundingVisibleChunkCoordinates();
 
     // Create prototypes
-    for (const auto &coordinate : visibleCoordinates) {
-        auto chunk = std::make_unique<Chunk>(coordinate);
-        _chunks.emplace(coordinate, std::move(chunk));
-    }
-    for (const auto &coordinate : edgeCoordinates) {
+    for (const auto &coordinate : allCoordinates) {
         auto chunk = std::make_unique<Chunk>(coordinate);
         _chunks.emplace(coordinate, std::move(chunk));
     }
 
     // Generate blocks
-    for (const auto &coordinate : visibleCoordinates) {
-        _chunks[coordinate]->generateBlocks(&_perlin);
-    }
-    for (const auto &coordinate : edgeCoordinates) {
+    for (const auto &coordinate : allCoordinates) {
         _chunks[coordinate]->generateBlocks(&_perlin);
     }
 
     // Decorate chunks
-    for (const auto &coordinate : visibleCoordinates) {
-        _chunks[coordinate]->generateDecorations(&_perlin);
-    }
-    for (const auto &coordinate : edgeCoordinates) {
+    for (const auto &coordinate : allCoordinates) {
         _chunks[coordinate]->generateDecorations(&_perlin);
     }
 
-    // Generate meshes
+    // Mesh visible chunks
     for (const auto &coordinate : visibleCoordinates) {
-        _chunks[coordinate]->setGenerationStep(GenerationStep::MESHED);
+        _chunks[coordinate]->setGenerationStep(GenerationStep::COMPLETE);
         _chunks[coordinate]->_mesh->markAsDirty();
     }
 }
@@ -129,7 +119,6 @@ void World::placeBlockQuietly(const Coordinate worldCoordinate, const BlockType 
     const auto chunk = chunkAt(chunkCoordinate);
 
     if (chunk == nullptr) {
-        // std::cerr << "No chunk found at " << worldCoordinate << " to place block." << std::endl;
         return;
     }
 

@@ -44,9 +44,11 @@ public:
     void generateTree(Coordinate localCoordinate);
 
     void destroyBlockQuietly(Coordinate localCoordinate);
+
     void destroyBlock(Coordinate localCoordinate);
 
     void placeBlockQuietly(Coordinate localCoordinate, BlockType blockType);
+
     void placeBlock(Coordinate localCoordinate, BlockType blockType);
 
     [[nodiscard]] GenerationStep getGenerationStep() const;
