@@ -6,7 +6,8 @@ class World;
 class RenderManager;
 class Window;
 
-namespace Craft {
+namespace Craft
+{
     extern Window *window;
     extern RenderManager *renderManager;
     extern World *world;

@@ -2,7 +2,8 @@
 #include <chrono>
 #include <iostream>
 
-class Timer {
+class Timer
+{
 private:
     std::chrono::time_point<std::chrono::steady_clock> _start{std::chrono::steady_clock::now()};
 
@@ -12,7 +13,8 @@ public:
     }
 
     [[nodiscard]] double elapsed() const {
-        return std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now() - _start).count();
+        return std::chrono::duration_cast<std::chrono::duration<double>>(std::chrono::steady_clock::now() - _start).
+            count();
     }
 };
 

@@ -17,7 +17,8 @@ class Block;
 class Player;
 class ChunkMesh;
 
-class World {
+class World
+{
 private:
     Light _sun{
         glm::vec3{0.0f, 255.0f, 0.0f},
@@ -27,6 +28,7 @@ private:
     };
 
     siv::PerlinNoise _perlin{Constant::WORLD_SEED};
+
 public:
     std::unordered_map<Coordinate, std::unique_ptr<Chunk>, CoordinateHash> _chunks; // Active chunks
 
@@ -36,6 +38,7 @@ public:
     void init();
 
     void addInitialChunks();
+    void loadNewChunks();
 
     [[nodiscard]] BlockType *blockAt(Coordinate worldCoordinate) const;
 

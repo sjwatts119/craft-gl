@@ -6,7 +6,8 @@
 #include <glad/glad.h>
 
 
-class Texture {
+class Texture
+{
 private:
     std::string _path;
     int _width;

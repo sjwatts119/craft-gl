@@ -2,7 +2,8 @@
 
 #include <glm/vec3.hpp>
 
-struct Light {
+struct Light
+{
     glm::vec3 position;
     glm::vec3 ambient;
     glm::vec3 diffuse;

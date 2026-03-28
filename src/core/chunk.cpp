@@ -8,8 +8,7 @@ Chunk::Chunk(const Coordinate coordinate) :
     _coordinate(coordinate),
     _worldCoordinate(coordinate.toWorldFromChunk()),
     _boundingBox(AABB::forChunk(coordinate)),
-    _mesh{std::make_unique<ChunkMesh>(this)}
-{
+    _mesh{std::make_unique<ChunkMesh>(this)} {
     _localToWorldMatrix = glm::translate(
         glm::mat4(1.0f),
         _coordinate.toWorldFromChunk().toVec3()
@@ -26,7 +25,7 @@ glm::mat4 Chunk::localToWorldMatrix() const {
     return _localToWorldMatrix;
 }
 
-void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
+void Chunk::generateBlocks(const siv::PerlinNoise *perlin) {
     for (int x = 0; x < Constant::CHUNK_SIZE; x++) {
         for (int z = 0; z < Constant::CHUNK_SIZE; z++) {
             auto worldCoordinate = _worldCoordinate + Coordinate{x, 0, z};
@@ -39,13 +38,17 @@ void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
 
                 if (blockWorldCoordinate.y > targetHeight) {
                     _blocks[x][y][z] = BlockType::AIR;
-                } else if (blockWorldCoordinate.y == targetHeight) {
+                }
+                else if (blockWorldCoordinate.y == targetHeight) {
                     _blocks[x][y][z] = BlockType::GRASS;
-                } else if (blockWorldCoordinate.y > targetHeight - 5) {
+                }
+                else if (blockWorldCoordinate.y > targetHeight - 5) {
                     _blocks[x][y][z] = BlockType::DIRT;
-                } else if (blockWorldCoordinate.y == 0) {
+                }
+                else if (blockWorldCoordinate.y == 0) {
                     _blocks[x][y][z] = BlockType::BEDROCK;
-                } else {
+                }
+                else {
                     _blocks[x][y][z] = BlockType::STONE;
                 }
             }
@@ -55,7 +58,7 @@ void Chunk::generateBlocks(const siv::PerlinNoise* perlin) {
     setGenerationStep(GenerationStep::PROTOTYPE);
 }
 
-void Chunk::generateDecorations(const siv::PerlinNoise* perlin) {
+void Chunk::generateDecorations(const siv::PerlinNoise *perlin) {
     std::mt19937 rng(Constant::WORLD_SEED + _coordinate.x + _coordinate.y * 31 + _coordinate.z * 961);
     std::bernoulli_distribution dist(Constant::TREE_GENERATION_CHANCE);
 
@@ -65,7 +68,7 @@ void Chunk::generateDecorations(const siv::PerlinNoise* perlin) {
                 continue;
             }
 
-            Coordinate localTreeCoordinate {x, 0, z};
+            Coordinate localTreeCoordinate{x, 0, z};
             const Coordinate worldTreeCoordinate = _coordinate.toWorldFromChunk(localTreeCoordinate);
 
             const auto terrainHeight = Craft::world->terrainHeightAt(worldTreeCoordinate);
@@ -116,7 +119,8 @@ void Chunk::generateTree(const Coordinate localCoordinate) {
         }
     }
 
-    for (int y = leafStartHeight + leafHeight + tuftHeight; y < leafStartHeight + leafHeight + tuftHeight + peakHeight; y++) {
+    for (int y = leafStartHeight + leafHeight + tuftHeight; y < leafStartHeight + leafHeight + tuftHeight + peakHeight;
+         y++) {
         for (int x = -peakDiameter / 2; x <= peakDiameter / 2; x++) {
             for (int z = -peakDiameter / 2; z <= peakDiameter / 2; z++) {
                 const auto blockCoordinate = localCoordinate + _worldCoordinate + Coordinate{x, y, z};

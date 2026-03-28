@@ -13,7 +13,8 @@
 #include "glm/gtc/type_ptr.hpp"
 #include "material/light.h"
 
-class Shader {
+class Shader
+{
 private:
     /**
      * Read in a shader file from a path, and return a string of its contents.

@@ -15,7 +15,8 @@
 class World;
 class ChunkMesh;
 
-class Chunk {
+class Chunk
+{
 private:
     glm::mat4 _localToWorldMatrix{};
 
@@ -37,9 +38,9 @@ public:
 
     [[nodiscard]] glm::mat4 localToWorldMatrix() const;
 
-    void generateBlocks(const siv::PerlinNoise* perlin);
+    void generateBlocks(const siv::PerlinNoise *perlin);
 
-    void generateDecorations(const siv::PerlinNoise* perlin);
+    void generateDecorations(const siv::PerlinNoise *perlin);
 
     void generateTree(Coordinate localCoordinate);
 
@@ -54,5 +55,4 @@ public:
     [[nodiscard]] GenerationStep getGenerationStep() const;
 
     void setGenerationStep(GenerationStep step);
-
 };

@@ -57,7 +57,8 @@ void Window::update() {
 
     if (shouldTick()) {
         tick();
-    } else {
+    }
+    else {
         _ticksElapsed = 0;
     }
 }
@@ -118,6 +119,6 @@ int Window::getTicksElapsed() const {
 }
 
 
-GLFWwindow* Window::getWindow() const {
+GLFWwindow *Window::getWindow() const {
     return _window;
 }

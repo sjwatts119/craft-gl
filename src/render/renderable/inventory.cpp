@@ -77,24 +77,31 @@ void Inventory::upload() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);
-    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _vertices.size()), _vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _vertices.size()), _vertices.data(),
+                 GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _eboId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_indices.size() * sizeof(GLuint)), _indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_indices.size() * sizeof(GLuint)), _indices.data(),
+                 GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), static_cast<void *>(nullptr));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()),
+                          static_cast<void*>(nullptr));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()),
+                          reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()),
+                          reinterpret_cast<void*>(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(8 * sizeof(float)));
+    glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()),
+                           reinterpret_cast<void*>(8 * sizeof(float)));
     glEnableVertexAttribArray(3);
 
-    glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((8 * sizeof(float)) + sizeof(int)));
+    glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()),
+                           reinterpret_cast<void*>((8 * sizeof(float)) + sizeof(int)));
     glEnableVertexAttribArray(4);
 
     _uploadNeeded = false;
@@ -105,7 +112,7 @@ void Inventory::bind() const {
 }
 
 void Inventory::render() const {
-    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void*>(nullptr));
 }
 
 void Inventory::cleanup() const {
@@ -149,5 +156,3 @@ glm::mat4 Inventory::getProjectionMatrix() {
 const Light &Inventory::getLight() const {
     return _light;
 }
-
-

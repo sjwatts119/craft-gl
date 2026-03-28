@@ -126,44 +126,56 @@ void ChunkMesh::regenerateMesh() {
 
                 if (left.isInBounds()) {
                     shouldRenderLeftFace = Block::transparentFromType(_chunk->_blocks[left.x][left.y][left.z]);
-                } else if (leftNeighbour != nullptr) {
+                }
+                else if (leftNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{Constant::CHUNK_SIZE - 1, y, z}};
-                    shouldRenderLeftFace = Block::transparentFromType(leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
+                    shouldRenderLeftFace = Block::transparentFromType(
+                        leftNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (right.isInBounds()) {
                     shouldRenderRightFace = Block::transparentFromType(_chunk->_blocks[right.x][right.y][right.z]);
-                } else if (rightNeighbour != nullptr) {
+                }
+                else if (rightNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{0, y, z}};
-                    shouldRenderRightFace = Block::transparentFromType(rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
+                    shouldRenderRightFace = Block::transparentFromType(
+                        rightNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (down.isInBounds()) {
                     shouldRenderBottomFace = Block::transparentFromType(_chunk->_blocks[down.x][down.y][down.z]);
-                } else if (downNeighbour != nullptr) {
+                }
+                else if (downNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, Constant::CHUNK_SIZE - 1, z}};
-                    shouldRenderBottomFace = Block::transparentFromType(downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
+                    shouldRenderBottomFace = Block::transparentFromType(
+                        downNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (up.isInBounds()) {
                     shouldRenderTopFace = Block::transparentFromType(_chunk->_blocks[up.x][up.y][up.z]);
-                } else if (upNeighbour != nullptr) {
+                }
+                else if (upNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, 0, z}};
-                    shouldRenderTopFace = Block::transparentFromType(upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
+                    shouldRenderTopFace = Block::transparentFromType(
+                        upNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (back.isInBounds()) {
                     shouldRenderBackFace = Block::transparentFromType(_chunk->_blocks[back.x][back.y][back.z]);
-                } else if (backNeighbour != nullptr) {
+                }
+                else if (backNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, Constant::CHUNK_SIZE - 1}};
-                    shouldRenderBackFace = Block::transparentFromType(backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
+                    shouldRenderBackFace = Block::transparentFromType(
+                        backNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (front.isInBounds()) {
                     shouldRenderFrontFace = Block::transparentFromType(_chunk->_blocks[front.x][front.y][front.z]);
-                } else if (frontNeighbour != nullptr) {
+                }
+                else if (frontNeighbour != nullptr) {
                     const auto localOffset = Coordinate{glm::vec3{x, y, 0}};
-                    shouldRenderFrontFace = Block::transparentFromType(frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
+                    shouldRenderFrontFace = Block::transparentFromType(
+                        frontNeighbour->_blocks[localOffset.x][localOffset.y][localOffset.z]);
                 }
 
                 if (shouldRenderLeftFace) {
@@ -173,10 +185,10 @@ void ChunkMesh::regenerateMesh() {
                         _indices.push_back(verticesCount + index);
                     }
 
-                    for (const auto&[position, normal, texCoords] : Block::getLeftVertices()) {
+                    for (const auto &[position, normal, texCoords] : Block::getLeftVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
-                        BlockData bufferData {
+                        BlockData bufferData{
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
@@ -195,10 +207,10 @@ void ChunkMesh::regenerateMesh() {
                         _indices.push_back(verticesCount + index);
                     }
 
-                    for (const auto&[position, normal, texCoords] : Block::getRightVertices()) {
+                    for (const auto &[position, normal, texCoords] : Block::getRightVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
-                        BlockData bufferData {
+                        BlockData bufferData{
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
@@ -216,10 +228,10 @@ void ChunkMesh::regenerateMesh() {
                         _indices.push_back(verticesCount + index);
                     }
 
-                    for (const auto&[position, normal, texCoords] : Block::getBottomVertices()) {
+                    for (const auto &[position, normal, texCoords] : Block::getBottomVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
-                        BlockData bufferData {
+                        BlockData bufferData{
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
@@ -238,10 +250,10 @@ void ChunkMesh::regenerateMesh() {
                         _indices.push_back(currentVertexCount + index);
                     }
 
-                    for (const auto&[position, normal, texCoords] : Block::getTopVertices()) {
+                    for (const auto &[position, normal, texCoords] : Block::getTopVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
-                        BlockData bufferData {
+                        BlockData bufferData{
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
@@ -259,10 +271,10 @@ void ChunkMesh::regenerateMesh() {
                         _indices.push_back(currentVertexCount + index);
                     }
 
-                    for (const auto&[position, normal, texCoords] : Block::getBackVertices()) {
+                    for (const auto &[position, normal, texCoords] : Block::getBackVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
-                        BlockData bufferData {
+                        BlockData bufferData{
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
@@ -280,10 +292,10 @@ void ChunkMesh::regenerateMesh() {
                         _indices.push_back(currentVertexCount + index);
                     }
 
-                    for (const auto&[position, normal, texCoords] : Block::getFrontVertices()) {
+                    for (const auto &[position, normal, texCoords] : Block::getFrontVertices()) {
                         const auto localVertices = position + localCoordinate.toVec3();
 
-                        BlockData bufferData {
+                        BlockData bufferData{
                             localVertices.x, localVertices.y, localVertices.z,
                             normal.x, normal.y, normal.z,
                             texCoords.x, texCoords.y,
@@ -315,24 +327,31 @@ void ChunkMesh::upload() {
     glBindVertexArray(_vaoId);
 
     glBindBuffer(GL_ARRAY_BUFFER, _vboId);
-    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _vertices.size()), _vertices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ARRAY_BUFFER, static_cast<GLsizei>(BlockData::size() * _vertices.size()), _vertices.data(),
+                 GL_STATIC_DRAW);
 
     glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, _eboId);
-    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_indices.size() * sizeof(GLuint)), _indices.data(), GL_STATIC_DRAW);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, static_cast<GLsizei>(_indices.size() * sizeof(GLuint)), _indices.data(),
+                 GL_STATIC_DRAW);
 
-    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), static_cast<void *>(nullptr));
+    glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()),
+                          static_cast<void*>(nullptr));
     glEnableVertexAttribArray(0);
 
-    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(3 * sizeof(float)));
+    glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()),
+                          reinterpret_cast<void*>(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
 
-    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(6 * sizeof(float)));
+    glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, static_cast<GLsizei>(BlockData::size()),
+                          reinterpret_cast<void*>(6 * sizeof(float)));
     glEnableVertexAttribArray(2);
 
-    glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>(8 * sizeof(float)));
+    glVertexAttribIPointer(3, 1, GL_INT, static_cast<GLsizei>(BlockData::size()),
+                           reinterpret_cast<void*>(8 * sizeof(float)));
     glEnableVertexAttribArray(3);
 
-    glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()), reinterpret_cast<void *>((8 * sizeof(float)) + sizeof(int)));
+    glVertexAttribIPointer(4, 1, GL_INT, static_cast<GLsizei>(BlockData::size()),
+                           reinterpret_cast<void*>((8 * sizeof(float)) + sizeof(int)));
     glEnableVertexAttribArray(4);
 
     _uploadNeeded = false;
@@ -343,7 +362,7 @@ void ChunkMesh::bind() const {
 }
 
 void ChunkMesh::render() const {
-    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void *>(nullptr));
+    glDrawElements(GL_TRIANGLES, static_cast<GLsizei>(_indices.size()), GL_UNSIGNED_INT, static_cast<void*>(nullptr));
 }
 
 void ChunkMesh::cleanup() const {

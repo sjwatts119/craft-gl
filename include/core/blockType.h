@@ -1,6 +1,7 @@
 #pragma once
 
-enum class BlockType: int {
+enum class BlockType: int
+{
     ERROR = -1,
     AIR = 0,
 

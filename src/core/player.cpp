@@ -104,73 +104,58 @@ void Player::processKeyboard() {
     /**
      * Movement
      */
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_W) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_W) == GLFW_PRESS) {
         moveForward(accelerationMultiplier);
     }
 
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_S) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_S) == GLFW_PRESS) {
         moveBackward(accelerationMultiplier);
     }
 
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_A) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_A) == GLFW_PRESS) {
         moveLeft(accelerationMultiplier);
     }
 
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_D) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_D) == GLFW_PRESS) {
         moveRight(accelerationMultiplier);
     }
 
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_SPACE) == GLFW_PRESS) {
         moveUp(accelerationMultiplier);
     }
 
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_LEFT_SHIFT) == GLFW_PRESS) {
         moveDown(accelerationMultiplier);
     }
 
     /**
      * Block selection
      */
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_1) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_1) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(1));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_2) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_2) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(2));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_3) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_3) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(3));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_4) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_4) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(4));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_5) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_5) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(5));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_6) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_6) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(6));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_7) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_7) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(7));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_8) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_8) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(8));
     }
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_9) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_9) == GLFW_PRESS) {
         _inventory.selectBlockType(static_cast<BlockType>(9));
     }
 
@@ -192,8 +177,7 @@ void Player::processKeyboard() {
     /**
      * Kill window
      */
-    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS)
-    {
+    if (glfwGetKey(Craft::window->getWindow(), GLFW_KEY_ESCAPE) == GLFW_PRESS) {
         glfwSetWindowShouldClose(Craft::window->getWindow(), true);
     }
 }
@@ -257,8 +241,8 @@ void Player::applyResistance() {
     }
 
     const auto horizontalResistanceFactor = _grounded
-        ? _slip * Constant::HORIZONTAL_RESISTANCE_FACTOR
-        : Constant::HORIZONTAL_RESISTANCE_FACTOR;
+                                                ? _slip * Constant::HORIZONTAL_RESISTANCE_FACTOR
+                                                : Constant::HORIZONTAL_RESISTANCE_FACTOR;
 
     _momentum.x *= horizontalResistanceFactor;
     _momentum.y *= Constant::VERTICAL_RESISTANCE_FACTOR;
@@ -297,7 +281,7 @@ void Player::updatePosition() {
     movementAABB.expandTo(newPosition);
 
     // Distance to push out testable coordinates based on width/height of player
-    const glm::vec3 push {_playerWidth / 2, _playerHeight / 2, _playerWidth / 2};
+    const glm::vec3 push{_playerWidth / 2, _playerHeight / 2, _playerWidth / 2};
 
     const int minX = static_cast<int>(std::floor(movementAABB.minX - push.x));
     const int maxX = static_cast<int>(std::floor(movementAABB.maxX + push.x));
@@ -330,7 +314,7 @@ void Player::updatePosition() {
     const auto originalDeltaZ = deltaZ;
 
     // clip movement on X
-    for (const auto& testableBlock : testableBlocks) {
+    for (const auto &testableBlock : testableBlocks) {
         deltaX = _boundingBox.clipX(testableBlock, deltaX);
     }
     _position.x += deltaX;
@@ -338,7 +322,7 @@ void Player::updatePosition() {
     updateBoundingBox();
 
     // clip movement on Y
-    for (const auto& testableBlock : testableBlocks) {
+    for (const auto &testableBlock : testableBlocks) {
         deltaY = _boundingBox.clipY(testableBlock, deltaY);
     }
     _position.y += deltaY;
@@ -347,7 +331,7 @@ void Player::updatePosition() {
     updateBoundingBox();
 
     // clip movement on Z
-    for (const auto& testableBlock : testableBlocks) {
+    for (const auto &testableBlock : testableBlocks) {
         deltaZ = _boundingBox.clipZ(testableBlock, deltaZ);
     }
     _position.z += deltaZ;
@@ -374,7 +358,8 @@ void Player::updateSlip() {
 
     // check the block directly below the player first.
     // it might not exist though if they are stood on the edge of a block.
-    if (const auto blockBelow = Craft::world->blockAt(directlyBelowCoord); blockBelow != nullptr && *blockBelow != BlockType::AIR) {
+    if (const auto blockBelow = Craft::world->blockAt(directlyBelowCoord); blockBelow != nullptr && *blockBelow !=
+        BlockType::AIR) {
         if (pushedAABB.intersects(AABB::forBlock(directlyBelowCoord))) {
             _slip = Block::slipperinessFromType(*blockBelow);
             return;
@@ -414,19 +399,17 @@ void Player::respawn() {
 /**
  * AIMING & CAMERA
  */
-void Player::updateCameraPosition()
-{
-    const auto interpolationFactor = std::clamp(Craft::window->getTimeSinceLastTick() / Constant::TIME_PER_TICK, 0.0f, 1.0f);
+void Player::updateCameraPosition() {
+    const auto interpolationFactor = std::clamp(Craft::window->getTimeSinceLastTick() / Constant::TIME_PER_TICK, 0.0f,
+                                                1.0f);
     _camera._position = glm::mix(_lastPosition, _position, interpolationFactor) + glm::vec3{0.0f, _eyeHeight, 0.0f};
 }
 
-void Player::aim(const float yawOffset, const float pitchOffset)
-{
+void Player::aim(const float yawOffset, const float pitchOffset) {
     _camera.aim(yawOffset * _aimSensitivity, pitchOffset * _aimSensitivity);
 }
 
-void Player::zoom(const float offset)
-{
+void Player::zoom(const float offset) {
     _camera.zoom(offset * _zoomSensitivity);
 }
 
@@ -487,12 +470,12 @@ void Player::clearAimingAtBlock() {
 }
 
 void Player::setAimingAtBlock() {
-    const Ray ray {_camera._position, _camera._forward};
+    const Ray ray{_camera._position, _camera._forward};
     const auto traversed = ray.traversedCoordinates(_reach);
 
     std::optional<Coordinate> aimedAtCoordinate;
 
-    for (const auto& coord : traversed) {
+    for (const auto &coord : traversed) {
         if (const auto block = Craft::world->blockAt(coord); block == nullptr || *block == BlockType::AIR) {
             continue;
         }
@@ -530,8 +513,7 @@ void Player::setAimingAtBlock() {
 /**
  * GETTERS
  */
-glm::vec3 Player::getPosition() const
-{
+glm::vec3 Player::getPosition() const {
     return _position;
 }
 

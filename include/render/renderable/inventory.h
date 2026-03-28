@@ -10,7 +10,8 @@
 #include "render/window.h"
 #include "render/buffer/blockData.h"
 
-class Inventory final : public Renderable {
+class Inventory final : public Renderable
+{
 private:
     BlockType _selectedBlockType = BlockType::OAK_LEAVES;
 
@@ -27,6 +28,7 @@ private:
         glm::vec3(0.3f, 0.3f, 0.3f),
         glm::vec3(0.6f, 0.6f, 0.6f)
     };
+
 public:
     Inventory();
 
@@ -56,7 +58,7 @@ public:
 
     [[nodiscard]] glm::mat4 getModelMatrix() const;
 
-    static glm::mat4 getViewMatrix() ;
+    static glm::mat4 getViewMatrix();
 
     static glm::mat4 getProjectionMatrix();
 

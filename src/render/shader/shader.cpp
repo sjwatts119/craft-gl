@@ -22,7 +22,8 @@ std::string Shader::readShaderFile(const char *path) {
 
         // Convert the string stream into a string
         contents = shaderStream.str();
-    } catch (std::ifstream::failure &exception) {
+    }
+    catch (std::ifstream::failure &exception) {
         std::cerr << "ERROR::SHADER::FILE_NOT_SUCCESSFULLY_READ: " << exception.what() << std::endl;
     }
 
@@ -60,7 +61,7 @@ unsigned int Shader::setupShaderProgram(const std::vector<unsigned int> &shaderI
     const unsigned int programId = glCreateProgram();
 
     // Attach the shaders to the program
-    for (const auto shaderId: shaderIds) {
+    for (const auto shaderId : shaderIds) {
         glAttachShader(programId, shaderId);
     }
 
@@ -79,7 +80,7 @@ unsigned int Shader::setupShaderProgram(const std::vector<unsigned int> &shaderI
     }
 
     // We can delete the shader objects now as they are linked into the program and no longer needed.
-    for (const auto shaderId: shaderIds) {
+    for (const auto shaderId : shaderIds) {
         glDeleteShader(shaderId);
     }
 
@@ -118,8 +119,7 @@ void Shader::setFloat(const std::string &name, const float value) const {
     glUniform1f(glGetUniformLocation(_id, name.c_str()), value);
 }
 
-void Shader::setVec3(const std::string &name, const glm::vec3 &vector) const
-{
+void Shader::setVec3(const std::string &name, const glm::vec3 &vector) const {
     glUniform3fv(glGetUniformLocation(_id, name.c_str()), 1, glm::value_ptr(vector));
 }
 

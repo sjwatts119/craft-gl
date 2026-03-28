@@ -6,7 +6,8 @@
 
 #include "utility/constant.h"
 
-class Window {
+class Window
+{
 private:
     int _width = Constant::WINDOW_WIDTH;
     int _height = Constant::WINDOW_HEIGHT;

@@ -11,14 +11,15 @@
 class Chunk;
 class World;
 
-class ChunkMesh final : public Renderable {
+class ChunkMesh final : public Renderable
+{
 private:
     Chunk *_chunk;
 
     bool _dirty = false;
     bool _uploadNeeded = false;
-public:
 
+public:
     std::vector<BlockData> _vertices;
     std::vector<GLuint> _indices;
 

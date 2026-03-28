@@ -5,7 +5,8 @@
 #include "AABB.h"
 #include "core/camera.h"
 
-struct Frustum {
+struct Frustum
+{
 private:
     /**
      * Gribb/Hartmann method
@@ -52,11 +53,11 @@ public:
      * Ignores far/near planes and is not 100% accurate
      */
     bool fastIntersects(const AABB &aabb) const {
-        const glm::vec4* planes[] = {&left, &right, &bottom, &top};
+        const glm::vec4 *planes[] = {&left, &right, &bottom, &top};
 
         // for each plane, find the positive vertex and check if it's inside
         // this is a bit inaccurate, it might not cull some AABBs but oh well it's fast
-        for (const auto* plane : planes) {
+        for (const auto *plane : planes) {
             const glm::vec3 positiveVertex = {
                 (plane->x >= 0) ? aabb.maxX : aabb.minX,
                 (plane->y >= 0) ? aabb.maxY : aabb.minY,
@@ -64,7 +65,8 @@ public:
             };
 
             // is the positive vertex outside the plane?
-            if (plane->x * positiveVertex.x + plane->y * positiveVertex.y + plane->z * positiveVertex.z + plane->w < 0) {
+            if (plane->x * positiveVertex.x + plane->y * positiveVertex.y + plane->z * positiveVertex.z + plane->w <
+                0) {
                 return false;
             }
         }

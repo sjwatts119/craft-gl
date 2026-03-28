@@ -1,6 +1,7 @@
 #pragma once
 
-enum class GenerationStep {
+enum class GenerationStep
+{
     PROTOTYPE,
     DECORATION,
     COMPLETE,

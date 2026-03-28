@@ -9,7 +9,8 @@
 #include "render/buffer/vertexData.h"
 #include "render/window.h"
 
-class Crosshair final : public Renderable {
+class Crosshair final : public Renderable
+{
 public:
     /**
      * Counter-clockwise winding
@@ -17,9 +18,9 @@ public:
     static constexpr std::array<VertexData, 4> VERTICES = {
         {
             {{-0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}, // bottom-left
-            {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},   // top-right
-            {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},  // top-left
+            {{0.5f, -0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}}, // top-right
+            {{-0.5f, 0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -45,6 +46,6 @@ public:
                 scaleFactor / Craft::window->getAspectRatio(),
                 scaleFactor,
                 0.01f)
-            );
+        );
     }
 };

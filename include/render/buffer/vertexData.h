@@ -4,7 +4,8 @@
 #include <glm/vec2.hpp>
 #include <glad/glad.h>
 
-struct VertexData {
+struct VertexData
+{
     glm::vec3 position;
     glm::vec3 normal;
     glm::vec2 texCoord;

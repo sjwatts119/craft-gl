@@ -16,7 +16,8 @@
 #include "render/buffer/vertexData.h"
 #include "utility/blockFace.h"
 
-class Block {
+class Block
+{
 private:
     BlockType _type;
     bool _highlighted;
@@ -28,10 +29,10 @@ private:
      */
     static constexpr std::array<VertexData, 4> TOP_VERTICES = {
         {
-            {{0.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
-            {{1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{1.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
-            {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+            {{0.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}}, // bottom-left
+            {{1.0f, 1.0f, 1.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{1.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {1.0f, 1.0f}}, // top-right
+            {{0.0f, 1.0f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -40,10 +41,10 @@ private:
      */
     static constexpr std::array<VertexData, 4> BOTTOM_VERTICES = {
         {
-            {{0.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
-            {{1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{1.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
-            {{0.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+            {{0.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}, {0.0f, 0.0f}}, // bottom-left
+            {{1.0f, 0.0f, 0.0f}, {0.0f, -1.0f, 0.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{1.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {1.0f, 1.0f}}, // top-right
+            {{0.0f, 0.0f, 1.0f}, {0.0f, -1.0f, 0.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -52,10 +53,10 @@ private:
      */
     static constexpr std::array<VertexData, 4> BACK_VERTICES = {
         {
-            {{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}},  // bottom-left
-            {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}},  // top-right
-            {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}},  // top-left
+            {{1.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 0.0f}}, // bottom-left
+            {{0.0f, 0.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{0.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {1.0f, 1.0f}}, // top-right
+            {{1.0f, 1.0f, 0.0f}, {0.0f, 0.0f, -1.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -64,10 +65,10 @@ private:
      */
     static constexpr std::array<VertexData, 4> FRONT_VERTICES = {
         {
-            {{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}},  // bottom-left
-            {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}},  // top-right
-            {{0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},  // top-left
+            {{0.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 0.0f}}, // bottom-left
+            {{1.0f, 0.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{1.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {1.0f, 1.0f}}, // top-right
+            {{0.0f, 1.0f, 1.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -76,10 +77,10 @@ private:
      */
     static constexpr std::array<VertexData, 4> LEFT_VERTICES = {
         {
-            {{0.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
-            {{0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
-            {{0.0f, 1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+            {{0.0f, 0.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}, // bottom-left
+            {{0.0f, 0.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{0.0f, 1.0f, 1.0f}, {-1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}, // top-right
+            {{0.0f, 1.0f, 0.0f}, {-1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -88,10 +89,10 @@ private:
      */
     static constexpr std::array<VertexData, 4> RIGHT_VERTICES = {
         {
-            {{1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}},  // bottom-left
-            {{1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},  // bottom-right
-            {{1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}},  // top-right
-            {{1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}},  // top-left
+            {{1.0f, 0.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 0.0f}}, // bottom-left
+            {{1.0f, 0.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}}, // bottom-right
+            {{1.0f, 1.0f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 1.0f}}, // top-right
+            {{1.0f, 1.0f, 1.0f}, {1.0f, 0.0f, 0.0f}, {0.0f, 1.0f}}, // top-left
         }
     };
 
@@ -171,8 +172,8 @@ public:
 
         auto i = 0;
 
-        for (const auto&[position, normal, texCoords] : getLeftVertices()) {
-            vertices[i++] = BlockData {
+        for (const auto &[position, normal, texCoords] : getLeftVertices()) {
+            vertices[i++] = BlockData{
                 position.x, position.y, position.z,
                 normal.x, normal.y, normal.z,
                 texCoords.x, texCoords.y,
@@ -181,8 +182,8 @@ public:
             };
         }
 
-        for (const auto&[position, normal, texCoords] : getRightVertices()) {
-            vertices[i++] = BlockData {
+        for (const auto &[position, normal, texCoords] : getRightVertices()) {
+            vertices[i++] = BlockData{
                 position.x, position.y, position.z,
                 normal.x, normal.y, normal.z,
                 texCoords.x, texCoords.y,
@@ -191,8 +192,8 @@ public:
             };
         }
 
-        for (const auto&[position, normal, texCoords] : getTopVertices()) {
-            vertices[i++] = BlockData {
+        for (const auto &[position, normal, texCoords] : getTopVertices()) {
+            vertices[i++] = BlockData{
                 position.x, position.y, position.z,
                 normal.x, normal.y, normal.z,
                 texCoords.x, texCoords.y,
@@ -201,8 +202,8 @@ public:
             };
         }
 
-        for (const auto&[position, normal, texCoords] : getBottomVertices()) {
-            vertices[i++] = BlockData {
+        for (const auto &[position, normal, texCoords] : getBottomVertices()) {
+            vertices[i++] = BlockData{
                 position.x, position.y, position.z,
                 normal.x, normal.y, normal.z,
                 texCoords.x, texCoords.y,
@@ -211,8 +212,8 @@ public:
             };
         }
 
-        for (const auto&[position, normal, texCoords] : getBackVertices()) {
-            vertices[i++] = BlockData {
+        for (const auto &[position, normal, texCoords] : getBackVertices()) {
+            vertices[i++] = BlockData{
                 position.x, position.y, position.z,
                 normal.x, normal.y, normal.z,
                 texCoords.x, texCoords.y,
@@ -221,8 +222,8 @@ public:
             };
         }
 
-        for (const auto&[position, normal, texCoords] : getFrontVertices()) {
-            vertices[i++] = BlockData {
+        for (const auto &[position, normal, texCoords] : getFrontVertices()) {
+            vertices[i++] = BlockData{
                 position.x, position.y, position.z,
                 normal.x, normal.y, normal.z,
                 texCoords.x, texCoords.y,

@@ -3,7 +3,8 @@
 #include <iostream>
 #include <vector>
 
-class TextureArray {
+class TextureArray
+{
 private:
     std::vector<std::string> _paths;
     int _width;

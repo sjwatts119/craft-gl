@@ -4,80 +4,79 @@ Block::Block(const BlockType type)
     : _type(type),
       _highlighted(false),
       _destructible(destructibleFromType(type)),
-      _slipperiness(slipperinessFromType(type)) {
-}
+      _slipperiness(slipperinessFromType(type)) {}
 
 bool Block::transparentFromType(const BlockType &type) {
     switch (type) {
-        case BlockType::GLASS_BLOCK:
-        case BlockType::OAK_LEAVES:
-        case BlockType::AIR:
-            return true;
-        default:
-            return false;
+    case BlockType::GLASS_BLOCK:
+    case BlockType::OAK_LEAVES:
+    case BlockType::AIR:
+        return true;
+    default:
+        return false;
     }
 }
 
 bool Block::destructibleFromType(const BlockType &type) {
     switch (type) {
-        case BlockType::BEDROCK:
-        case BlockType::AIR:
-        case BlockType::ERROR:
-            return false;
-        default:
-            return true;
+    case BlockType::BEDROCK:
+    case BlockType::AIR:
+    case BlockType::ERROR:
+        return false;
+    default:
+        return true;
     }
 }
 
 float Block::slipperinessFromType(const BlockType &type) {
     switch (type) {
-        case BlockType::PACKED_ICE:
-            return 0.98f;
-        default:
-            return 0.6f;
+    case BlockType::PACKED_ICE:
+        return 0.98f;
+    default:
+        return 0.6f;
     }
 }
 
 BlockTextureId Block::textureIdFromTypeAndFace(const BlockType &type, const BlockFace &face) {
     switch (type) {
-        case BlockType::GRASS:
-            switch (face) {
-                case FACE_TOP:
-                    return BlockTextureId::GRASS_BLOCK_TOP;
-                case FACE_BOTTOM:
-                    return BlockTextureId::DIRT;
-                default:
-                    return BlockTextureId::GRASS_BLOCK_SIDE;
-            }
-        case BlockType::DIRT:
+    case BlockType::GRASS:
+        switch (face) {
+        case FACE_TOP:
+            return BlockTextureId::GRASS_BLOCK_TOP;
+        case FACE_BOTTOM:
             return BlockTextureId::DIRT;
-        case BlockType::STONE:
-            return BlockTextureId::STONE;
-        case BlockType::OAK_LOG:
-            switch (face) {
-                case FACE_TOP:
-                case FACE_BOTTOM:
-                    return BlockTextureId::OAK_LOG_TOP;
-                default:
-                    return BlockTextureId::OAK_LOG_SIDE;
-            }
-        case BlockType::OAK_LEAVES:
-            return BlockTextureId::OAK_LEAVES;
-        case BlockType::OAK_PLANKS:
-            return BlockTextureId::OAK_PLANKS;
-        case BlockType::DIAMOND_BLOCK:
-            return BlockTextureId::DIAMOND_BLOCK;
-        case BlockType::PACKED_ICE:
-            return BlockTextureId::PACKED_ICE;
-        case BlockType::BEDROCK:
-            return BlockTextureId::BEDROCK;
-        case BlockType::GLASS_BLOCK:
-            return BlockTextureId::GLASS_BLOCK;
-        case BlockType::ERROR:
-            return BlockTextureId::ERROR;
-        case BlockType::AIR:
         default:
-            return BlockTextureId::NONE;
+            return BlockTextureId::GRASS_BLOCK_SIDE;
+        }
+    case BlockType::DIRT:
+        return BlockTextureId::DIRT;
+    case BlockType::STONE:
+        return BlockTextureId::STONE;
+    case BlockType::OAK_LOG:
+        switch (face) {
+        case FACE_TOP:
+        case FACE_BOTTOM:
+            return BlockTextureId::OAK_LOG_TOP;
+        default:
+            return BlockTextureId::OAK_LOG_SIDE;
+        }
+    case BlockType::OAK_LEAVES:
+        return BlockTextureId::OAK_LEAVES;
+    case BlockType::OAK_PLANKS:
+        return BlockTextureId::OAK_PLANKS;
+    case BlockType::DIAMOND_BLOCK:
+        return BlockTextureId::DIAMOND_BLOCK;
+    case BlockType::PACKED_ICE:
+        return BlockTextureId::PACKED_ICE;
+    case BlockType::BEDROCK:
+        return BlockTextureId::BEDROCK;
+    case BlockType::GLASS_BLOCK:
+        return BlockTextureId::GLASS_BLOCK;
+    case BlockType::ERROR:
+        return BlockTextureId::ERROR;
+    case BlockType::AIR:
+    default:
+        return BlockTextureId::NONE;
     }
 }
 
@@ -85,7 +84,7 @@ BlockType Block::getType() const {
     return _type;
 }
 
-void Block::setType(const BlockType& type) {
+void Block::setType(const BlockType &type) {
     _type = type;
 }
 

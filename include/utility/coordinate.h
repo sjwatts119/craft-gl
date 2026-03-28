@@ -8,7 +8,8 @@
 #include "core/block.h"
 #include "utility/blockFace.h"
 
-struct Coordinate {
+struct Coordinate
+{
 private:
     /**
      * always get a positive mod result, positiveMod(-1, 16) => 15 or positiveMod(17, 16) => 1
@@ -140,20 +141,20 @@ public:
 
     [[nodiscard]] Coordinate moveTowards(const BlockFace face) const {
         switch (face) {
-            case FACE_LEFT:
-                return leftNeighbour();
-            case FACE_RIGHT:
-                return rightNeighbour();
-            case FACE_BOTTOM:
-                return downNeighbour();
-            case FACE_TOP:
-                return upNeighbour();
-            case FACE_BACK:
-                return backNeighbour();
-            case FACE_FRONT:
-                return frontNeighbour();
-            default:
-                return *this;
+        case FACE_LEFT:
+            return leftNeighbour();
+        case FACE_RIGHT:
+            return rightNeighbour();
+        case FACE_BOTTOM:
+            return downNeighbour();
+        case FACE_TOP:
+            return upNeighbour();
+        case FACE_BACK:
+            return backNeighbour();
+        case FACE_FRONT:
+            return frontNeighbour();
+        default:
+            return *this;
         }
     }
 
@@ -184,7 +185,8 @@ inline Coordinate operator-(const Coordinate &a, const Coordinate &b) {
  *
  * @see https://www.codegenes.net/blog/c-unordered-map-using-a-custom-class-type-as-the-key/
  */
-struct CoordinateHash {
+struct CoordinateHash
+{
     size_t operator()(const Coordinate &coordinate) const {
         const size_t x = std::hash<int>{}(coordinate.x);
         const size_t y = std::hash<int>{}(coordinate.y);

@@ -5,7 +5,8 @@
 #include "core/world.h"
 #include "core/player.h"
 
-namespace Craft {
+namespace Craft
+{
     Window *window;
     RenderManager *renderManager;
     World *world;

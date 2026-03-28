@@ -7,7 +7,8 @@
 
 struct Coordinate;
 
-struct AABB {
+struct AABB
+{
     float minX, minY, minZ;
     float maxX, maxY, maxZ;
 
@@ -58,6 +59,6 @@ struct AABB {
 
 inline std::ostream &operator<<(std::ostream &os, const AABB &aabb) {
     os << "{min: {x: " << aabb.minX << ", y: " << aabb.minY << ", z: " << aabb.minZ << "}, "
-       << "max: {x: " << aabb.maxX << ", y: " << aabb.maxY << ", z: " << aabb.maxZ << "}}";
+        << "max: {x: " << aabb.maxX << ", y: " << aabb.maxY << ", z: " << aabb.maxZ << "}}";
     return os;
 }

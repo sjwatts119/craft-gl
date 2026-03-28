@@ -4,12 +4,14 @@
 #include "core/world.h"
 #include "render/buffer/aabbData.h"
 
-class Debug final : public Renderable {
+class Debug final : public Renderable
+{
 private:
     std::vector<AABBData> _vertices;
     std::vector<GLuint> _indices;
 
-    void addAABB(const AABB& aabb);
+    void addAABB(const AABB &aabb);
+
 public:
     Debug();
 

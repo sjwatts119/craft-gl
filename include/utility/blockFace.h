@@ -1,6 +1,7 @@
 #pragma once
 
-enum BlockFace: int {
+enum BlockFace: int
+{
     FACE_NONE = -1,
     FACE_TOP = 0,
     FACE_BOTTOM = 1,

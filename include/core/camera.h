@@ -10,7 +10,8 @@
 
 #include "geometry/AABB.h"
 
-class Camera {
+class Camera
+{
 public:
     /** Euler Angles **/
     float _pitch = 0.0f;
@@ -30,7 +31,7 @@ public:
     float _nearClip = 0.1f;
     float _farClip = 500.0f;
 
-    explicit Camera(const glm::vec3 &position): _position(position) {
+    explicit Camera(const glm::vec3 &position) : _position(position) {
         updateBasisVectors();
     }
 

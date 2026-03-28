@@ -32,13 +32,11 @@ void Camera::zoom(const float offset) {
     _fov = std::clamp(newFov, 1.0f, 90.0f);
 }
 
-glm::mat4 Camera::getViewMatrix() const
-{
+glm::mat4 Camera::getViewMatrix() const {
     return glm::lookAt(_position, _position + _forward, _up);
 }
 
-glm::mat4 Camera::getProjectionMatrix() const
-{
+glm::mat4 Camera::getProjectionMatrix() const {
     return glm::perspective(
         glm::radians(_fov),
         static_cast<float>(Craft::window->getWidth()) / static_cast<float>(Craft::window->getHeight()),

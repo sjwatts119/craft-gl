@@ -2,7 +2,8 @@
 
 #include <siv/perlin.h>
 
-namespace Constant {
+namespace Constant
+{
     static constexpr siv::PerlinNoise::seed_type WORLD_SEED = 1237;
 
     static constexpr float EPSILON = 0.0001f; // AABB intersection epsilon
@@ -31,7 +32,8 @@ namespace Constant {
     static constexpr int CHUNK_DELETIONS_PER_FRAME = 4;
     static constexpr int REMESHES_PER_THREAD_PER_FRAME = 2;
 
-    static constexpr float STANDING_ON_NEGATIVE_Y_OFFSET = -0.5f; // amount to push down detection point when checking for stood on block
+    static constexpr float STANDING_ON_NEGATIVE_Y_OFFSET = -0.5f;
+    // amount to push down detection point when checking for stood on block
 
     static constexpr float JUMP_VELOCITY = 0.45f; // instant upward velocity when jumping
 
@@ -40,13 +42,14 @@ namespace Constant {
     static constexpr float GRAVITY_ACCELERATION = 0.08f; // blocks per tick^2
 
     static constexpr float HORIZONTAL_RESISTANCE_FACTOR = 0.91f; // speed retained / tick after resistance
-    static constexpr float VERTICAL_RESISTANCE_FACTOR = 0.98f;   // speed retained / tick after resistance
-    static constexpr float FLYING_RESISTANCE_FACTOR = 0.90f;    // speed retained / tick after resistance when flying
+    static constexpr float VERTICAL_RESISTANCE_FACTOR = 0.98f; // speed retained / tick after resistance
+    static constexpr float FLYING_RESISTANCE_FACTOR = 0.90f; // speed retained / tick after resistance when flying
 
     static constexpr float NO_SLIPPERINESS = 0.02f; // base horizontal resistance when no slipperiness
     static constexpr float BLOCK_SLIPPERINESS_FACTOR = 0.6f; // multiplier for horizontal resistance when on a block
 
     static constexpr float TERMINAL_VELOCITY = 3.92f; // blocks per tick
 
-    static constexpr int VOXEL_TRAVERSAL_LIMIT = 100; // maximum number of intersection points to check when traversing blocks with a ray
+    static constexpr int VOXEL_TRAVERSAL_LIMIT = 100;
+    // maximum number of intersection points to check when traversing blocks with a ray
 }

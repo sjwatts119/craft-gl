@@ -135,8 +135,9 @@ void World::regenerateDirtyMeshes() {
     std::vector<std::jthread> threads;
 
     // Regenerate chunk meshes for dirty chunks
-    for (auto &[coordinate, chunk]: _chunks) {
-        if (chunk->getGenerationStep() != GenerationStep::COMPLETE && chunk->getGenerationStep() != GenerationStep::MESHED) {
+    for (auto &[coordinate, chunk] : _chunks) {
+        if (chunk->getGenerationStep() != GenerationStep::COMPLETE && chunk->getGenerationStep() !=
+            GenerationStep::MESHED) {
             continue;
         }
 
@@ -162,6 +163,6 @@ void World::update() {
     regenerateDirtyMeshes();
 }
 
-const Light& World::getSun() const {
+const Light &World::getSun() const {
     return _sun;
 }

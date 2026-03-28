@@ -2,7 +2,8 @@
 
 #include <glad/glad.h>
 
-class Renderable {
+class Renderable
+{
 protected:
     GLuint _vboId{};
     GLuint _vaoId{};
@@ -19,6 +20,7 @@ protected:
         glDeleteBuffers(1, &_eboId);
         glDeleteVertexArrays(1, &_vaoId);
     }
+
 public:
     virtual ~Renderable() = default;
 

@@ -4,7 +4,8 @@
 #include "textureArray.h"
 #include "material/blockTextureList.h"
 
-class TextureManager {
+class TextureManager
+{
 public:
     TextureArray _blockTextures{
         BlockTextureList::allPaths(),

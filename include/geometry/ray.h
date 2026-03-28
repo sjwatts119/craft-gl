@@ -5,7 +5,8 @@
 #include "AABB.h"
 #include "utility/blockFace.h"
 
-class Ray {
+class Ray
+{
     glm::vec3 _start;
     glm::vec3 _direction;
     glm::vec3 _inverseDirection;
@@ -14,8 +15,7 @@ public:
     static constexpr float RAY_EPSILON = 0.0001f;
 
     Ray(const glm::vec3 start, const glm::vec3 direction) : _start(start), _direction(direction),
-                                                            _inverseDirection(1.0f / direction) {
-    }
+                                                            _inverseDirection(1.0f / direction) {}
 
     [[nodiscard]] std::vector<Coordinate> traversedCoordinates(const float t) const {
         std::vector<Coordinate> traversed;
@@ -43,17 +43,20 @@ public:
                     traversedDistance = tMax.x;
                     pos.x += step.x;
                     tMax.x += delta.x;
-                } else {
+                }
+                else {
                     traversedDistance = tMax.z;
                     pos.z += step.z;
                     tMax.z += delta.z;
                 }
-            } else {
+            }
+            else {
                 if (tMax.y < tMax.z) {
                     traversedDistance = tMax.y;
                     pos.y += step.y;
                     tMax.y += delta.y;
-                } else {
+                }
+                else {
                     pos.z += step.z;
                     tMax.z += delta.z;
                 }

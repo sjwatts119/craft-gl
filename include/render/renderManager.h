@@ -20,7 +20,8 @@
 #include "render/renderable/chunkMesh.h"
 #include "render/renderable/crosshair.h"
 
-class RenderManager {
+class RenderManager
+{
 private:
     ShaderManager _shaderManager;
     TextureManager _textureManager;
@@ -34,6 +35,7 @@ private:
     void renderInterface() const;
 
     void renderDebug() const;
+
 public:
     RenderManager();
 

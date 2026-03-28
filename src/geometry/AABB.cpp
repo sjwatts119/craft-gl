@@ -2,16 +2,16 @@
 
 AABB AABB::forBlock(const Coordinate &coord) {
     return {
-            {
-                static_cast<float>(coord.x),
-                static_cast<float>(coord.y),
-                static_cast<float>(coord.z)
-            },
-            {
-                static_cast<float>(coord.x) + 1.0f,
-                static_cast<float>(coord.y) + 1.0f,
-                static_cast<float>(coord.z) + 1.0f
-            }
+        {
+            static_cast<float>(coord.x),
+            static_cast<float>(coord.y),
+            static_cast<float>(coord.z)
+        },
+        {
+            static_cast<float>(coord.x) + 1.0f,
+            static_cast<float>(coord.y) + 1.0f,
+            static_cast<float>(coord.z) + 1.0f
+        }
     };
 }
 
@@ -19,31 +19,31 @@ AABB AABB::forChunk(const Coordinate &chunkCoord) {
     const auto worldCoord = chunkCoord.toWorldFromChunk();
 
     return {
-            {
-                static_cast<float>(worldCoord.x),
-                static_cast<float>(worldCoord.y),
-                static_cast<float>(worldCoord.z)
-            },
-            {
-                static_cast<float>(worldCoord.x) + Constant::CHUNK_SIZE,
-                static_cast<float>(worldCoord.y) + Constant::CHUNK_SIZE,
-                static_cast<float>(worldCoord.z) + Constant::CHUNK_SIZE
-            }
+        {
+            static_cast<float>(worldCoord.x),
+            static_cast<float>(worldCoord.y),
+            static_cast<float>(worldCoord.z)
+        },
+        {
+            static_cast<float>(worldCoord.x) + Constant::CHUNK_SIZE,
+            static_cast<float>(worldCoord.y) + Constant::CHUNK_SIZE,
+            static_cast<float>(worldCoord.z) + Constant::CHUNK_SIZE
+        }
     };
 }
 
 AABB AABB::forPlayer(const glm::vec3 &position, const float playerWidth, const float playerHeight) {
     return {
-            {
-                position.x - (playerWidth / 2),
-                position.y,
-                position.z - (playerWidth / 2)
-            },
-            {
-                position.x + (playerWidth / 2),
-                position.y + playerHeight,
-                position.z + (playerWidth / 2)
-            }
+        {
+            position.x - (playerWidth / 2),
+            position.y,
+            position.z - (playerWidth / 2)
+        },
+        {
+            position.x + (playerWidth / 2),
+            position.y + playerHeight,
+            position.z + (playerWidth / 2)
+        }
     };
 }
 
@@ -129,7 +129,6 @@ float AABB::clipY(const AABB &against, float deltaY) const {
         if (const auto clip = against.minY - maxY - Constant::EPSILON; deltaY > clip) {
             deltaY = clip;
         }
-
     }
 
     // Moving down
@@ -163,5 +162,3 @@ float AABB::clipZ(const AABB &against, float deltaZ) const {
 
     return deltaZ;
 }
-
-

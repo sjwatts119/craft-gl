@@ -18,12 +18,14 @@
 #include "render/renderable/crosshair.h"
 #include "utility/direction.h"
 
-enum class MovementMode {
+enum class MovementMode
+{
     FLYING,
     WALKING,
 };
 
-class Player {
+class Player
+{
     /** Sensitivities and configurables **/
     MovementMode _mode = MovementMode::WALKING;
     float _zoomSensitivity = 2.0f;

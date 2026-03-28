@@ -35,11 +35,11 @@ void RenderManager::renderBlocks() const {
 
     _shaderManager._blockShader.setMat4("uViewMatrix", Craft::player->getCamera()->getViewMatrix());
     _shaderManager._blockShader.setMat4("uProjectionMatrix", Craft::player->getCamera()->getProjectionMatrix());
-    _shaderManager._blockShader.setLight("uSun" , Craft::world->getSun());
+    _shaderManager._blockShader.setLight("uSun", Craft::world->getSun());
 
     const Frustum viewFrustum{*Craft::player->getCamera()};
 
-    for (const auto &chunk: Craft::world->_chunks | std::views::values) {
+    for (const auto &chunk : Craft::world->_chunks | std::views::values) {
         if (chunk->getGenerationStep() != GenerationStep::MESHED) {
             continue;
         }
